@@ -1,4 +1,4 @@
-import { Building2, ChevronDown, Mail, MapPin, Phone, Upload } from 'lucide-react';
+import { Building2, ChevronDown, Mail, MapPin, Upload } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -48,6 +48,100 @@ const interiorFallbacks: Record<Apartment['building'], string> = {
   3: '6636_Inter_cam03_v2.jpg',
 };
 const supabase: SupabaseClient | null = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
+function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState(initialMessage);
+
+  useEffect(() => {
+    setMessage(initialMessage);
+  }, [initialMessage]);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase) return;
+    setSubmitting(true);
+    setSubmitError(false);
+    const { error } = await supabase.from('kontakt').insert({ name, email, telefon: phone, nachricht: message });
+    if (error) {
+      console.error('Kontaktformular Fehler:', error);
+      setSubmitting(false);
+      setSubmitError(true);
+      return;
+    }
+
+    await supabase.functions.invoke('send-kontakt-email', {
+      body: { name, email, telefon: phone, nachricht: message },
+    });
+
+    setSubmitting(false);
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <p className="text-xl font-light text-gray-300">
+        Vielen Dank, {name}. Wir melden uns in Kürze bei Ihnen.
+      </p>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
+      <input
+        required
+        className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-gray-600 disabled:opacity-40"
+        placeholder="Ihr Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        disabled={submitting}
+      />
+      <input
+        required
+        type="email"
+        className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-gray-600 disabled:opacity-40"
+        placeholder="Ihre E-Mail"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={submitting}
+      />
+      <input
+        type="tel"
+        className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-gray-600 disabled:opacity-40"
+        placeholder="Telefon"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        disabled={submitting}
+      />
+      <textarea
+        rows={4}
+        className="md:col-span-2 w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-gray-600 disabled:opacity-40 resize-none"
+        placeholder="Ihre Nachricht (optional)"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        disabled={submitting}
+      />
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full px-4 py-3 bg-white text-black tracking-wide hover:bg-gray-200 transition-colors disabled:opacity-40"
+      >
+        {submitting ? 'Wird gesendet…' : 'Unterlagen anfordern'}
+      </button>
+      {submitError && (
+        <p className="md:col-span-2 text-sm text-red-400">
+          Etwas ist schiefgelaufen. Bitte schreiben Sie uns direkt an{' '}
+          <a href="mailto:kontakt@widematte.ch" className="underline">kontakt@widematte.ch</a>.
+        </p>
+      )}
+    </form>
+  );
+}
 
 function floorLabel(floor: number) {
   if (floor === 0) return 'EG';
@@ -104,7 +198,12 @@ function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage
 function App() {
   const [images, setImages] = useState<ApartmentImage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [prefill, setPrefill] = useState('');
+
+  const requestInfo = (apt: Apartment) => {
+    setPrefill(`Ich interessiere mich für die Wohnung Gebäude ${apt.building} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Zusendung der Verkaufsunterlagen.`);
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -118,7 +217,6 @@ function App() {
         .select('apartment_id, image_type, storage_path');
 
       if (fetchError) {
-        setError('Bilder konnten nicht geladen werden.');
         setLoading(false);
         return;
       }
@@ -183,7 +281,6 @@ function App() {
           Durchdachte Grundrisse, hochwertige Materialien und ein ruhiges Wohnumfeld.
         </p>
 
-        {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
         {loading ? (
           <p className="text-gray-500">Bilder werden geladen...</p>
         ) : (
@@ -231,7 +328,7 @@ function App() {
                     <td className="py-7"><StatusBadge status={apt.status} /></td>
                     <td className="py-7 text-right">
                       {apt.status === 'available' ? (
-                        <a href="#contact" className="text-xs border-b border-black pb-1 uppercase tracking-widest hover:opacity-50 transition-opacity">Unterlagen anfordern</a>
+                        <button onClick={() => requestInfo(apt)} className="text-xs border-b border-black pb-1 uppercase tracking-widest hover:opacity-50 transition-opacity">Unterlagen anfordern</button>
                       ) : apt.status === 'reserved' ? (
                         <span className="text-xs border-b border-gray-300 pb-1 uppercase tracking-widest text-gray-400 cursor-not-allowed">Warteliste</span>
                       ) : null}
@@ -269,13 +366,9 @@ function App() {
             <MapPin className="w-5 h-5" />
             <span>Niederwilerstrasse, 5524 Nesselnbach</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Phone className="w-5 h-5" />
-            <span>+41 41 000 00 00</span>
-          </div>
-          <div className="flex items-center gap-3">
+<div className="flex items-center gap-3">
             <Mail className="w-5 h-5" />
-            <span>info@residenzen-nesselbach.ch</span>
+            <a href="mailto:kontakt@widematte.ch" className="hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
           </div>
         </div>
       </section>
@@ -286,23 +379,7 @@ function App() {
           <p className="text-xl text-gray-400 mb-12">
             Fordern Sie die Verkaufsunterlagen an oder vereinbaren Sie eine Besichtigung.
           </p>
-          <div className="grid md:grid-cols-2 gap-6">
-            <input
-              className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none"
-              placeholder="Ihr Name"
-            />
-            <input
-              className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none"
-              placeholder="Ihre E-Mail"
-              type="email"
-            />
-            <input
-              className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none"
-              placeholder="Telefon"
-              type="tel"
-            />
-            <button className="w-full px-4 py-3 bg-white text-black tracking-wide">Unterlagen anfordern</button>
-          </div>
+          <ContactForm initialMessage={prefill} />
         </div>
       </section>
 
