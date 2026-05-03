@@ -12,6 +12,7 @@ interface Apartment {
   floor: number;
   status: 'available' | 'reserved' | 'sold';
   note?: string;
+  placeholder?: boolean;
 }
 
 interface ApartmentImage {
@@ -23,16 +24,16 @@ interface ApartmentImage {
 const apartments: Apartment[] = [
   // Gebäude 1
   { id: 1, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1250000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 108, rooms: 3.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 4.5 Zimmer' },
+  { id: 2, building: '1', size: 108, rooms: 3.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 4.5 Zimmer', placeholder: true },
   { id: 3, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
-  { id: 4, building: '2', size: 127, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold' },
-  { id: 5, building: '2', size: 127, rooms: 4.5, rent: 32000, price: 1250000, floor: 1, status: 'sold' },
-  { id: 6, building: '2', size: 163, rooms: 5.5, rent: 36000, price: 1400000, floor: 2, status: 'sold' },
+  { id: 4, building: '2', size: 127, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold', placeholder: true },
+  { id: 5, building: '2', size: 127, rooms: 4.5, rent: 32000, price: 1250000, floor: 1, status: 'sold', placeholder: true },
+  { id: 6, building: '2', size: 163, rooms: 5.5, rent: 36000, price: 1400000, floor: 2, status: 'sold', placeholder: true },
   // Gebäude 3
-  { id: 7, building: '3', size: 115, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available' },
+  { id: 7, building: '3', size: 115, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true },
   { id: 8, building: '3', size: 115, rooms: 4.5, rent: 30000, price: 1250000, floor: 1, status: 'available' },
-  { id: 9, building: '3', size: 113, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved' },
+  { id: 9, building: '3', size: 113, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true  },
 ];
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -66,7 +67,7 @@ function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage
   const heroImage = apartmentImages.find((img) => img.image_type === 'hero');
   const buildingFallback = interiorFallbacks[apt.floor] ?? defaultHeroPath;
   const imagePath = heroImage?.storage_path ?? buildingFallback;
-  const imageUrl = supabaseUrl && bucketName && imagePath
+  const imageUrl = !apt.placeholder && supabaseUrl && bucketName && imagePath
     ? `${supabaseUrl}/storage/v1/object/public/${bucketName}/${imagePath}`
     : null;
 
