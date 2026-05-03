@@ -4,12 +4,13 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 interface Apartment {
   id: number;
-  building: 'A' | 'B' | 'C';
+  building: '1' | '2' | '3';
   number: string;
   size: number;
   bedrooms: number;
   price: number;
   floor: number;
+  status: 'available' | 'reserved' | 'sold';
 }
 
 interface ApartmentImage {
@@ -19,15 +20,15 @@ interface ApartmentImage {
 }
 
 const apartments: Apartment[] = [
-  { id: 1, building: 'A', number: '101', size: 85, bedrooms: 2, price: 450000, floor: 1 },
-  { id: 2, building: 'A', number: '102', size: 95, bedrooms: 3, price: 520000, floor: 1 },
-  { id: 3, building: 'A', number: '201', size: 110, bedrooms: 3, price: 580000, floor: 2 },
-  { id: 4, building: 'B', number: '101', size: 75, bedrooms: 2, price: 420000, floor: 1 },
-  { id: 5, building: 'B', number: '102', size: 85, bedrooms: 2, price: 465000, floor: 1 },
-  { id: 6, building: 'B', number: '201', size: 100, bedrooms: 3, price: 550000, floor: 2 },
-  { id: 7, building: 'C', number: '101', size: 90, bedrooms: 2, price: 485000, floor: 1 },
-  { id: 8, building: 'C', number: '102', size: 105, bedrooms: 3, price: 565000, floor: 1 },
-  { id: 9, building: 'C', number: '201', size: 120, bedrooms: 4, price: 650000, floor: 2 },
+  { id: 1, building: '1', number: '101', size: 85, bedrooms: 2, price: 450000, floor: 0, status: 'available' },
+  { id: 2, building: '1', number: '102', size: 95, bedrooms: 3, price: 520000, floor: 1, status: 'available' },
+  { id: 3, building: '1', number: '103', size: 110, bedrooms: 3, price: 580000, floor: 2, status: 'reserved' },
+  { id: 4, building: '2', number: '201', size: 75, bedrooms: 2, price: 420000, floor: 0, status: 'sold' },
+  { id: 5, building: '2', number: '202', size: 85, bedrooms: 2, price: 465000, floor: 1, status: 'sold' },
+  { id: 6, building: '2', number: '203', size: 100, bedrooms: 3, price: 550000, floor: 2, status: 'sold' },
+  { id: 7, building: '3', number: '301', size: 90, bedrooms: 2, price: 485000, floor: 0, status: 'available' },
+  { id: 8, building: '3', number: '302', size: 105, bedrooms: 3, price: 565000, floor: 1, status: 'available' },
+  { id: 9, building: '3', number: '303', size: 120, bedrooms: 4, price: 650000, floor: 2, status: 'available' },
 ];
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -38,11 +39,17 @@ const heroBackgroundUrl = supabaseUrl && bucketName
   ? `${supabaseUrl}/storage/v1/object/public/${bucketName}/${defaultHeroPath}`
   : undefined;
 const interiorFallbacks: Record<Apartment['building'], string> = {
-  A: '6636_Inter_cam01_v2.jpg',
-  B: '6636_Inter_cam02_v2.jpg',
-  C: '6636_Inter_cam03_v2.jpg',
+  1: '6636_Inter_cam01_v2.jpg',
+  2: '6636_Inter_cam02_v2.jpg',
+  3: '6636_Inter_cam03_v2.jpg',
 };
 const supabase: SupabaseClient | null = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
+function floorLabel(floor: number) {
+  if (floor === 0) return 'EG';
+  if (floor === 2) return 'DG';
+  return `${floor}. OG`;
+}
 
 function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage[] }) {
   const apartmentImages = images.filter((img) => img.apartment_id === apt.id);
@@ -68,7 +75,7 @@ function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage
       <div className="p-8">
         <div className="flex justify-between mb-4">
           <span className="text-2xl font-light">Whg. {apt.number}</span>
-          <span className="text-sm text-gray-600">{apt.floor}. OG</span>
+          <span className="text-sm text-gray-600">{floorLabel(apt.floor)}</span>
         </div>
         <p className="text-sm text-gray-600 mb-4">
           {apt.size} m² · {apt.bedrooms} Zimmer
@@ -109,7 +116,7 @@ function App() {
   }, []);
 
   const grouped = useMemo(() => {
-    return ['A', 'B', 'C'].map((building) => ({
+    return ['1', '2', '3'].map((building) => ({
       building,
       units: apartments.filter((a) => a.building === building),
     }));
@@ -125,6 +132,7 @@ function App() {
           </div>
           <div className="hidden md:flex gap-8 text-sm tracking-wide">
             <a href="#apartments">Wohnungen</a>
+            <a href="#availability">Verfügbarkeit</a>
             <a href="#plans">Grundrisse</a>
             <a href="#location">Lage</a>
             <a href="#contact">Kontakt</a>
@@ -177,6 +185,54 @@ function App() {
             ))}
           </div>
         )}
+      </section>
+
+      <section id="availability" className="py-32 px-6 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-6xl font-light mb-6">Verfügbarkeit</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mb-16">
+            Aktuell verfügbare Wohnungen zur Erwerbung.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  {['Wohnung', 'Fläche', 'Zimmer', 'Kaufpreis', 'Status', ''].map((h) => (
+                    <th key={h} className={`py-6 text-xs font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {apartments.map((apt) => (
+                  <tr key={apt.id} className="hover:bg-white transition-colors">
+                    <td className="py-7 text-xl font-light">Geb. {apt.building} · {floorLabel(apt.floor)}</td>
+                    <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
+                    <td className="py-7 text-sm text-gray-700">{apt.bedrooms} Zimmer</td>
+                    <td className="py-7 text-base font-light">CHF {apt.price.toLocaleString('de-CH')}</td>
+                    <td className="py-7">
+                      {apt.status === 'available' && (
+                        <span className="px-3 py-1 bg-green-500 text-white text-[10px] uppercase tracking-widest rounded-full">Verfügbar</span>
+                      )}
+                      {apt.status === 'reserved' && (
+                        <span className="px-3 py-1 bg-amber-400 text-white text-[10px] uppercase tracking-widest rounded-full">Reserviert</span>
+                      )}
+                      {apt.status === 'sold' && (
+                        <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full">Verkauft</span>
+                      )}
+                    </td>
+                    <td className="py-7 text-right">
+                      {apt.status === 'available' ? (
+                        <a href="#contact" className="text-xs border-b border-black pb-1 uppercase tracking-widest hover:opacity-50 transition-opacity">Unterlagen anfordern</a>
+                      ) : apt.status === 'reserved' ? (
+                        <span className="text-xs border-b border-gray-300 pb-1 uppercase tracking-widest text-gray-400 cursor-not-allowed">Warteliste</span>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <section id="plans" className="py-32 px-6 bg-gray-50">
