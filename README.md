@@ -1,4 +1,4 @@
-# Residenzen Nesselbach – Vite + Tailwind
+# Widematte – Vite + Tailwind
 
 ## Setup
 

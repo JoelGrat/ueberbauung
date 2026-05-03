@@ -90,8 +90,6 @@ function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage
         <p className="text-sm text-gray-600 mb-1">{apt.rooms} Zimmer · {apt.size} m²</p>
         {apt.note && <p className="text-xs text-gray-400 mb-3">{apt.note}</p>}
         {!apt.note && <div className="mb-3" />}
-        <p className="text-xs text-gray-400 mb-1">Nettomiete / Monat</p>
-        <p className="text-base font-light mb-3">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')}</p>
         <p className="text-xs text-gray-400 mb-1">Verkaufspreis</p>
         <p className="text-xl md:text-2xl font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
       </div>
@@ -340,10 +338,6 @@ function App() {
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-5">
                   <div>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Nettomiete / Mt.</p>
-                    <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')}</p>
-                  </div>
-                  <div>
                     <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
                     <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
                   </div>
@@ -371,7 +365,7 @@ function App() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-200">
-                  {['Wohnung', 'Zimmer', 'NWF', 'Nettomiete / Mt.', 'Verkaufspreis', 'Status', ''].map((h) => (
+                  {['Wohnung', 'Zimmer', 'NWF', 'Verkaufspreis', 'Status', ''].map((h) => (
                     <th key={h} className={`py-6 text-xs font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
                   ))}
                 </tr>
@@ -385,7 +379,6 @@ function App() {
                       {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
                     </td>
                     <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
-                    <td className="py-7 text-sm text-gray-700">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')}</td>
                     <td className="py-7 text-base font-light">CHF {apt.price.toLocaleString('de-CH')}</td>
                     <td className="py-7"><StatusBadge status={apt.status} /></td>
                     <td className="py-7 text-right">
@@ -450,7 +443,7 @@ function App() {
       </section>
 
       <footer className="py-10 md:py-12 px-6 bg-black text-white border-t border-gray-800">
-        <p className="text-sm text-gray-400">© 2026 Residenzen Nesselbach</p>
+        <p className="text-sm text-gray-400">© 2026 Widematte</p>
       </footer>
     </div>
   );
