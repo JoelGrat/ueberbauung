@@ -52,7 +52,7 @@ serve(async (req) => {
           <tr>
             <td style="padding:24px 40px 0;">
               <p style="margin:0;font-size:15px;font-weight:300;color:#444444;line-height:1.7;">
-                Eine neue Person hat über das Kontaktformular auf <a href="https://widematte.ch" style="color:#111111;">widematte.ch</a> die Verkaufsunterlagen zu den <strong style="font-weight:500;">Widematte</strong> angefordert. Bitte nehmen Sie zeitnah Kontakt auf und senden Sie die Unterlagen zu.
+                Eine neue Person hat über das Kontaktformular auf <a href="https://widematte.ch" style="color:#111111;">widematte.ch</a> die Unterlagen zu den <strong style="font-weight:500;">Widematte</strong> angefordert. Bitte nehmen Sie zeitnah Kontakt auf und senden Sie die Unterlagen zu.
               </p>
             </td>
           </tr>

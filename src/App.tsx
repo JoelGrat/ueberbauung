@@ -24,7 +24,7 @@ const apartments: Apartment[] = [
   // Gebäude 1
   { id: 1, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1250000, floor: 0, status: 'available' },
   { id: 2, building: '1', size: 108, rooms: 3.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 4.5 Zimmer' },
-  { id: 3, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'reserved' },
+  { id: 3, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
   { id: 4, building: '2', size: 127, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold' },
   { id: 5, building: '2', size: 127, rooms: 4.5, rent: 32000, price: 1250000, floor: 1, status: 'sold' },
@@ -32,7 +32,7 @@ const apartments: Apartment[] = [
   // Gebäude 3
   { id: 7, building: '3', size: 115, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available' },
   { id: 8, building: '3', size: 115, rooms: 4.5, rent: 30000, price: 1250000, floor: 1, status: 'available' },
-  { id: 9, building: '3', size: 113, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'available' },
+  { id: 9, building: '3', size: 113, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved' },
 ];
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -198,7 +198,7 @@ function App() {
   const closeMenu = () => setMenuOpen(false);
 
   const requestInfo = (apt: Apartment) => {
-    setPrefill(`Ich interessiere mich für die Wohnung Gebäude ${apt.building} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Zusendung der Verkaufsunterlagen.`);
+    setPrefill(`Ich interessiere mich für die Wohnung Gebäude ${apt.building} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Kontaktaufnahme.`);
     closeMenu();
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -436,7 +436,7 @@ function App() {
         <div className="max-w-4xl mx-auto md:mx-0">
           <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-8">Kontakt</h2>
           <p className="text-lg md:text-xl text-gray-400 mb-10 md:mb-12">
-            Fordern Sie die Verkaufsunterlagen an oder vereinbaren Sie eine Besichtigung.
+            Fordern Sie die Unterlagen an.
           </p>
           <ContactForm initialMessage={prefill} />
         </div>
