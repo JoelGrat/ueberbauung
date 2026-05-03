@@ -5,12 +5,13 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 interface Apartment {
   id: number;
   building: '1' | '2' | '3';
-  number: string;
   size: number;
-  bedrooms: number;
+  rooms: number;
+  rent: number;
   price: number;
   floor: number;
   status: 'available' | 'reserved' | 'sold';
+  note?: string;
 }
 
 interface ApartmentImage {
@@ -20,15 +21,18 @@ interface ApartmentImage {
 }
 
 const apartments: Apartment[] = [
-  { id: 1, building: '1', number: '101', size: 85, bedrooms: 2, price: 450000, floor: 0, status: 'available' },
-  { id: 2, building: '1', number: '102', size: 95, bedrooms: 3, price: 520000, floor: 1, status: 'available' },
-  { id: 3, building: '1', number: '103', size: 110, bedrooms: 3, price: 580000, floor: 2, status: 'reserved' },
-  { id: 4, building: '2', number: '201', size: 75, bedrooms: 2, price: 420000, floor: 0, status: 'sold' },
-  { id: 5, building: '2', number: '202', size: 85, bedrooms: 2, price: 465000, floor: 1, status: 'sold' },
-  { id: 6, building: '2', number: '203', size: 100, bedrooms: 3, price: 550000, floor: 2, status: 'sold' },
-  { id: 7, building: '3', number: '301', size: 90, bedrooms: 2, price: 485000, floor: 0, status: 'available' },
-  { id: 8, building: '3', number: '302', size: 105, bedrooms: 3, price: 565000, floor: 1, status: 'available' },
-  { id: 9, building: '3', number: '303', size: 120, bedrooms: 4, price: 650000, floor: 2, status: 'available' },
+  // Gebäude 1
+  { id: 1, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1250000, floor: 0, status: 'available' },
+  { id: 2, building: '1', size: 108, rooms: 3.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 4.5 Zimmer' },
+  { id: 3, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'reserved' },
+  // Gebäude 2 – verkauft
+  { id: 4, building: '2', size: 127, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold' },
+  { id: 5, building: '2', size: 127, rooms: 4.5, rent: 32000, price: 1250000, floor: 1, status: 'sold' },
+  { id: 6, building: '2', size: 163, rooms: 5.5, rent: 36000, price: 1400000, floor: 2, status: 'sold' },
+  // Gebäude 3
+  { id: 7, building: '3', size: 115, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available' },
+  { id: 8, building: '3', size: 115, rooms: 4.5, rent: 30000, price: 1250000, floor: 1, status: 'available' },
+  { id: 9, building: '3', size: 113, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'available' },
 ];
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -51,6 +55,12 @@ function floorLabel(floor: number) {
   return `${floor}. OG`;
 }
 
+function StatusBadge({ status }: { status: Apartment['status'] }) {
+  if (status === 'available') return <span className="px-3 py-1 bg-green-500 text-white text-[10px] uppercase tracking-widest rounded-full">Verfügbar</span>;
+  if (status === 'reserved') return <span className="px-3 py-1 bg-amber-400 text-white text-[10px] uppercase tracking-widest rounded-full">Reserviert</span>;
+  return <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full">Verkauft</span>;
+}
+
 function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage[] }) {
   const apartmentImages = images.filter((img) => img.apartment_id === apt.id);
   const heroImage = apartmentImages.find((img) => img.image_type === 'hero');
@@ -63,23 +73,28 @@ function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage
   return (
     <div className="border overflow-hidden hover:shadow-lg transition-shadow bg-white">
       {imageUrl ? (
-        <img src={imageUrl} alt={`Apartment ${apt.number}`} className="w-full h-64 object-cover" />
+        <img src={imageUrl} alt={`Gebäude ${apt.building} ${floorLabel(apt.floor)}`} className="w-full h-64 object-cover" loading="lazy" />
       ) : (
         <div className="w-full h-64 bg-gray-100 flex items-center justify-center">
           <div className="text-center">
             <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">Upload images</p>
+            <p className="text-sm text-gray-500">Bild folgt</p>
           </div>
         </div>
       )}
       <div className="p-8">
-        <div className="flex justify-between mb-4">
-          <span className="text-2xl font-light">Whg. {apt.number}</span>
-          <span className="text-sm text-gray-600">{floorLabel(apt.floor)}</span>
+        <div className="flex justify-between items-start mb-4">
+          <span className="text-2xl font-light">{floorLabel(apt.floor)}</span>
+          <StatusBadge status={apt.status} />
         </div>
-        <p className="text-sm text-gray-600 mb-4">
-          {apt.size} m² · {apt.bedrooms} Zimmer
+        <p className="text-sm text-gray-600 mb-1">
+          {apt.rooms} Zimmer · {apt.size} m²
         </p>
+        {apt.note && <p className="text-xs text-gray-400 mb-4">{apt.note}</p>}
+        {!apt.note && <div className="mb-4" />}
+        <p className="text-xs text-gray-400 mb-1">Nettomiete / Monat</p>
+        <p className="text-base font-light mb-3">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')}</p>
+        <p className="text-xs text-gray-400 mb-1">Verkaufspreis</p>
         <p className="text-2xl font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
       </div>
     </div>
@@ -197,7 +212,7 @@ function App() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-200">
-                  {['Wohnung', 'Fläche', 'Zimmer', 'Kaufpreis', 'Status', ''].map((h) => (
+                  {['Wohnung', 'Zimmer', 'NWF', 'Nettomiete / Mt.', 'Verkaufspreis', 'Status', ''].map((h) => (
                     <th key={h} className={`py-6 text-xs font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
                   ))}
                 </tr>
@@ -206,20 +221,14 @@ function App() {
                 {apartments.map((apt) => (
                   <tr key={apt.id} className="hover:bg-white transition-colors">
                     <td className="py-7 text-xl font-light">Geb. {apt.building} · {floorLabel(apt.floor)}</td>
-                    <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
-                    <td className="py-7 text-sm text-gray-700">{apt.bedrooms} Zimmer</td>
-                    <td className="py-7 text-base font-light">CHF {apt.price.toLocaleString('de-CH')}</td>
-                    <td className="py-7">
-                      {apt.status === 'available' && (
-                        <span className="px-3 py-1 bg-green-500 text-white text-[10px] uppercase tracking-widest rounded-full">Verfügbar</span>
-                      )}
-                      {apt.status === 'reserved' && (
-                        <span className="px-3 py-1 bg-amber-400 text-white text-[10px] uppercase tracking-widest rounded-full">Reserviert</span>
-                      )}
-                      {apt.status === 'sold' && (
-                        <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full">Verkauft</span>
-                      )}
+                    <td className="py-7 text-sm text-gray-700">
+                      {apt.rooms}
+                      {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
                     </td>
+                    <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
+                    <td className="py-7 text-sm text-gray-700">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')}</td>
+                    <td className="py-7 text-base font-light">CHF {apt.price.toLocaleString('de-CH')}</td>
+                    <td className="py-7"><StatusBadge status={apt.status} /></td>
                     <td className="py-7 text-right">
                       {apt.status === 'available' ? (
                         <a href="#contact" className="text-xs border-b border-black pb-1 uppercase tracking-widest hover:opacity-50 transition-opacity">Unterlagen anfordern</a>
@@ -231,6 +240,11 @@ function App() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="mt-12 pt-8 border-t border-gray-200">
+            <p className="text-xs uppercase tracking-widest text-gray-400 mb-3">Tiefgarage</p>
+            <p className="text-base font-light">18 Einstellplätze · CHF 25'920 pro Platz</p>
+            <p className="text-xs text-gray-400 mt-1">Hinweis: Autolift etwas klein</p>
           </div>
         </div>
       </section>
@@ -253,7 +267,7 @@ function App() {
         <div className="flex flex-col md:flex-row gap-8 text-gray-700">
           <div className="flex items-center gap-3">
             <MapPin className="w-5 h-5" />
-            <span>5603 Nesselnbach, Schweiz</span>
+            <span>Niederwilerstrasse, 5524 Nesselnbach</span>
           </div>
           <div className="flex items-center gap-3">
             <Phone className="w-5 h-5" />
