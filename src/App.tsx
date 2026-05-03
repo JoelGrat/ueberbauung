@@ -42,10 +42,10 @@ const defaultHeroPath = 'Aussenansicht.jpg';
 const heroBackgroundUrl = supabaseUrl && bucketName
   ? `${supabaseUrl}/storage/v1/object/public/${bucketName}/${defaultHeroPath}`
   : undefined;
-const interiorFallbacks: Record<Apartment['building'], string> = {
-  1: '6636_Inter_cam01_v2.jpg',
-  2: '6636_Inter_cam02_v2.jpg',
-  3: '6636_Inter_cam03_v2.jpg',
+const interiorFallbacks: Record<number, string> = {
+  0: '6636_Inter_cam01_v2.jpg',  // EG
+  1: '6636_Inter_cam03_v2.jpg',  // 1. OG
+  2: '6636_Inter_cam02_v2.jpg',  // DG
 };
 const supabase: SupabaseClient | null = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
@@ -64,7 +64,7 @@ function StatusBadge({ status }: { status: Apartment['status'] }) {
 function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage[] }) {
   const apartmentImages = images.filter((img) => img.apartment_id === apt.id);
   const heroImage = apartmentImages.find((img) => img.image_type === 'hero');
-  const buildingFallback = interiorFallbacks[apt.building] ?? defaultHeroPath;
+  const buildingFallback = interiorFallbacks[apt.floor] ?? defaultHeroPath;
   const imagePath = heroImage?.storage_path ?? buildingFallback;
   const imageUrl = supabaseUrl && bucketName && imagePath
     ? `${supabaseUrl}/storage/v1/object/public/${bucketName}/${imagePath}`
@@ -294,7 +294,7 @@ function App() {
       <section id="apartments" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
         <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-12 md:mb-16">
-          Durchdachte Grundrisse, hochwertige Materialien und ein ruhiges Wohnumfeld.
+          Durchdachte Grundrisse, hochwertige Materialien und ein ländliches, ruhiges Wohnumfeld direkt an der Landwirtschaftszone.
         </p>
         {loading ? (
           <p className="text-gray-500">Bilder werden geladen…</p>
@@ -328,7 +328,7 @@ function App() {
               <div key={apt.id} className="bg-white border border-gray-200 p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <p className="text-lg font-light">Geb. {apt.building} · {floorLabel(apt.floor)}</p>
+                    <p className="text-lg font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</p>
                     <p className="text-sm text-gray-500 mt-1">
                       {apt.rooms} Zimmer · {apt.size} m²
                       {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
@@ -373,7 +373,7 @@ function App() {
               <tbody className="divide-y divide-gray-100">
                 {apartments.map((apt) => (
                   <tr key={apt.id} className="hover:bg-white transition-colors">
-                    <td className="py-7 text-xl font-light">Geb. {apt.building} · {floorLabel(apt.floor)}</td>
+                    <td className="py-7 text-xl font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</td>
                     <td className="py-7 text-sm text-gray-700">
                       {apt.rooms}
                       {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
@@ -397,7 +397,6 @@ function App() {
           <div className="mt-10 md:mt-12 pt-8 border-t border-gray-200">
             <p className="text-xs uppercase tracking-widest text-gray-400 mb-3">Tiefgarage</p>
             <p className="text-base font-light">18 Einstellplätze · CHF 25'920 pro Platz</p>
-            <p className="text-xs text-gray-400 mt-1">Hinweis: Autolift etwas klein</p>
           </div>
         </div>
       </section>
@@ -417,7 +416,7 @@ function App() {
         <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-10 md:mb-12">
           Nesselnbach bietet ländliche Ruhe mit schneller Anbindung an Lenzburg,
-          Wohlen und Aarau.
+          Aarau, Baden, Zürich, Zug und Luzern.
         </p>
         <div className="flex flex-col gap-5 md:flex-row md:gap-8 text-gray-700">
           <div className="flex items-center gap-3">
