@@ -52,7 +52,7 @@ const buildingImagePaths: Record<string, string[]> = {
 };
 
 const buildingDescriptions: Record<string, string> = {
-  '1': 'Drei 4.5-Zimmer-Wohnungen auf drei Stockwerken mit offenen Grundrissen und Blick in die Landschaft. Die Wohnung im ersten Obergeschoss ist optional auch als 3.5-Zimmer-Wohnung erhältlich.',
+  '1': 'Drei 4.5-Zimmer-Wohnungen auf drei Stockwerken mit offenen Grundrissen und Blick ins Grüne. Die Wohnung im ersten Obergeschoss ist optional auch als 3.5-Zimmer-Wohnung erhältlich.',
   '2': 'Drei grosszügige Wohnungen von 4.5 bis 5.5 Zimmern auf drei Stockwerken – vollständig verkauft. Das Dachgeschoss bietet mit 163 m² die grösste Einheit der Überbauung.',
   '3': 'Drei Wohnungen à 4.5 Zimmer mit ruhiger Südausrichtung und direktem Bezug zur angrenzenden Landwirtschaftszone.',
 };
