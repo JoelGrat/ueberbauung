@@ -25,8 +25,8 @@ interface ApartmentImage {
 const apartments: Apartment[] = [
   // Gebäude 1
   { id: 1, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1250000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 108, rooms: 3.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 4.5 Zimmer', placeholder: true, outdoor: 23.74 },
-  { id: 3, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'available' },
+  { id: 2, building: '1', size: 108, rooms: 4.5, rent: 28000, price: 1150000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 23.74 },
+  { id: 3, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1200000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
   { id: 4, building: '2', size: 127, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold', placeholder: true },
   { id: 5, building: '2', size: 127, rooms: 4.5, rent: 32000, price: 1250000, floor: 1, status: 'sold', placeholder: true },
@@ -37,6 +37,12 @@ const apartments: Apartment[] = [
   { id: 9, building: '3', size: 113, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true  },
 ];
 
+const buildingListingType: Record<string, 'sale' | 'rent'> = {
+  '1': 'sale',
+  '2': 'sale',
+  '3': 'rent',
+};
+
 // Add image filenames from Supabase Storage here — one entry per picture.
 // Example: '1': ['Gebaeude1_Aussen.jpg', 'Gebaeude1_Kueche.jpg']
 const buildingImagePaths: Record<string, string[]> = {
@@ -46,7 +52,7 @@ const buildingImagePaths: Record<string, string[]> = {
 };
 
 const buildingDescriptions: Record<string, string> = {
-  '1': 'Drei Wohnungen auf drei Stockwerken mit offenen Grundrissen und Blick in die Landschaft. Die Wohnung im ersten Obergeschoss ist optional auch als 4.5-Zimmer-Variante erhältlich.',
+  '1': 'Drei 4.5-Zimmer-Wohnungen auf drei Stockwerken mit offenen Grundrissen und Blick in die Landschaft. Die Wohnung im ersten Obergeschoss ist optional auch als 3.5-Zimmer-Wohnung erhältlich.',
   '2': 'Drei grosszügige Wohnungen von 4.5 bis 5.5 Zimmern auf drei Stockwerken – vollständig verkauft. Das Dachgeschoss bietet mit 163 m² die grösste Einheit der Überbauung.',
   '3': 'Drei Wohnungen à 4.5 Zimmer mit ruhiger Südausrichtung und direktem Bezug zur angrenzenden Landwirtschaftszone.',
 };
@@ -111,12 +117,21 @@ function BuildingCard({ building, units, images, onRequest }: {
   const maxSize = Math.max(...units.map(u => u.size));
 
   const available = units.filter(u => u.status === 'available');
+  const listingType = buildingListingType[building] ?? 'sale';
 
   const roomsLabel = minRooms === maxRooms ? `${minRooms}` : `${minRooms}–${maxRooms}`;
   const sizeLabel = minSize === maxSize ? `${minSize}` : `${minSize}–${maxSize}`;
 
   const priceLabel = (() => {
     if (available.length === 0) return null;
+    if (listingType === 'rent') {
+      const rents = available.map(u => Math.round(u.rent / 12));
+      const min = Math.min(...rents);
+      const max = Math.max(...rents);
+      return min === max
+        ? `CHF ${min.toLocaleString('de-CH')} / Monat`
+        : `CHF ${min.toLocaleString('de-CH')} – ${max.toLocaleString('de-CH')} / Monat`;
+    }
     const prices = available.map(u => u.price);
     const min = Math.min(...prices);
     const max = Math.max(...prices);
@@ -124,6 +139,8 @@ function BuildingCard({ building, units, images, onRequest }: {
       ? `CHF ${min.toLocaleString('de-CH')}`
       : `CHF ${min.toLocaleString('de-CH')} – ${max.toLocaleString('de-CH')}`;
   })();
+
+  const priceRowLabel = listingType === 'rent' ? 'Mietpreis ab' : 'Verkaufspreis ab';
 
   return (
     <div className="border overflow-hidden bg-white hover:shadow-lg transition-shadow flex flex-col">
@@ -186,7 +203,7 @@ function BuildingCard({ building, units, images, onRequest }: {
           </div>
           {priceLabel && (
             <div className="col-span-2">
-              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis ab</p>
+              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">{priceRowLabel}</p>
               <p className="text-base font-light">{priceLabel}</p>
             </div>
           )}
@@ -349,7 +366,7 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-white text-black overflow-x-hidden">
 
       {/* Nav */}
       <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-200">
@@ -394,7 +411,7 @@ function App() {
         } : undefined}
       >
         <div className="relative text-center px-6 max-w-5xl">
-          <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md whitespace-nowrap">Ländlich wohnen</h1>
+          <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md">Ländlich wohnen</h1>
           <p className="text-lg md:text-2xl font-light text-gray-200 mb-10 md:mb-12">
             Drei Gebäude. Neun Wohnungen. Zeitlose Architektur im Aargau.
           </p>
@@ -435,7 +452,7 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-6">Verfügbarkeit</h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-12 md:mb-16">
-            Aktuell verfügbare Wohnungen zur Erwerbung.
+            Aktuell verfügbare Wohnungen zum Kauf und zur Miete.
           </p>
 
           {/* Mobile: cards */}
@@ -454,8 +471,17 @@ function App() {
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-5">
                   <div>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
-                    <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
+                    {buildingListingType[apt.building] === 'rent' ? (
+                      <>
+                        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Mietpreis</p>
+                        <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} / Monat</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
+                        <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
+                      </>
+                    )}
                   </div>
                 </div>
                 {apt.status === 'available' && (
@@ -481,7 +507,7 @@ function App() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-200">
-                  {['Wohnung', 'Zimmer', 'NWF', 'Verkaufspreis', 'Status', ''].map((h) => (
+                  {['Wohnung', 'Zimmer', 'NWF', 'Preis', 'Status', ''].map((h) => (
                     <th key={h} className={`py-6 text-xs font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
                   ))}
                 </tr>
@@ -495,7 +521,11 @@ function App() {
                       {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
                     </td>
                     <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
-                    <td className="py-7 text-base font-light">CHF {apt.price.toLocaleString('de-CH')}</td>
+                    <td className="py-7 text-base font-light">
+                      {buildingListingType[apt.building] === 'rent'
+                        ? <>CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-sm text-gray-400">/ Monat</span></>
+                        : <>CHF {apt.price.toLocaleString('de-CH')}</>}
+                    </td>
                     <td className="py-7"><StatusBadge status={apt.status} /></td>
                     <td className="py-7 text-right">
                       {apt.status === 'available' ? (
