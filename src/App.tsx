@@ -43,6 +43,12 @@ const buildingListingType: Record<string, 'sale' | 'rent'> = {
   '3': 'rent',
 };
 
+const buildingShowPrice: Record<string, boolean> = {
+  '1': true,
+  '2': false,
+  '3': false,
+};
+
 // Add image filenames from Supabase Storage here — one entry per picture.
 // Example: '1': ['Gebaeude1_Aussen.jpg', 'Gebaeude1_Kueche.jpg']
 const buildingImagePaths: Record<string, string[]> = {
@@ -201,7 +207,7 @@ function BuildingCard({ building, units, images, onRequest }: {
             <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Zimmer</p>
             <p className="text-sm font-light">{roomsLabel}</p>
           </div>
-          {priceLabel && (
+          {priceLabel && buildingShowPrice[building] && (
             <div className="col-span-2">
               <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">{priceRowLabel}</p>
               <p className="text-base font-light">{priceLabel}</p>
@@ -469,21 +475,23 @@ function App() {
                   </div>
                   <StatusBadge status={apt.status} />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                  <div>
-                    {buildingListingType[apt.building] === 'rent' ? (
-                      <>
-                        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Mietpreis</p>
-                        <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} / Monat</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
-                        <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
-                      </>
-                    )}
+                {buildingShowPrice[apt.building] && (
+                  <div className="grid grid-cols-2 gap-4 mb-5">
+                    <div>
+                      {buildingListingType[apt.building] === 'rent' ? (
+                        <>
+                          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Mietpreis</p>
+                          <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} / Monat</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
+                          <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
                 {apt.status === 'available' && (
                   <button
                     onClick={() => requestInfo(apt)}
@@ -522,9 +530,13 @@ function App() {
                     </td>
                     <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
                     <td className="py-7 text-base font-light">
-                      {buildingListingType[apt.building] === 'rent'
-                        ? <>CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-sm text-gray-400">/ Monat</span></>
-                        : <>CHF {apt.price.toLocaleString('de-CH')}</>}
+                      {buildingShowPrice[apt.building] ? (
+                        buildingListingType[apt.building] === 'rent'
+                          ? <>CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-sm text-gray-400">/ Monat</span></>
+                          : <>CHF {apt.price.toLocaleString('de-CH')}</>
+                      ) : (
+                        <span className="text-gray-400">–</span>
+                      )}
                     </td>
                     <td className="py-7"><StatusBadge status={apt.status} /></td>
                     <td className="py-7 text-right">
