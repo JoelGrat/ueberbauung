@@ -278,7 +278,7 @@ function App() {
         } : undefined}
       >
         <div className="relative text-center px-6 max-w-5xl">
-          <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md">Ruhig wohnen.</h1>
+          <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md whitespace-nowrap">Ländlich wohnen.</h1>
           <p className="text-lg md:text-2xl font-light text-gray-200 mb-10 md:mb-12">
             Drei Gebäude. Neun Wohnungen. Zeitlose Architektur im Aargau.
           </p>
