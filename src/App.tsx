@@ -1,4 +1,4 @@
-import { Building2, ChevronDown, Mail, MapPin, Menu, Upload, X } from 'lucide-react';
+import { Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, MapPin, Menu, Upload, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -13,6 +13,7 @@ interface Apartment {
   status: 'available' | 'reserved' | 'sold';
   note?: string;
   placeholder?: boolean;
+  outdoor?: number;
 }
 
 interface ApartmentImage {
@@ -24,7 +25,7 @@ interface ApartmentImage {
 const apartments: Apartment[] = [
   // Gebäude 1
   { id: 1, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1250000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 108, rooms: 3.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 4.5 Zimmer', placeholder: true },
+  { id: 2, building: '1', size: 108, rooms: 3.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 4.5 Zimmer', placeholder: true, outdoor: 23.74 },
   { id: 3, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
   { id: 4, building: '2', size: 127, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold', placeholder: true },
@@ -35,6 +36,20 @@ const apartments: Apartment[] = [
   { id: 8, building: '3', size: 115, rooms: 4.5, rent: 30000, price: 1250000, floor: 1, status: 'available' },
   { id: 9, building: '3', size: 113, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true  },
 ];
+
+// Add image filenames from Supabase Storage here — one entry per picture.
+// Example: '1': ['Gebaeude1_Aussen.jpg', 'Gebaeude1_Kueche.jpg']
+const buildingImagePaths: Record<string, string[]> = {
+  '1': ['6636_Inter_cam01_v2.jpg','6636_Inter_cam02_v2.jpg'],
+  '2': [],
+  '3': [],
+};
+
+const buildingDescriptions: Record<string, string> = {
+  '1': 'Drei Wohnungen auf drei Stockwerken mit offenen Grundrissen und Blick in die Landschaft. Die Wohnung im ersten Obergeschoss ist optional auch als 4.5-Zimmer-Variante erhältlich.',
+  '2': 'Drei grosszügige Wohnungen von 4.5 bis 5.5 Zimmern auf drei Stockwerken – vollständig verkauft. Das Dachgeschoss bietet mit 163 m² die grösste Einheit der Überbauung.',
+  '3': 'Drei Wohnungen à 4.5 Zimmer mit ruhiger Südausrichtung und direktem Bezug zur angrenzenden Landwirtschaftszone.',
+};
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
@@ -62,37 +77,132 @@ function StatusBadge({ status }: { status: Apartment['status'] }) {
   return <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full">Verkauft</span>;
 }
 
-function ApartmentCard({ apt, images }: { apt: Apartment; images: ApartmentImage[] }) {
-  const apartmentImages = images.filter((img) => img.apartment_id === apt.id);
-  const heroImage = apartmentImages.find((img) => img.image_type === 'hero');
-  const buildingFallback = interiorFallbacks[apt.floor] ?? defaultHeroPath;
-  const imagePath = heroImage?.storage_path ?? buildingFallback;
-  const imageUrl = !apt.placeholder && supabaseUrl && bucketName && imagePath
-    ? `${supabaseUrl}/storage/v1/object/public/${bucketName}/${imagePath}`
-    : null;
+function BuildingCard({ building, units, images, onRequest }: {
+  building: string;
+  units: Apartment[];
+  images: ApartmentImage[];
+  onRequest: (building: string) => void;
+}) {
+  const [imgIndex, setImgIndex] = useState(0);
+
+  const imageUrls = useMemo(() => {
+    if (!supabaseUrl || !bucketName) return [];
+    const base = `${supabaseUrl}/storage/v1/object/public/${bucketName}`;
+    const configured = buildingImagePaths[building] ?? [];
+    if (configured.length > 0) return configured.map(p => `${base}/${p}`);
+    const unitIds = new Set(units.map(u => u.id));
+    const dbImages = images.filter(img => unitIds.has(img.apartment_id));
+    const urls = dbImages.map(img => `${base}/${img.storage_path}`);
+    if (urls.length === 0) {
+      const fallbackUnit = units.find(u => !u.placeholder);
+      if (fallbackUnit) urls.push(`${base}/${interiorFallbacks[fallbackUnit.floor] ?? defaultHeroPath}`);
+    }
+    return urls;
+  }, [building, units, images]);
+
+  const total = imageUrls.length;
+  const currentUrl = imageUrls[imgIndex] ?? null;
+  const prev = (e: React.MouseEvent) => { e.stopPropagation(); setImgIndex(i => (i - 1 + total) % total); };
+  const next = (e: React.MouseEvent) => { e.stopPropagation(); setImgIndex(i => (i + 1) % total); };
+
+  const minRooms = Math.min(...units.map(u => u.rooms));
+  const maxRooms = Math.max(...units.map(u => u.rooms));
+  const minSize = Math.min(...units.map(u => u.size));
+  const maxSize = Math.max(...units.map(u => u.size));
+
+  const available = units.filter(u => u.status === 'available');
+
+  const roomsLabel = minRooms === maxRooms ? `${minRooms}` : `${minRooms}–${maxRooms}`;
+  const sizeLabel = minSize === maxSize ? `${minSize}` : `${minSize}–${maxSize}`;
+
+  const priceLabel = (() => {
+    if (available.length === 0) return null;
+    const prices = available.map(u => u.price);
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    return min === max
+      ? `CHF ${min.toLocaleString('de-CH')}`
+      : `CHF ${min.toLocaleString('de-CH')} – ${max.toLocaleString('de-CH')}`;
+  })();
 
   return (
-    <div className="border overflow-hidden hover:shadow-lg transition-shadow bg-white">
-      {imageUrl ? (
-        <img src={imageUrl} alt={`Gebäude ${apt.building} ${floorLabel(apt.floor)}`} className="w-full h-56 md:h-64 object-cover" loading="lazy" />
-      ) : (
-        <div className="w-full h-56 md:h-64 bg-gray-100 flex items-center justify-center">
-          <div className="text-center">
-            <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">Bild folgt</p>
+    <div className="border overflow-hidden bg-white hover:shadow-lg transition-shadow flex flex-col">
+      <div className="relative">
+        {currentUrl ? (
+          <img src={currentUrl} alt={`Gebäude ${building}`} className="w-full h-64 md:h-72 object-cover" loading="lazy" />
+        ) : (
+          <div className="w-full h-64 md:h-72 bg-gray-100 flex items-center justify-center">
+            <div className="text-center">
+              <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-500">Bild folgt</p>
+            </div>
           </div>
+        )}
+        {total > 1 && (
+          <>
+            <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
+              <ChevronRight className="w-4 h-4" />
+            </button>
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+              {imageUrls.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => { e.stopPropagation(); setImgIndex(i); }}
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${i === imgIndex ? 'bg-white' : 'bg-white/50'}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      <div className="p-6 md:p-8 flex flex-col flex-1">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-2xl md:text-3xl font-light">Gebäude {building}</h3>
+          {available.length > 0 ? (
+            <span className="px-3 py-1 bg-green-500 text-white text-[10px] uppercase tracking-widest rounded-full shrink-0 ml-3">
+              {available.length} verfügbar
+            </span>
+          ) : (
+            <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full shrink-0 ml-3">
+              Verkauft
+            </span>
+          )}
         </div>
-      )}
-      <div className="p-6 md:p-8">
-        <div className="flex justify-between items-start mb-3">
-          <span className="text-xl md:text-2xl font-light">{floorLabel(apt.floor)}</span>
-          <StatusBadge status={apt.status} />
+        <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">{roomsLabel} Zimmer · {sizeLabel} m²</p>
+        <p className="text-sm text-gray-600 leading-relaxed mb-6 flex-1">
+          {buildingDescriptions[building]}
+        </p>
+        <div className="border-t border-gray-100 pt-5 mb-6 grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Wohnfläche (netto)</p>
+            <p className="text-sm font-light">{sizeLabel} m²</p>
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Zimmer</p>
+            <p className="text-sm font-light">{roomsLabel}</p>
+          </div>
+          {priceLabel && (
+            <div className="col-span-2">
+              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis ab</p>
+              <p className="text-base font-light">{priceLabel}</p>
+            </div>
+          )}
         </div>
-        <p className="text-sm text-gray-600 mb-1">{apt.rooms} Zimmer · {apt.size} m²</p>
-        {apt.note && <p className="text-xs text-gray-400 mb-3">{apt.note}</p>}
-        {!apt.note && <div className="mb-3" />}
-        <p className="text-xs text-gray-400 mb-1">Verkaufspreis</p>
-        <p className="text-xl md:text-2xl font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
+        {available.length > 0 ? (
+          <button
+            onClick={() => onRequest(building)}
+            className="w-full py-3 border border-black text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+          >
+            Unterlagen anfordern
+          </button>
+        ) : (
+          <p className="w-full py-3 border border-gray-200 text-xs uppercase tracking-widest text-gray-400 text-center">
+            Vollständig verkauft
+          </p>
+        )}
       </div>
     </div>
   );
@@ -204,6 +314,12 @@ function App() {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const requestBuildingInfo = (building: string) => {
+    setPrefill(`Ich interessiere mich für Wohnungen in Gebäude ${building} und bitte um Kontaktaufnahme sowie Zusendung der Unterlagen.`);
+    closeMenu();
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const fetchImages = async () => {
       if (!supabase) { setLoading(false); return; }
@@ -278,7 +394,7 @@ function App() {
         } : undefined}
       >
         <div className="relative text-center px-6 max-w-5xl">
-          <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md whitespace-nowrap">Ländlich wohnen.</h1>
+          <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md whitespace-nowrap">Ländlich wohnen</h1>
           <p className="text-lg md:text-2xl font-light text-gray-200 mb-10 md:mb-12">
             Drei Gebäude. Neun Wohnungen. Zeitlose Architektur im Aargau.
           </p>
@@ -300,16 +416,15 @@ function App() {
         {loading ? (
           <p className="text-gray-500">Bilder werden geladen…</p>
         ) : (
-          <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {grouped.map(({ building, units }) => (
-              <div key={building}>
-                <h3 className="text-2xl md:text-4xl font-light mb-6 md:mb-8">Gebäude {building}</h3>
-                <div className="space-y-6">
-                  {units.map((apt) => (
-                    <ApartmentCard key={apt.id} apt={apt} images={images} />
-                  ))}
-                </div>
-              </div>
+              <BuildingCard
+                key={building}
+                building={building}
+                units={units}
+                images={images}
+                onRequest={requestBuildingInfo}
+              />
             ))}
           </div>
         )}
