@@ -354,6 +354,12 @@ function App() {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const requestWaitlist = (apt: Apartment) => {
+    setPrefill(`Ich interessiere mich für Gebäude ${apt.building} · ${floorLabel(apt.floor)} und möchte auf die Warteliste gesetzt werden.`);
+    closeMenu();
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const fetchImages = async () => {
       if (!supabase) return;
@@ -518,7 +524,12 @@ function App() {
                   </button>
                 )}
                 {apt.status === 'reserved' && (
-                  <p className="text-xs uppercase tracking-widest text-gray-400 text-center py-3 border border-gray-200">Reserviert</p>
+                  <button
+                    onClick={() => requestWaitlist(apt)}
+                    className="w-full py-3 border border-black text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+                  >
+                    Warteliste
+                  </button>
                 )}
                 {apt.status === 'sold' && (
                   <p className="text-xs uppercase tracking-widest text-gray-400 text-center py-3 border border-gray-200">Verkauft</p>
@@ -563,7 +574,7 @@ function App() {
                       {apt.status === 'available' ? (
                         <button onClick={() => requestInfo(apt)} className="text-xs border-b border-black pb-1 uppercase tracking-widest hover:opacity-50 transition-opacity">Unterlagen anfordern</button>
                       ) : apt.status === 'reserved' ? (
-                        <span className="text-xs border-b border-gray-300 pb-1 uppercase tracking-widest text-gray-400 cursor-not-allowed">Warteliste</span>
+                        <button onClick={() => requestWaitlist(apt)} className="text-xs border-b border-black pb-1 uppercase tracking-widest hover:opacity-50 transition-opacity">Warteliste</button>
                       ) : null}
                     </td>
                   </tr>
