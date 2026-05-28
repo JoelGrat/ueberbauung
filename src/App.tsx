@@ -1,4 +1,4 @@
-import { Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, MapPin, Menu, Phone, Upload, X } from 'lucide-react';
+import { Building2, ChevronDown, ChevronLeft, ChevronRight, Download, Mail, MapPin, Menu, Phone, Upload, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -107,16 +107,16 @@ function Lightbox({ images, startIndex, onClose }: { images: string[]; startInde
 
   return (
     <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center" onClick={onClose}>
-      <button onClick={onClose} className="absolute top-5 right-5 text-white/70 hover:text-white transition-colors z-10">
-        <X className="w-8 h-8" />
+      <button onClick={onClose} className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors z-10">
+        <X className="w-7 h-7" />
       </button>
       {total > 1 && (
         <>
-          <button onClick={prev} className="absolute left-4 md:left-8 text-white/60 hover:text-white transition-colors z-10">
-            <ChevronLeft className="w-10 h-10" />
+          <button onClick={prev} className="absolute left-2 md:left-8 p-3 text-white/60 hover:text-white transition-colors z-10">
+            <ChevronLeft className="w-8 h-8" />
           </button>
-          <button onClick={next} className="absolute right-4 md:right-8 text-white/60 hover:text-white transition-colors z-10">
-            <ChevronRight className="w-10 h-10" />
+          <button onClick={next} className="absolute right-2 md:right-8 p-3 text-white/60 hover:text-white transition-colors z-10">
+            <ChevronRight className="w-8 h-8" />
           </button>
         </>
       )}
@@ -462,21 +462,21 @@ function App() {
         }}
       >
         <div className="relative text-center px-6 max-w-5xl">
-          <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md">Ländlich wohnen</h1>
-          <p className="text-lg md:text-2xl font-light text-gray-200 mb-0">
+          <h1 className="text-4xl sm:text-6xl md:text-9xl font-light mb-4 md:mb-6 text-white drop-shadow-md">Ländlich wohnen</h1>
+          <p className="text-base md:text-2xl font-light text-gray-200 mb-0 px-2">
             Drei Gebäude. Neun Wohnungen. Zeitlose Architektur im Aargau.
           </p>
-          <a href="#apartments" className="inline-block mt-10 md:mt-12 px-8 py-4 bg-black/80 text-white text-xs tracking-widest uppercase">
+          <a href="#apartments" className="inline-block mt-8 md:mt-12 px-8 py-4 bg-black/80 text-white text-xs tracking-widest uppercase">
             Wohnungen entdecken
           </a>
         </div>
-        <div className="absolute top-24 right-8 md:right-12">
-          <div className="bg-red-600 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3">
-            <span className="relative flex h-2.5 w-2.5">
+        <div className="absolute top-20 md:top-24 right-4 md:right-12">
+          <div className="bg-red-600 text-white px-3 py-2 md:px-5 md:py-3 rounded-full shadow-2xl flex items-center gap-2 md:gap-3">
+            <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-60"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-white"></span>
             </span>
-            <span className="text-sm font-semibold tracking-wide">{availableCount} von {apartments.length} Wohnungen verfügbar</span>
+            <span className="text-xs md:text-sm font-semibold tracking-wide whitespace-nowrap">{availableCount}/{apartments.length} <span className="hidden sm:inline">Wohnungen </span>verfügbar</span>
           </div>
         </div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
@@ -486,11 +486,11 @@ function App() {
 
       {/* Wohnungen */}
       <section id="apartments" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
-        <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
-        <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-12 md:mb-16">
+        <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
+        <p className="text-base md:text-xl text-gray-600 max-w-2xl mb-10 md:mb-16">
           Durchdachte Grundrisse, hochwertige Materialien und ein ländliches, ruhiges Wohnumfeld direkt an der Landwirtschaftszone.
         </p>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {grouped.map(({ building, units }) => (
             <BuildingCard
               key={building}
@@ -505,8 +505,8 @@ function App() {
       {/* Verfügbarkeit */}
       <section id="availability" className="py-16 md:py-32 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-6">Verfügbarkeit</h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-12 md:mb-16">
+          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Verfügbarkeit</h2>
+          <p className="text-base md:text-xl text-gray-600 max-w-2xl mb-10 md:mb-16">
             Aktuell verfügbare Wohnungen zum Kauf und zur Miete.
           </p>
 
@@ -524,24 +524,22 @@ function App() {
                   </div>
                   <StatusBadge status={apt.status} />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                  <div>
-                    {buildingShowPrice[apt.building] ? (
-                      buildingListingType[apt.building] === 'rent' ? (
-                        <>
-                          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Mietpreis</p>
-                          <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} / Monat</p>
-                        </>
-                      ) : (
-                        <>
-                          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
-                          <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
-                        </>
-                      )
-                    ) : buildingListingType[apt.building] === 'rent' ? (
-                      <p className="text-sm font-light text-gray-500">Mietobjekt</p>
-                    ) : null}
-                  </div>
+                <div className="mb-5">
+                  {buildingShowPrice[apt.building] ? (
+                    buildingListingType[apt.building] === 'rent' ? (
+                      <>
+                        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Mietpreis</p>
+                        <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} / Monat</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
+                        <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
+                      </>
+                    )
+                  ) : buildingListingType[apt.building] === 'rent' ? (
+                    <p className="text-sm font-light text-gray-500">Mietobjekt</p>
+                  ) : null}
                 </div>
                 {apt.status === 'available' && (
                   <button
@@ -620,27 +618,30 @@ function App() {
       {/* Grundrisse */}
       <section id="plans" className="py-16 md:py-32 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-6">Grundrisse</h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-10 md:mb-12">
+          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Grundrisse</h2>
+          <p className="text-base md:text-xl text-gray-600 max-w-2xl mb-8 md:mb-12">
             Funktionale Raumaufteilung mit Fokus auf Licht und Alltagstauglichkeit.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4">
             {[
-              { file: '/Images/Grundrisse/Grundriss_EGs.pdf', label: 'Erdgeschoss' },
-              { file: '/Images/Grundrisse/Grundriss_OGs.pdf', label: 'Obergeschoss' },
-              { file: '/Images/Grundrisse/Grundriss_DGs.pdf', label: 'Dachgeschoss' },
-              { file: '/Images/Grundrisse/Grundriss_UGs.pdf', label: 'Untergeschoss' },
-              { file: '/Images/Grundrisse/Grundriss_GalerieEstrich.pdf', label: 'Galerie / Estrich' },
-            ].map(({ file, label }) => (
+              { file: '/Images/Grundrisse/Grundriss_EGs.pdf', label: 'Erdgeschoss', sub: 'EG' },
+              { file: '/Images/Grundrisse/Grundriss_OGs.pdf', label: 'Obergeschoss', sub: 'OG' },
+              { file: '/Images/Grundrisse/Grundriss_DGs.pdf', label: 'Dachgeschoss', sub: 'DG' },
+              { file: '/Images/Grundrisse/Grundriss_UGs.pdf', label: 'Untergeschoss', sub: 'UG' },
+              { file: '/Images/Grundrisse/Grundriss_GalerieEstrich.pdf', label: 'Galerie / Estrich', sub: 'GAL' },
+            ].map(({ file, label, sub }) => (
               <a
                 key={file}
                 href={file}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border border-gray-200 px-6 py-5 flex justify-between items-center hover:bg-white transition-colors md:last:col-span-2"
+                className="border border-gray-200 bg-white px-4 py-4 md:px-6 md:py-5 flex justify-between items-center hover:bg-gray-50 active:bg-gray-100 transition-colors last:col-span-2"
               >
-                <span className="font-light text-sm">{label}</span>
-                <span className="text-xs uppercase tracking-widest text-gray-500">Herunterladen</span>
+                <div>
+                  <p className="font-light text-sm md:text-base">{label}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-0.5">PDF</p>
+                </div>
+                <Download className="w-4 h-4 text-gray-400 shrink-0" />
               </a>
             ))}
           </div>
@@ -649,8 +650,8 @@ function App() {
 
       {/* Lage */}
       <section id="location" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
-        <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
-        <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-10 md:mb-12">
+        <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
+        <p className="text-base md:text-xl text-gray-600 max-w-2xl mb-8 md:mb-12">
           Nesselnbach bietet ländliche Ruhe mit schneller Anbindung an Lenzburg,
           Aarau, Baden, Zürich, Zug und Luzern.
         </p>
@@ -666,7 +667,7 @@ function App() {
         </div>
         <iframe
           src="https://maps.google.com/maps?q=47.38690377766172,8.290382694997003&output=embed"
-          className="border-0 w-full h-96 mt-8"
+          className="border-0 w-full h-64 md:h-96 mt-8"
           title="Standort Widematte"
           allowFullScreen
           loading="lazy"
@@ -675,8 +676,8 @@ function App() {
 
       {/* Kontakt */}
       <section id="contact" className="py-16 md:py-32 px-6 bg-black text-white">
-        <div className="max-w-4xl mx-auto md:mx-0">
-          <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-8">Kontakt</h2>
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-8">Kontakt</h2>
           <p className="text-lg md:text-xl text-gray-400 mb-6">
             Fordern Sie die Unterlagen an.
           </p>
