@@ -1,4 +1,4 @@
-import { Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, MapPin, Menu, Upload, X } from 'lucide-react';
+import { Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, MapPin, Menu, Phone, Upload, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -648,9 +648,19 @@ function App() {
       <section id="contact" className="py-16 md:py-32 px-6 bg-black text-white">
         <div className="max-w-4xl mx-auto md:mx-0">
           <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-8">Kontakt</h2>
-          <p className="text-lg md:text-xl text-gray-400 mb-10 md:mb-12">
+          <p className="text-lg md:text-xl text-gray-400 mb-6">
             Fordern Sie die Unterlagen an.
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-gray-300 mb-10 md:mb-12">
+            <a href="mailto:kontakt@widematte.ch" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
+              <Mail className="w-4 h-4" />
+              kontakt@widematte.ch
+            </a>
+            <a href="tel:+41795830089" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
+              <Phone className="w-4 h-4" />
+              +41 79 583 00 89
+            </a>
+          </div>
           <ContactForm initialMessage={prefill} />
         </div>
       </section>
