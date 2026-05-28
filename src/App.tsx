@@ -54,7 +54,7 @@ const buildingShowPrice: Record<string, boolean> = {
 const buildingImagePaths: Record<string, string[]> = {
   '1': ['6636_Inter_cam01_v2.jpg','6636_Inter_cam02_v2.jpg'],
   '2': [],
-  '3': [],
+  '3': ['6636_Inter_cam02_v1.jpg', '6636_Inter_cam03_v1.jpg'],
 };
 
 const buildingDescriptions: Record<string, string> = {
@@ -207,12 +207,16 @@ function BuildingCard({ building, units, images, onRequest }: {
             <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Zimmer</p>
             <p className="text-sm font-light">{roomsLabel}</p>
           </div>
-          {priceLabel && buildingShowPrice[building] && (
+          {buildingShowPrice[building] && priceLabel ? (
             <div className="col-span-2">
               <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">{priceRowLabel}</p>
               <p className="text-base font-light">{priceLabel}</p>
             </div>
-          )}
+          ) : listingType === 'rent' ? (
+            <div className="col-span-2">
+              <p className="text-sm font-light text-gray-500">Mietobjekt</p>
+            </div>
+          ) : null}
         </div>
         {available.length > 0 ? (
           <button
@@ -325,7 +329,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
 
 function App() {
   const [images, setImages] = useState<ApartmentImage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!supabase);
   const [prefill, setPrefill] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -475,10 +479,10 @@ function App() {
                   </div>
                   <StatusBadge status={apt.status} />
                 </div>
-                {buildingShowPrice[apt.building] && (
-                  <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div>
-                      {buildingListingType[apt.building] === 'rent' ? (
+                <div className="grid grid-cols-2 gap-4 mb-5">
+                  <div>
+                    {buildingShowPrice[apt.building] ? (
+                      buildingListingType[apt.building] === 'rent' ? (
                         <>
                           <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Mietpreis</p>
                           <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} / Monat</p>
@@ -488,10 +492,12 @@ function App() {
                           <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
                           <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
                         </>
-                      )}
-                    </div>
+                      )
+                    ) : buildingListingType[apt.building] === 'rent' ? (
+                      <p className="text-sm font-light text-gray-500">Mietobjekt</p>
+                    ) : null}
                   </div>
-                )}
+                </div>
                 {apt.status === 'available' && (
                   <button
                     onClick={() => requestInfo(apt)}
@@ -534,6 +540,8 @@ function App() {
                         buildingListingType[apt.building] === 'rent'
                           ? <>CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-sm text-gray-400">/ Monat</span></>
                           : <>CHF {apt.price.toLocaleString('de-CH')}</>
+                      ) : buildingListingType[apt.building] === 'rent' ? (
+                        <span className="text-gray-500 font-light">Mietobjekt</span>
                       ) : (
                         <span className="text-gray-400">–</span>
                       )}
