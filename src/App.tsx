@@ -329,7 +329,6 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
 
 function App() {
   const [images, setImages] = useState<ApartmentImage[]>([]);
-  const [loading, setLoading] = useState(false);
   const [prefill, setPrefill] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -349,13 +348,12 @@ function App() {
 
   useEffect(() => {
     const fetchImages = async () => {
-      if (!supabase) { setLoading(false); return; }
+      if (!supabase) return;
       const { data, error: fetchError } = await supabase
         .from('apartment_images')
         .select('apartment_id, image_type, storage_path');
-      if (fetchError) { setLoading(false); return; }
+      if (fetchError) return;
       setImages(data || []);
-      setLoading(false);
     };
     fetchImages();
   }, []);
@@ -440,21 +438,17 @@ function App() {
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-12 md:mb-16">
           Durchdachte Grundrisse, hochwertige Materialien und ein ländliches, ruhiges Wohnumfeld direkt an der Landwirtschaftszone.
         </p>
-        {loading ? (
-          <p className="text-gray-500">Bilder werden geladen…</p>
-        ) : (
-          <div className="grid md:grid-cols-3 gap-8">
-            {grouped.map(({ building, units }) => (
-              <BuildingCard
-                key={building}
-                building={building}
-                units={units}
-                images={images}
-                onRequest={requestBuildingInfo}
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid md:grid-cols-3 gap-8">
+          {grouped.map(({ building, units }) => (
+            <BuildingCard
+              key={building}
+              building={building}
+              units={units}
+              images={images}
+              onRequest={requestBuildingInfo}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Verfügbarkeit */}
