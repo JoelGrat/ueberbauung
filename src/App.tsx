@@ -638,9 +638,11 @@ function App() {
           </div>
         </div>
         <iframe
-          src="https://maps.google.com/maps?q=Niederwilerstrasse,5524+Nesselnbach,Switzerland&output=embed"
+          src="https://maps.google.com/maps/embed?q=Niederwilerstrasse,5524+Nesselnbach,Switzerland"
           className="border-0 w-full h-96 mt-8"
           title="Standort Widematte"
+          allowFullScreen
+          loading="lazy"
         />
       </section>
 
