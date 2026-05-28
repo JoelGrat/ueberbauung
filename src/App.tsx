@@ -84,9 +84,21 @@ function floorLabel(floor: number) {
 }
 
 function StatusBadge({ status }: { status: Apartment['status'] }) {
-  if (status === 'available') return <span className="px-3 py-1 bg-green-500 text-white text-[10px] uppercase tracking-widest rounded-full">Verfügbar</span>;
-  if (status === 'reserved') return <span className="px-3 py-1 bg-amber-400 text-white text-[10px] uppercase tracking-widest rounded-full">Reserviert</span>;
-  return <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full">Verkauft</span>;
+  if (status === 'available') return (
+    <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-emerald-700">
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />Verfügbar
+    </span>
+  );
+  if (status === 'reserved') return (
+    <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-amber-600">
+      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />Reserviert
+    </span>
+  );
+  return (
+    <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-widests text-gray-400">
+      <span className="w-1.5 h-1.5 rounded-full bg-gray-300 shrink-0" />Verkauft
+    </span>
+  );
 }
 
 function Lightbox({ images, startIndex, onClose }: { images: string[]; startIndex: number; onClose: () => void }) {
@@ -188,33 +200,45 @@ function BuildingCard({ building, units, onRequest }: {
   const priceRowLabel = listingType === 'rent' ? 'Mietpreis ab' : 'Verkaufspreis ab';
 
   return (
-    <div className="border overflow-hidden bg-white hover:shadow-lg transition-shadow flex flex-col">
+    <div className="overflow-hidden bg-white border border-gray-200 hover:border-gray-400 transition-colors flex flex-col">
       {lightboxIndex !== null && (
         <Lightbox images={imageUrls} startIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
       )}
       <div className="relative">
         {currentUrl ? (
           <img
+            key={imgIndex}
             src={currentUrl}
             alt={`Gebäude ${building}`}
-            className="w-full h-64 md:h-72 object-cover cursor-zoom-in"
+            className="w-full aspect-[3/2] object-cover cursor-zoom-in fade-in"
             loading="lazy"
             onClick={() => setLightboxIndex(imgIndex)}
           />
         ) : (
-          <div className="w-full h-64 md:h-72 bg-gray-100 flex items-center justify-center">
+          <div className="w-full aspect-[3/2] bg-gray-100 flex items-center justify-center">
             <div className="text-center">
               <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm text-gray-500">Bild folgt</p>
             </div>
           </div>
         )}
+        <div className="absolute top-3 left-3">
+          {available.length > 0 ? (
+            <span className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm px-2.5 py-1.5 text-[10px] uppercase tracking-widest text-emerald-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />{available.length} verfügbar
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm px-2.5 py-1.5 text-[10px] uppercase tracking-widest text-gray-500">
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-400 shrink-0" />Verkauft
+            </span>
+          )}
+        </div>
         {total > 1 && (
           <>
-            <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
+            <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
+            <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
               <ChevronRight className="w-4 h-4" />
             </button>
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
@@ -222,7 +246,7 @@ function BuildingCard({ building, units, onRequest }: {
                 <button
                   key={i}
                   onClick={(e) => { e.stopPropagation(); setImgIndex(i); }}
-                  className={`w-1.5 h-1.5 rounded-full transition-colors ${i === imgIndex ? 'bg-white' : 'bg-white/50'}`}
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${i === imgIndex ? 'bg-white' : 'bg-white/40'}`}
                 />
               ))}
             </div>
@@ -230,38 +254,28 @@ function BuildingCard({ building, units, onRequest }: {
         )}
       </div>
       <div className="p-6 md:p-8 flex flex-col flex-1">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-2xl md:text-3xl font-light">Gebäude {building}</h3>
-          {available.length > 0 ? (
-            <span className="px-3 py-1 bg-green-500 text-white text-[10px] uppercase tracking-widest rounded-full shrink-0 ml-3">
-              {available.length} verfügbar
-            </span>
-          ) : (
-            <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full shrink-0 ml-3">
-              Verkauft
-            </span>
-          )}
-        </div>
+        <h3 className="text-2xl md:text-3xl font-light mb-1">Gebäude {building}</h3>
         <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">{roomsLabel} Zimmer · {sizeLabel} m²</p>
-        <p className="text-sm text-gray-600 leading-relaxed mb-6 flex-1">
+        <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">
           {buildingDescriptions[building]}
         </p>
-        <div className="border-t border-gray-100 pt-5 mb-6 grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Wohnfläche (netto)</p>
+        <div className="border-t border-gray-100 pt-4 mb-5 space-y-3">
+          <div className="flex justify-between items-baseline">
+            <p className="text-[10px] uppercase tracking-widest text-gray-400">Wohnfläche</p>
             <p className="text-sm font-light">{sizeLabel} m²</p>
           </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Zimmer</p>
+          <div className="flex justify-between items-baseline">
+            <p className="text-[10px] uppercase tracking-widest text-gray-400">Zimmer</p>
             <p className="text-sm font-light">{roomsLabel}</p>
           </div>
           {buildingShowPrice[building] && priceLabel ? (
-            <div className="col-span-2">
-              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">{priceRowLabel}</p>
-              <p className="text-base font-light">{priceLabel}</p>
+            <div className="flex justify-between items-baseline">
+              <p className="text-[10px] uppercase tracking-widest text-gray-400">{priceRowLabel}</p>
+              <p className="text-sm font-light">{priceLabel}</p>
             </div>
           ) : listingType === 'rent' ? (
-            <div className="col-span-2">
+            <div className="flex justify-between items-baseline">
+              <p className="text-[10px] uppercase tracking-widest text-gray-400">Typ</p>
               <p className="text-sm font-light text-gray-500">Mietobjekt</p>
             </div>
           ) : null}
@@ -269,12 +283,12 @@ function BuildingCard({ building, units, onRequest }: {
         {available.length > 0 ? (
           <button
             onClick={() => onRequest(building)}
-            className="w-full py-3 border border-black text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+            className="w-full py-3.5 bg-black text-white text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
           >
             Unterlagen anfordern
           </button>
         ) : (
-          <p className="w-full py-3 border border-gray-200 text-xs uppercase tracking-widest text-gray-400 text-center">
+          <p className="w-full py-3.5 border border-gray-200 text-xs uppercase tracking-widest text-gray-300 text-center">
             Vollständig verkauft
           </p>
         )}
@@ -463,26 +477,40 @@ function App() {
       >
         <div className="relative text-center px-6 max-w-5xl">
           <h1 className="text-4xl sm:text-6xl md:text-9xl font-light mb-4 md:mb-6 text-white drop-shadow-md">Ländlich wohnen</h1>
-          <p className="text-base md:text-2xl font-light text-gray-200 mb-0 px-2">
-            Drei Gebäude. Neun Wohnungen. Zeitlose Architektur im Aargau.
+          <p className="text-base md:text-xl font-light text-gray-300 mb-0 px-2 max-w-xl mx-auto">
+            Neubauprojekt in Nesselnbach — 4.5- und 5.5-Zimmer-Wohnungen, umgeben von Natur und Stille.
           </p>
-          <a href="#apartments" className="inline-block mt-8 md:mt-12 px-8 py-4 bg-black/80 text-white text-xs tracking-widest uppercase">
+          <a href="#apartments" className="inline-block mt-8 md:mt-12 px-8 py-4 bg-black text-white text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors">
             Wohnungen entdecken
           </a>
         </div>
         <div className="absolute top-20 md:top-24 right-4 md:right-12">
-          <div className="bg-red-600 text-white px-3 py-2 md:px-5 md:py-3 rounded-full shadow-2xl flex items-center gap-2 md:gap-3">
-            <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-60"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-white"></span>
-            </span>
-            <span className="text-xs md:text-sm font-semibold tracking-wide whitespace-nowrap">{availableCount}/{apartments.length} <span className="hidden sm:inline">Wohnungen </span>verfügbar</span>
+          <div className="bg-black/70 backdrop-blur-sm text-white px-3 py-2 md:px-4 md:py-2.5 flex items-center gap-2 border border-white/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+            <span className="text-xs font-light tracking-widest uppercase whitespace-nowrap">{availableCount} von {apartments.length} verfügbar</span>
           </div>
         </div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
           <ChevronDown className="w-6 h-6 text-white/60" />
         </div>
       </section>
+
+      {/* Stats bar */}
+      <div className="bg-gray-950 text-white py-8 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x md:divide-gray-800">
+          {[
+            { value: '9', label: 'Wohnungen' },
+            { value: '3', label: 'Gebäude' },
+            { value: '107 – 163 m²', label: 'Wohnfläche' },
+            { value: '4.5 – 5.5', label: 'Zimmer' },
+          ].map(({ value, label }) => (
+            <div key={label} className="md:px-10 first:md:pl-0 last:md:pr-0">
+              <p className="text-xl md:text-2xl font-light mb-1">{value}</p>
+              <p className="text-[10px] uppercase tracking-widest text-gray-500">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Wohnungen */}
       <section id="apartments" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
@@ -501,6 +529,16 @@ function App() {
           ))}
         </div>
       </section>
+
+      {/* Divider */}
+      <div
+        className="h-48 md:h-72 w-full"
+        style={{
+          backgroundImage: `url('/Images/Aussenansicht/Aussenansicht_BirdView.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 40%',
+        }}
+      />
 
       {/* Verfügbarkeit */}
       <section id="availability" className="py-16 md:py-32 px-6 bg-gray-50">
@@ -568,38 +606,38 @@ function App() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-200">
-                  {['Wohnung', 'Zimmer', 'NWF', 'Preis', 'Status', ''].map((h) => (
-                    <th key={h} className={`py-6 text-xs font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
+                <tr className="border-b-2 border-gray-200">
+                  {['Wohnung', 'Zimmer', 'Fläche', 'Preis', 'Status', ''].map((h) => (
+                    <th key={h} className={`pb-4 text-[10px] font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody>
                 {apartments.map((apt) => (
-                  <tr key={apt.id} className="hover:bg-white transition-colors">
-                    <td className="py-7 text-xl font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</td>
-                    <td className="py-7 text-sm text-gray-700">
-                      {apt.rooms}
-                      {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
+                  <tr key={apt.id} className="border-b border-gray-100 hover:bg-white transition-colors group">
+                    <td className="py-5">
+                      <p className="text-base font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</p>
+                      {apt.note && <p className="text-xs text-gray-400 mt-0.5">{apt.note}</p>}
                     </td>
-                    <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
-                    <td className="py-7 text-base font-light">
+                    <td className="py-5 text-sm text-gray-600">{apt.rooms}</td>
+                    <td className="py-5 text-sm text-gray-600">{apt.size} m²</td>
+                    <td className="py-5 text-sm font-light">
                       {buildingShowPrice[apt.building] ? (
                         buildingListingType[apt.building] === 'rent'
-                          ? <>CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-sm text-gray-400">/ Monat</span></>
+                          ? <>CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-xs text-gray-400">/ Mt.</span></>
                           : <>CHF {apt.price.toLocaleString('de-CH')}</>
                       ) : buildingListingType[apt.building] === 'rent' ? (
-                        <span className="text-gray-500 font-light">Mietobjekt</span>
+                        <span className="text-gray-400 font-light">Mietobjekt</span>
                       ) : (
-                        <span className="text-gray-400">–</span>
+                        <span className="text-gray-300">–</span>
                       )}
                     </td>
-                    <td className="py-7"><StatusBadge status={apt.status} /></td>
-                    <td className="py-7 text-right">
+                    <td className="py-5"><StatusBadge status={apt.status} /></td>
+                    <td className="py-5 text-right">
                       {apt.status === 'available' ? (
-                        <button onClick={() => requestInfo(apt)} className="text-xs border-b border-black pb-1 uppercase tracking-widest hover:opacity-50 transition-opacity">Unterlagen anfordern</button>
+                        <button onClick={() => requestInfo(apt)} className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5">Unterlagen</button>
                       ) : apt.status === 'reserved' ? (
-                        <button onClick={() => requestWaitlist(apt)} className="text-xs border-b border-black pb-1 uppercase tracking-widest hover:opacity-50 transition-opacity">Warteliste</button>
+                        <button onClick={() => requestWaitlist(apt)} className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5">Warteliste</button>
                       ) : null}
                     </td>
                   </tr>
