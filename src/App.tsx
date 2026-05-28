@@ -16,11 +16,6 @@ interface Apartment {
   outdoor?: number;
 }
 
-interface ApartmentImage {
-  apartment_id: number;
-  image_type: string;
-  storage_path: string;
-}
 
 const apartments: Apartment[] = [
   // Gebäude 1
@@ -74,13 +69,7 @@ const buildingDescriptions: Record<string, string> = {
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-const bucketName = (import.meta.env.VITE_SUPABASE_BUCKET as string | undefined) ?? 'images';
 const heroBackgroundUrl = '/Images/Aussenansicht/Aussenansicht_0.jpg';
-const interiorFallbacks: Record<number, string> = {
-  0: '6636_Inter_cam01_v2.jpg',  // EG
-  1: '6636_Inter_cam03_v2.jpg',  // 1. OG
-  2: '6636_Inter_cam02_v2.jpg',  // DG
-};
 const supabase: SupabaseClient | null = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 function floorLabel(floor: number) {
@@ -95,28 +84,14 @@ function StatusBadge({ status }: { status: Apartment['status'] }) {
   return <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full">Verkauft</span>;
 }
 
-function BuildingCard({ building, units, images, onRequest }: {
+function BuildingCard({ building, units, onRequest }: {
   building: string;
   units: Apartment[];
-  images: ApartmentImage[];
   onRequest: (building: string) => void;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
 
-  const imageUrls = useMemo(() => {
-    const configured = buildingImagePaths[building] ?? [];
-    if (configured.length > 0) return configured;
-    if (!supabaseUrl || !bucketName) return [];
-    const base = `${supabaseUrl}/storage/v1/object/public/${bucketName}`;
-    const unitIds = new Set(units.map(u => u.id));
-    const dbImages = images.filter(img => unitIds.has(img.apartment_id));
-    const urls = dbImages.map(img => `${base}/${img.storage_path}`);
-    if (urls.length === 0) {
-      const fallbackUnit = units.find(u => !u.placeholder);
-      if (fallbackUnit) urls.push(`${base}/${interiorFallbacks[fallbackUnit.floor]}`);
-    }
-    return urls;
-  }, [building, units, images]);
+  const imageUrls = buildingImagePaths[building] ?? [];
 
   const total = imageUrls.length;
   const currentUrl = imageUrls[imgIndex] ?? null;
@@ -256,7 +231,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!supabase) return;
+    if (!supabase) { setSubmitError(true); return; }
     setSubmitting(true);
     setSubmitError(false);
     const { error } = await supabase.from('kontakt').insert({ name, email, telefon: phone, nachricht: message });
@@ -321,7 +296,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
         disabled={submitting}
         className="md:col-span-2 w-full px-4 py-4 bg-white text-black tracking-widest text-sm uppercase hover:bg-gray-200 transition-colors disabled:opacity-40"
       >
-        {submitting ? 'Wird gesendet…' : 'Unterlagen anfordern'}
+        {submitting ? 'Wird gesendet…' : 'Senden'}
       </button>
       {submitError && (
         <p className="md:col-span-2 text-sm text-red-400">
@@ -334,7 +309,6 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
 }
 
 function App() {
-  const [images, setImages] = useState<ApartmentImage[]>([]);
   const [prefill, setPrefill] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -359,18 +333,6 @@ function App() {
     closeMenu();
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      if (!supabase) return;
-      const { data, error: fetchError } = await supabase
-        .from('apartment_images')
-        .select('apartment_id, image_type, storage_path');
-      if (fetchError) return;
-      setImages(data || []);
-    };
-    fetchImages();
-  }, []);
 
   const grouped = useMemo(() =>
     ['1', '2', '3'].map((building) => ({
@@ -461,7 +423,6 @@ function App() {
               key={building}
               building={building}
               units={units}
-              images={images}
               onRequest={requestBuildingInfo}
             />
           ))}
@@ -508,12 +469,6 @@ function App() {
                       <p className="text-sm font-light text-gray-500">Mietobjekt</p>
                     ) : null}
                   </div>
-                  {apt.outdoor !== undefined && (
-                    <div>
-                      <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Aussenbereich</p>
-                      <p className="text-sm font-light">{apt.outdoor} m²</p>
-                    </div>
-                  )}
                 </div>
                 {apt.status === 'available' && (
                   <button
@@ -543,7 +498,7 @@ function App() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-200">
-                  {['Wohnung', 'Zimmer', 'NWF', 'Aussenbereich', 'Preis', 'Status', ''].map((h) => (
+                  {['Wohnung', 'Zimmer', 'NWF', 'Preis', 'Status', ''].map((h) => (
                     <th key={h} className={`py-6 text-xs font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
                   ))}
                 </tr>
@@ -557,7 +512,6 @@ function App() {
                       {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
                     </td>
                     <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
-                    <td className="py-7 text-sm text-gray-700">{apt.outdoor !== undefined ? `${apt.outdoor} m²` : '—'}</td>
                     <td className="py-7 text-base font-light">
                       {buildingShowPrice[apt.building] ? (
                         buildingListingType[apt.building] === 'rent'
@@ -610,7 +564,7 @@ function App() {
                 href={file}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border border-gray-200 px-6 py-5 flex justify-between items-center hover:bg-white transition-colors"
+                className="border border-gray-200 px-6 py-5 flex justify-between items-center hover:bg-white transition-colors md:last:col-span-2"
               >
                 <span className="font-light text-sm">{label}</span>
                 <span className="text-xs uppercase tracking-widest text-gray-500">Herunterladen</span>
@@ -638,7 +592,7 @@ function App() {
           </div>
         </div>
         <iframe
-          src="https://maps.google.com/maps/embed?q=Niederwilerstrasse,5524+Nesselnbach,Switzerland"
+          src="https://maps.google.com/maps?q=Niederwilerstrasse+5524+Nesselnbach+Schweiz&output=embed"
           className="border-0 w-full h-96 mt-8"
           title="Standort Widematte"
           allowFullScreen
@@ -667,19 +621,34 @@ function App() {
         </div>
       </section>
 
-      <footer className="py-10 md:py-12 px-6 bg-black text-white border-t border-gray-800">
-        <div className="max-w-7xl mx-auto space-y-3 text-sm text-gray-400">
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <a href="mailto:kontakt@widematte.ch" className="hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
-            <span>·</span>
-            <a href="tel:+41795830089" className="hover:opacity-60 transition-opacity">+41 79 583 00 89</a>
+      <footer className="py-16 md:py-20 px-6 bg-black text-white border-t border-gray-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 mb-12">
+            <div>
+              <p className="text-base tracking-wide font-light mb-3">WIDEMATTE</p>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                Neubauwohnungen in<br />Nesselnbach, Kanton Aargau
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-4">Kontakt</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <a href="mailto:kontakt@widematte.ch" className="block hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
+                <a href="tel:+41795830089" className="block hover:opacity-60 transition-opacity">+41 79 583 00 89</a>
+                <p className="text-gray-600 pt-1">Niederwilerstrasse<br />5524 Nesselnbach</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-4">Rechtliches</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <a href="/impressum.html" className="block hover:opacity-60 transition-opacity">Impressum</a>
+                <a href="/datenschutz.html" className="block hover:opacity-60 transition-opacity">Datenschutz</a>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <a href="/impressum.html" className="hover:opacity-60 transition-opacity">Impressum</a>
-            <span>·</span>
-            <a href="/datenschutz.html" className="hover:opacity-60 transition-opacity">Datenschutz</a>
+          <div className="border-t border-gray-800 pt-6">
+            <p className="text-xs text-gray-600">© 2026 Widematte. Alle Rechte vorbehalten.</p>
           </div>
-          <p>© 2026 Widematte</p>
         </div>
       </footer>
     </div>
