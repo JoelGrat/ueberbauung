@@ -51,9 +51,19 @@ const buildingShowPrice: Record<string, boolean> = {
 
 // Local paths (starting with /) are served from public/. Supabase filenames get the storage base prepended.
 const buildingImagePaths: Record<string, string[]> = {
-  '1': ['/Images/Aussenansicht/Aussenansicht_0.jpg', '/Images/Aussenansicht/Aussenansicht_1.jpg'],
+  '1': [
+    '/Images/Innenansicht/Geb1_EG_Livingroom.jpg',
+    '/Images/Aussenansicht/Aussenansicht_0.jpg',
+    '/Images/Aussenansicht/Aussenansicht_1.jpg',
+  ],
   '2': ['/Images/Aussenansicht/Aussenansicht_2.jpg'],
-  '3': ['/Images/Aussenansicht/Aussenansicht_BirdView.jpg', '/Images/Aussenansicht/Aussenansicht_0.jpg'],
+  '3': [
+    '/Images/Innenansicht/Geb3_OG_Livingroom.jpg',
+    '/Images/Innenansicht/Geb3_DG_Livingroom.jpg',
+    '/Images/Innenansicht/Geb3_EG_Badezimmer.jpg',
+    '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
+    '/Images/Aussenansicht/Aussenansicht_0.jpg',
+  ],
 };
 
 const buildingDescriptions: Record<string, string> = {
