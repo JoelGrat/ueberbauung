@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(npx supabase *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\joelg\\\\ueberbauung_git\\\\ueberbauung\\\\docs\\\\superpowers\\\\plans\")",
+      "Bash(Out-Null)",
+      "Bash(npx tsc *)",
+      "Bash(npm test *)",
+      "Bash(git push *)",
+      "Bash(git mv *)",
+      "mcp__plugin_claude-mem_mcp-search__smart_search",
+      "Bash(node -e ' *)",
+      "Bash(echo \"Exit: $?\")"
     ]
   }
 }
