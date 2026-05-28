@@ -67,9 +67,9 @@ const buildingImagePaths: Record<string, string[]> = {
 };
 
 const buildingDescriptions: Record<string, string> = {
-  '1': 'Drei 4.5-Zimmer-Wohnungen auf drei Stockwerken mit offenen Grundrissen und Blick ins Grüne. Die Wohnung im ersten Obergeschoss ist optional auch als 3.5-Zimmer-Wohnung erhältlich.',
-  '2': 'Drei grosszügige Wohnungen von 4.5 bis 5.5 Zimmern auf drei Stockwerken – vollständig verkauft. Das Dachgeschoss bietet mit 163 m² die grösste Einheit der Überbauung.',
-  '3': 'Drei Wohnungen à 4.5 Zimmer mit ruhiger Südausrichtung und direktem Bezug zur angrenzenden Landwirtschaftszone.',
+  '1': 'Offene Grundrisse, helle Räume und direkter Blick ins Grüne — optional auch als 3.5-Zimmer.',
+  '2': 'Grosszügige Wohnungen von 4.5 bis 5.5 Zimmern mit dem grössten Grundriss der Überbauung im Dachgeschoss.',
+  '3': 'Ruhige Südausrichtung mit direktem Bezug zur angrenzenden Landwirtschaftszone.',
 };
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -285,7 +285,7 @@ function BuildingCard({ building, units, onRequest }: {
             onClick={() => onRequest(building)}
             className="w-full py-3.5 bg-black text-white text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
           >
-            Unterlagen anfordern
+            Jetzt anfragen
           </button>
         ) : (
           <p className="w-full py-3.5 border border-gray-200 text-xs uppercase tracking-widest text-gray-300 text-center">
@@ -329,19 +329,21 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
     setSubmitted(true);
   };
 
+  const inputClass = "w-full px-4 py-3 bg-white text-black border border-gray-300 focus:outline-none focus:border-gray-800 disabled:opacity-40 placeholder:text-gray-400 transition-colors";
+
   if (submitted) {
     return (
-      <p className="text-xl font-light text-gray-300">
+      <p className="text-xl font-light text-gray-600">
         Vielen Dank, {name}. Wir melden uns in Kürze bei Ihnen.
       </p>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4 md:gap-6">
+    <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4 md:gap-5">
       <input
         required
-        className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-gray-600 disabled:opacity-40"
+        className={inputClass}
         placeholder="Ihr Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -350,7 +352,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
       <input
         required
         type="email"
-        className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-gray-600 disabled:opacity-40"
+        className={inputClass}
         placeholder="Ihre E-Mail"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -358,7 +360,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
       />
       <input
         type="tel"
-        className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-gray-600 disabled:opacity-40"
+        className={inputClass}
         placeholder="Telefon (optional)"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
@@ -366,7 +368,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
       />
       <textarea
         rows={4}
-        className="md:col-span-2 w-full px-4 py-3 bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-gray-600 disabled:opacity-40 resize-none"
+        className={`md:col-span-2 resize-none ${inputClass}`}
         placeholder="Ihre Nachricht (optional)"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
@@ -375,12 +377,16 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
       <button
         type="submit"
         disabled={submitting}
-        className="md:col-span-2 w-full px-4 py-4 bg-white text-black tracking-widest text-sm uppercase hover:bg-gray-200 transition-colors disabled:opacity-40"
+        className="md:col-span-2 w-full px-4 py-4 bg-black text-white tracking-widest text-xs uppercase hover:bg-gray-900 transition-colors disabled:opacity-40"
       >
         {submitting ? 'Wird gesendet…' : 'Senden'}
       </button>
+      <p className="md:col-span-2 text-xs text-gray-400">
+        Ihre Angaben werden vertraulich behandelt.{' '}
+        <a href="/datenschutz.html" className="underline hover:opacity-60 transition-opacity">Datenschutz</a>
+      </p>
       {submitError && (
-        <p className="md:col-span-2 text-sm text-red-400">
+        <p className="md:col-span-2 text-sm text-red-600">
           Etwas ist schiefgelaufen. Bitte schreiben Sie uns direkt an{' '}
           <a href="mailto:kontakt@widematte.ch" className="underline">kontakt@widematte.ch</a>.
         </p>
@@ -396,6 +402,23 @@ function App() {
   const closeMenu = () => setMenuOpen(false);
 
   const availableCount = apartments.filter(a => a.status === 'available').length;
+
+  const [activeSection, setActiveSection] = useState('');
+  useEffect(() => {
+    const ids = ['apartments', 'availability', 'plans', 'location', 'contact'];
+    const onScroll = () => {
+      const y = window.scrollY + 100;
+      let current = '';
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= y) current = id;
+      }
+      setActiveSection(current);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const requestInfo = (apt: Apartment) => {
     setPrefill(`Ich interessiere mich für die Wohnung Gebäude ${apt.building} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Kontaktaufnahme.`);
@@ -442,7 +465,15 @@ function App() {
           </div>
           {/* Desktop links */}
           <div className="hidden md:flex gap-8 text-sm tracking-wide">
-            {navLinks.map((l) => <a key={l.href} href={l.href}>{l.label}</a>)}
+            {navLinks.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className={`transition-opacity hover:opacity-60 pb-0.5 ${activeSection === l.href.slice(1) ? 'border-b border-black' : ''}`}
+              >
+                {l.label}
+              </a>
+            ))}
           </div>
           {/* Mobile burger */}
           <button className="md:hidden p-1" onClick={() => setMenuOpen((o) => !o)} aria-label="Menü">
@@ -470,7 +501,7 @@ function App() {
       <section
         className="relative h-screen flex items-center justify-center bg-gray-900"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${heroBackgroundUrl})`,
+          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.65) 100%), url(${heroBackgroundUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -490,14 +521,11 @@ function App() {
             <span className="text-xs font-light tracking-widest uppercase whitespace-nowrap">{availableCount} von {apartments.length} verfügbar</span>
           </div>
         </div>
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-6 h-6 text-white/60" />
-        </div>
       </section>
 
       {/* Stats bar */}
-      <div className="bg-gray-950 text-white py-8 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x md:divide-gray-800">
+      <div className="bg-gray-50 border-y border-gray-100 py-8 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x md:divide-gray-200">
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
@@ -505,8 +533,8 @@ function App() {
             { value: '4.5 – 5.5', label: 'Zimmer' },
           ].map(({ value, label }) => (
             <div key={label} className="md:px-10 first:md:pl-0 last:md:pr-0">
-              <p className="text-xl md:text-2xl font-light mb-1">{value}</p>
-              <p className="text-[10px] uppercase tracking-widest text-gray-500">{label}</p>
+              <p className="text-xl md:text-2xl font-light mb-1 text-black">{value}</p>
+              <p className="text-[10px] uppercase tracking-widest text-gray-400">{label}</p>
             </div>
           ))}
         </div>
@@ -514,9 +542,10 @@ function App() {
 
       {/* Wohnungen */}
       <section id="apartments" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
+        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">01 / Wohnungen</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
-        <p className="text-base md:text-xl text-gray-600 max-w-2xl mb-10 md:mb-16">
-          Durchdachte Grundrisse, hochwertige Materialien und ein ländliches, ruhiges Wohnumfeld direkt an der Landwirtschaftszone.
+        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-16">
+          Hochwertige Neubauwohnungen in ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
         </p>
         <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {grouped.map(({ building, units }) => (
@@ -532,19 +561,25 @@ function App() {
 
       {/* Divider */}
       <div
-        className="h-48 md:h-72 w-full"
+        className="relative h-48 md:h-72 w-full overflow-hidden"
         style={{
           backgroundImage: `url('/Images/Aussenansicht/Aussenansicht_BirdView.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 40%',
         }}
-      />
+      >
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10">
+          <p className="text-white/80 text-[10px] uppercase tracking-widest">Die Überbauung · Nesselnbach, Kanton Aargau</p>
+        </div>
+      </div>
 
       {/* Verfügbarkeit */}
       <section id="availability" className="py-16 md:py-32 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Verfügbarkeit</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Verfügbarkeit</h2>
-          <p className="text-base md:text-xl text-gray-600 max-w-2xl mb-10 md:mb-16">
+          <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-16">
             Aktuell verfügbare Wohnungen zum Kauf und zur Miete.
           </p>
 
@@ -584,7 +619,7 @@ function App() {
                     onClick={() => requestInfo(apt)}
                     className="w-full py-3 border border-black text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
                   >
-                    Unterlagen anfordern
+                    Jetzt anfragen
                   </button>
                 )}
                 {apt.status === 'reserved' && (
@@ -613,8 +648,10 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {apartments.map((apt) => (
-                  <tr key={apt.id} className="border-b border-gray-100 hover:bg-white transition-colors group">
+                {apartments.map((apt, idx) => {
+                  const isFirstOfBuilding = idx > 0 && apartments[idx - 1].building !== apt.building;
+                  return (
+                  <tr key={apt.id} className={`border-b border-gray-100 hover:bg-white transition-colors ${isFirstOfBuilding ? 'border-t-2 border-gray-200' : ''}`}>
                     <td className="py-5">
                       <p className="text-base font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</p>
                       {apt.note && <p className="text-xs text-gray-400 mt-0.5">{apt.note}</p>}
@@ -635,13 +672,14 @@ function App() {
                     <td className="py-5"><StatusBadge status={apt.status} /></td>
                     <td className="py-5 text-right">
                       {apt.status === 'available' ? (
-                        <button onClick={() => requestInfo(apt)} className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5">Unterlagen</button>
+                        <button onClick={() => requestInfo(apt)} className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5">Anfragen</button>
                       ) : apt.status === 'reserved' ? (
                         <button onClick={() => requestWaitlist(apt)} className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5">Warteliste</button>
                       ) : null}
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -654,10 +692,11 @@ function App() {
       </section>
 
       {/* Grundrisse */}
-      <section id="plans" className="py-16 md:py-32 px-6 bg-gray-50">
+      <section id="plans" className="py-16 md:py-32 px-6 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto">
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">03 / Grundrisse</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Grundrisse</h2>
-          <p className="text-base md:text-xl text-gray-600 max-w-2xl mb-8 md:mb-12">
+          <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8 md:mb-12">
             Funktionale Raumaufteilung mit Fokus auf Licht und Alltagstauglichkeit.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4">
@@ -688,18 +727,32 @@ function App() {
 
       {/* Lage */}
       <section id="location" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
+        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">04 / Lage</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
-        <p className="text-base md:text-xl text-gray-600 max-w-2xl mb-8 md:mb-12">
-          Nesselnbach bietet ländliche Ruhe mit schneller Anbindung an Lenzburg,
-          Aarau, Baden, Zürich, Zug und Luzern.
+        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8 md:mb-10">
+          Nesselnbach bietet ländliche Ruhe mit schneller Anbindung an die grossen Zentren.
         </p>
-        <div className="flex flex-col gap-5 md:flex-row md:gap-8 text-gray-700">
-          <div className="flex items-center gap-3">
-            <MapPin className="w-5 h-5 shrink-0" />
+        <div className="flex flex-wrap gap-3 mb-8">
+          {[
+            { place: 'Lenzburg', time: '12 Min.' },
+            { place: 'Aarau', time: '20 Min.' },
+            { place: 'Baden', time: '22 Min.' },
+            { place: 'Zürich', time: '38 Min.' },
+            { place: 'Bern', time: '65 Min.' },
+          ].map(({ place, time }) => (
+            <div key={place} className="border border-gray-200 px-4 py-2 flex items-baseline gap-2">
+              <span className="text-xs text-gray-400">{time}</span>
+              <span className="text-sm font-light">{place}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col gap-3 md:flex-row md:gap-8 text-gray-500 text-sm mb-8">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 shrink-0" />
             <span>Niederwilerstrasse, 5524 Nesselnbach</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Mail className="w-5 h-5 shrink-0" />
+          <div className="flex items-center gap-2">
+            <Mail className="w-4 h-4 shrink-0" />
             <a href="mailto:kontakt@widematte.ch" className="hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
           </div>
         </div>
@@ -713,13 +766,14 @@ function App() {
       </section>
 
       {/* Kontakt */}
-      <section id="contact" className="py-16 md:py-32 px-6 bg-black text-white">
+      <section id="contact" className="py-16 md:py-32 px-6 bg-gray-50 border-t border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-8">Kontakt</h2>
-          <p className="text-lg md:text-xl text-gray-400 mb-6">
-            Fordern Sie die Unterlagen an.
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">05 / Kontakt</p>
+          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Kontakt</h2>
+          <p className="text-base md:text-xl text-gray-500 mb-6">
+            Wir begleiten Sie gerne — sprechen Sie mit uns.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-gray-300 mb-10 md:mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-gray-600 text-sm mb-10 md:mb-12">
             <a href="mailto:kontakt@widematte.ch" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
               <Mail className="w-4 h-4" />
               kontakt@widematte.ch
@@ -737,7 +791,7 @@ function App() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 mb-12">
             <div>
-              <p className="text-base tracking-wide font-light mb-3">WIDEMATTE</p>
+              <p className="text-2xl tracking-[0.2em] font-light mb-3">WIDEMATTE</p>
               <p className="text-sm text-gray-500 leading-relaxed">
                 Neubauwohnungen in<br />Nesselnbach, Kanton Aargau
               </p>
