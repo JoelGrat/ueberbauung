@@ -47,12 +47,17 @@ const buildingShowPrice: Record<string, boolean> = {
 // Local paths (starting with /) are served from public/. Supabase filenames get the storage base prepended.
 const buildingImagePaths: Record<string, string[]> = {
   '1': [
+    '/Images/Aussenansicht/Gebeaude_1_Highlight.png',
     '/Images/Innenansicht/Geb1_EG_Livingroom.jpg',
     '/Images/Aussenansicht/Aussenansicht_0.jpg',
     '/Images/Aussenansicht/Aussenansicht_1.jpg',
   ],
-  '2': ['/Images/Aussenansicht/Aussenansicht_2.jpg'],
+  '2': [
+    '/Images/Aussenansicht/Gebeaude_2_Highlight.png',
+    '/Images/Aussenansicht/Aussenansicht_2.jpg',
+  ],
   '3': [
+    '/Images/Aussenansicht/Gebeaude_3_Highlight.png',
     '/Images/Innenansicht/Geb3_OG_Livingroom.jpg',
     '/Images/Innenansicht/Geb3_DG_Livingroom.jpg',
     '/Images/Innenansicht/Geb3_EG_Badezimmer.jpg',
@@ -84,12 +89,65 @@ function StatusBadge({ status }: { status: Apartment['status'] }) {
   return <span className="px-3 py-1 bg-gray-400 text-white text-[10px] uppercase tracking-widest rounded-full">Verkauft</span>;
 }
 
+function Lightbox({ images, startIndex, onClose }: { images: string[]; startIndex: number; onClose: () => void }) {
+  const [index, setIndex] = useState(startIndex);
+  const total = images.length;
+  const prev = (e: React.MouseEvent) => { e.stopPropagation(); setIndex(i => (i - 1 + total) % total); };
+  const next = (e: React.MouseEvent) => { e.stopPropagation(); setIndex(i => (i + 1) % total); };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') setIndex(i => (i - 1 + total) % total);
+      if (e.key === 'ArrowRight') setIndex(i => (i + 1) % total);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose, total]);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center" onClick={onClose}>
+      <button onClick={onClose} className="absolute top-5 right-5 text-white/70 hover:text-white transition-colors z-10">
+        <X className="w-8 h-8" />
+      </button>
+      {total > 1 && (
+        <>
+          <button onClick={prev} className="absolute left-4 md:left-8 text-white/60 hover:text-white transition-colors z-10">
+            <ChevronLeft className="w-10 h-10" />
+          </button>
+          <button onClick={next} className="absolute right-4 md:right-8 text-white/60 hover:text-white transition-colors z-10">
+            <ChevronRight className="w-10 h-10" />
+          </button>
+        </>
+      )}
+      <img
+        src={images[index]}
+        alt=""
+        className="max-h-[90vh] max-w-[90vw] object-contain select-none"
+        onClick={e => e.stopPropagation()}
+      />
+      {total > 1 && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={e => { e.stopPropagation(); setIndex(i); }}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === index ? 'bg-white' : 'bg-white/30'}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function BuildingCard({ building, units, onRequest }: {
   building: string;
   units: Apartment[];
   onRequest: (building: string) => void;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const imageUrls = buildingImagePaths[building] ?? [];
 
@@ -131,9 +189,18 @@ function BuildingCard({ building, units, onRequest }: {
 
   return (
     <div className="border overflow-hidden bg-white hover:shadow-lg transition-shadow flex flex-col">
+      {lightboxIndex !== null && (
+        <Lightbox images={imageUrls} startIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
+      )}
       <div className="relative">
         {currentUrl ? (
-          <img src={currentUrl} alt={`Gebäude ${building}`} className="w-full h-64 md:h-72 object-cover" loading="lazy" />
+          <img
+            src={currentUrl}
+            alt={`Gebäude ${building}`}
+            className="w-full h-64 md:h-72 object-cover cursor-zoom-in"
+            loading="lazy"
+            onClick={() => setLightboxIndex(imgIndex)}
+          />
         ) : (
           <div className="w-full h-64 md:h-72 bg-gray-100 flex items-center justify-center">
             <div className="text-center">
@@ -399,12 +466,18 @@ function App() {
           <p className="text-lg md:text-2xl font-light text-gray-200 mb-0">
             Drei Gebäude. Neun Wohnungen. Zeitlose Architektur im Aargau.
           </p>
-          <p className="text-sm text-gray-300 mt-4 tracking-wide mb-10 md:mb-12">
-            {availableCount} von {apartments.length} Wohnungen verfügbar
-          </p>
-          <a href="#apartments" className="inline-block px-8 py-4 bg-black/80 text-white text-xs tracking-widest uppercase">
+          <a href="#apartments" className="inline-block mt-10 md:mt-12 px-8 py-4 bg-black/80 text-white text-xs tracking-widest uppercase">
             Wohnungen entdecken
           </a>
+        </div>
+        <div className="absolute top-24 right-8 md:right-12">
+          <div className="bg-red-600 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-60"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
+            </span>
+            <span className="text-sm font-semibold tracking-wide">{availableCount} von {apartments.length} Wohnungen verfügbar</span>
+          </div>
         </div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
           <ChevronDown className="w-6 h-6 text-white/60" />
@@ -592,7 +665,7 @@ function App() {
           </div>
         </div>
         <iframe
-          src="https://maps.google.com/maps?q=Niederwilerstrasse+5524+Nesselnbach+Schweiz&output=embed"
+          src="https://maps.google.com/maps?q=47.38690377766172,8.290382694997003&output=embed"
           className="border-0 w-full h-96 mt-8"
           title="Standort Widematte"
           allowFullScreen
