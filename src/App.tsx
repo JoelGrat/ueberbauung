@@ -340,6 +340,8 @@ function App() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  const availableCount = apartments.filter(a => a.status === 'available').length;
+
   const requestInfo = (apt: Apartment) => {
     setPrefill(`Ich interessiere mich für die Wohnung Gebäude ${apt.building} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Kontaktaufnahme.`);
     closeMenu();
@@ -426,8 +428,11 @@ function App() {
       >
         <div className="relative text-center px-6 max-w-5xl">
           <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md">Ländlich wohnen</h1>
-          <p className="text-lg md:text-2xl font-light text-gray-200 mb-10 md:mb-12">
+          <p className="text-lg md:text-2xl font-light text-gray-200 mb-0">
             Drei Gebäude. Neun Wohnungen. Zeitlose Architektur im Aargau.
+          </p>
+          <p className="text-sm text-gray-300 mt-4 tracking-wide mb-10 md:mb-12">
+            {availableCount} von {apartments.length} Wohnungen verfügbar
           </p>
           <a href="#apartments" className="inline-block px-8 py-4 bg-black/80 text-white text-xs tracking-widest uppercase">
             Wohnungen entdecken
