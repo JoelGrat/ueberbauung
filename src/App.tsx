@@ -594,9 +594,29 @@ function App() {
       <section id="plans" className="py-16 md:py-32 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl md:text-6xl font-light mb-4 md:mb-6">Grundrisse</h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl">
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-10 md:mb-12">
             Funktionale Raumaufteilung mit Fokus auf Licht und Alltagstauglichkeit.
           </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { file: '/Images/Grundrisse/Grundriss_EGs.pdf', label: 'Erdgeschoss' },
+              { file: '/Images/Grundrisse/Grundriss_OGs.pdf', label: 'Obergeschoss' },
+              { file: '/Images/Grundrisse/Grundriss_DGs.pdf', label: 'Dachgeschoss' },
+              { file: '/Images/Grundrisse/Grundriss_UGs.pdf', label: 'Untergeschoss' },
+              { file: '/Images/Grundrisse/Grundriss_GalerieEstrich.pdf', label: 'Galerie / Estrich' },
+            ].map(({ file, label }) => (
+              <a
+                key={file}
+                href={file}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-gray-200 px-6 py-5 flex justify-between items-center hover:bg-white transition-colors"
+              >
+                <span className="font-light text-sm">{label}</span>
+                <span className="text-xs uppercase tracking-widest text-gray-500">Herunterladen</span>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
