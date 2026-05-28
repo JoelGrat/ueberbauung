@@ -49,12 +49,11 @@ const buildingShowPrice: Record<string, boolean> = {
   '3': false,
 };
 
-// Add image filenames from Supabase Storage here — one entry per picture.
-// Example: '1': ['Gebaeude1_Aussen.jpg', 'Gebaeude1_Kueche.jpg']
+// Local paths (starting with /) are served from public/. Supabase filenames get the storage base prepended.
 const buildingImagePaths: Record<string, string[]> = {
-  '1': ['6636_Inter_cam01_v2.jpg','6636_Inter_cam02_v2.jpg'],
-  '2': [],
-  '3': ['6636_Inter_cam02_v1.jpg', '6636_Inter_cam03_v1.jpg'],
+  '1': ['/Images/Aussenansicht/Aussenansicht_0.jpg', '/Images/Aussenansicht/Aussenansicht_1.jpg'],
+  '2': ['/Images/Aussenansicht/Aussenansicht_2.jpg'],
+  '3': ['/Images/Aussenansicht/Aussenansicht_BirdView.jpg', '/Images/Aussenansicht/Aussenansicht_0.jpg'],
 };
 
 const buildingDescriptions: Record<string, string> = {
@@ -66,10 +65,7 @@ const buildingDescriptions: Record<string, string> = {
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 const bucketName = (import.meta.env.VITE_SUPABASE_BUCKET as string | undefined) ?? 'images';
-const defaultHeroPath = 'Aussenansicht.jpg';
-const heroBackgroundUrl = supabaseUrl && bucketName
-  ? `${supabaseUrl}/storage/v1/object/public/${bucketName}/${defaultHeroPath}`
-  : undefined;
+const heroBackgroundUrl = '/Images/Aussenansicht/Aussenansicht_0.jpg';
 const interiorFallbacks: Record<number, string> = {
   0: '6636_Inter_cam01_v2.jpg',  // EG
   1: '6636_Inter_cam03_v2.jpg',  // 1. OG
@@ -98,16 +94,16 @@ function BuildingCard({ building, units, images, onRequest }: {
   const [imgIndex, setImgIndex] = useState(0);
 
   const imageUrls = useMemo(() => {
+    const configured = buildingImagePaths[building] ?? [];
+    if (configured.length > 0) return configured;
     if (!supabaseUrl || !bucketName) return [];
     const base = `${supabaseUrl}/storage/v1/object/public/${bucketName}`;
-    const configured = buildingImagePaths[building] ?? [];
-    if (configured.length > 0) return configured.map(p => `${base}/${p}`);
     const unitIds = new Set(units.map(u => u.id));
     const dbImages = images.filter(img => unitIds.has(img.apartment_id));
     const urls = dbImages.map(img => `${base}/${img.storage_path}`);
     if (urls.length === 0) {
       const fallbackUnit = units.find(u => !u.placeholder);
-      if (fallbackUnit) urls.push(`${base}/${interiorFallbacks[fallbackUnit.floor] ?? defaultHeroPath}`);
+      if (fallbackUnit) urls.push(`${base}/${interiorFallbacks[fallbackUnit.floor]}`);
     }
     return urls;
   }, [building, units, images]);
@@ -412,11 +408,11 @@ function App() {
       {/* Hero */}
       <section
         className="relative h-screen flex items-center justify-center bg-gray-900"
-        style={heroBackgroundUrl ? {
+        style={{
           backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${heroBackgroundUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-        } : undefined}
+        }}
       >
         <div className="relative text-center px-6 max-w-5xl">
           <h1 className="text-5xl sm:text-7xl md:text-9xl font-light mb-6 text-white drop-shadow-md">Ländlich wohnen</h1>
