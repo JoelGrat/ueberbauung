@@ -666,7 +666,19 @@ function App() {
       </section>
 
       <footer className="py-10 md:py-12 px-6 bg-black text-white border-t border-gray-800">
-        <p className="text-sm text-gray-400">© 2026 Widematte</p>
+        <div className="max-w-7xl mx-auto space-y-3 text-sm text-gray-400">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <a href="mailto:kontakt@widematte.ch" className="hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
+            <span>·</span>
+            <a href="tel:+41795830089" className="hover:opacity-60 transition-opacity">+41 79 583 00 89</a>
+          </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <a href="/impressum.html" className="hover:opacity-60 transition-opacity">Impressum</a>
+            <span>·</span>
+            <a href="/datenschutz.html" className="hover:opacity-60 transition-opacity">Datenschutz</a>
+          </div>
+          <p>© 2026 Widematte</p>
+        </div>
       </footer>
     </div>
   );
