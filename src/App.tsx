@@ -502,6 +502,12 @@ function App() {
                       <p className="text-sm font-light text-gray-500">Mietobjekt</p>
                     ) : null}
                   </div>
+                  {apt.outdoor !== undefined && (
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Aussenbereich</p>
+                      <p className="text-sm font-light">{apt.outdoor} m²</p>
+                    </div>
+                  )}
                 </div>
                 {apt.status === 'available' && (
                   <button
@@ -526,7 +532,7 @@ function App() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-200">
-                  {['Wohnung', 'Zimmer', 'NWF', 'Preis', 'Status', ''].map((h) => (
+                  {['Wohnung', 'Zimmer', 'NWF', 'Aussenbereich', 'Preis', 'Status', ''].map((h) => (
                     <th key={h} className={`py-6 text-xs font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
                   ))}
                 </tr>
@@ -540,6 +546,7 @@ function App() {
                       {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
                     </td>
                     <td className="py-7 text-sm text-gray-700">{apt.size} m²</td>
+                    <td className="py-7 text-sm text-gray-700">{apt.outdoor !== undefined ? `${apt.outdoor} m²` : '—'}</td>
                     <td className="py-7 text-base font-light">
                       {buildingShowPrice[apt.building] ? (
                         buildingListingType[apt.building] === 'rent'
