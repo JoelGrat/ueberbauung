@@ -637,6 +637,11 @@ function App() {
             <a href="mailto:kontakt@widematte.ch" className="hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
           </div>
         </div>
+        <iframe
+          src="https://maps.google.com/maps?q=Niederwilerstrasse,5524+Nesselnbach,Switzerland&output=embed"
+          className="border-0 w-full h-96 mt-8"
+          title="Standort Widematte"
+        />
       </section>
 
       {/* Kontakt */}
