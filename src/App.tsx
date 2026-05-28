@@ -329,7 +329,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
 
 function App() {
   const [images, setImages] = useState<ApartmentImage[]>([]);
-  const [loading, setLoading] = useState(!!supabase);
+  const [loading, setLoading] = useState(false);
   const [prefill, setPrefill] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
 
