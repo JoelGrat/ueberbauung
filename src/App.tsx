@@ -1,4 +1,4 @@
-import { Building2, ChevronDown, ChevronLeft, ChevronRight, Download, Mail, MapPin, Menu, Phone, Upload, X } from 'lucide-react';
+import { Building2, ChevronDown, ChevronLeft, ChevronRight, Download, Mail, MapPin, Menu, Upload, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -6,6 +6,10 @@ interface Apartment {
   id: number;
   building: '1' | '2' | '3';
   size: number;
+  sizeBrutto?: number;
+  sizeBalkon?: number;
+  sizeGarden?: number;
+  sizeEstrich?: number;
   rooms: number;
   rent: number;
   price: number;
@@ -19,29 +23,29 @@ interface Apartment {
 
 const apartments: Apartment[] = [
   // Gebäude 1
-  { id: 1, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1250000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 108, rooms: 4.5, rent: 28000, price: 1150000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 23.74 },
-  { id: 3, building: '1', size: 107, rooms: 4.5, rent: 30000, price: 1200000, floor: 2, status: 'available' },
+  { id: 1, building: '1', size: 107, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 116.96, sizeEstrich: 0, rooms: 4.5, rent: 30000, price: 1250000, floor: 0, status: 'available' },
+  { id: 2, building: '1', size: 108, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 0, sizeEstrich: 0, rooms: 4.5, rent: 28000, price: 1150000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 23.74 },
+  { id: 3, building: '1', size: 107, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 0, sizeEstrich: 38.15, rooms: 4.5, rent: 30000, price: 1200000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
-  { id: 4, building: '2', size: 127, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold', placeholder: true },
-  { id: 5, building: '2', size: 127, rooms: 4.5, rent: 32000, price: 1250000, floor: 1, status: 'sold', placeholder: true },
-  { id: 6, building: '2', size: 163, rooms: 5.5, rent: 36000, price: 1400000, floor: 2, status: 'sold', placeholder: true },
+  { id: 4, building: '2', size: 127, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 282.00, sizeEstrich: 0, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold', placeholder: true },
+  { id: 5, building: '2', size: 127, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 0, sizeEstrich: 0, rooms: 4.5, rent: 32000, price: 1250000, floor: 1, status: 'sold', placeholder: true },
+  { id: 6, building: '2', size: 163, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 0, sizeEstrich: 112.85, rooms: 5.5, rent: 36000, price: 1400000, floor: 2, status: 'sold', placeholder: true },
   // Gebäude 3
-  { id: 7, building: '3', size: 115, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true },
-  { id: 8, building: '3', size: 115, rooms: 4.5, rent: 30000, price: 1250000, floor: 1, status: 'available' },
-  { id: 9, building: '3', size: 113, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true  },
+  { id: 7, building: '3', size: 115, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 167.97, sizeEstrich: 0, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true },
+  { id: 8, building: '3', size: 115, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 0, sizeEstrich: 0, rooms: 4.5, rent: 30000, price: 1250000, floor: 1, status: 'available' },
+  { id: 9, building: '3', size: 113, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 0, sizeEstrich: 50.04, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true  },
 ];
 
 const buildingListingType: Record<string, 'sale' | 'rent'> = {
   '1': 'sale',
   '2': 'sale',
-  '3': 'rent',
+  '3': 'sale',
 };
 
 const buildingShowPrice: Record<string, boolean> = {
   '1': true,
   '2': false,
-  '3': false,
+  '3': true,
 };
 
 // Local paths (starting with /) are served from public/. Supabase filenames get the storage base prepended.
@@ -49,26 +53,28 @@ const buildingImagePaths: Record<string, string[]> = {
   '1': [
     '/Images/Aussenansicht/Gebeaude_1_Highlight.png',
     '/Images/Innenansicht/Geb1_EG_Livingroom.jpg',
+    '/Images/Innenansicht/Geb1_DG_Livingroom.jpg',
     '/Images/Aussenansicht/Aussenansicht_0.jpg',
-    '/Images/Aussenansicht/Aussenansicht_1.jpg',
+    '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
   ],
   '2': [
     '/Images/Aussenansicht/Gebeaude_2_Highlight.png',
     '/Images/Aussenansicht/Aussenansicht_2.jpg',
+    '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
   ],
   '3': [
     '/Images/Aussenansicht/Gebeaude_3_Highlight.png',
     '/Images/Innenansicht/Geb3_OG_Livingroom.jpg',
-    '/Images/Innenansicht/Geb3_DG_Livingroom.jpg',
-    '/Images/Innenansicht/Geb3_EG_Badezimmer.jpg',
-    '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
+    //'/Images/Innenansicht/Geb3_EG_Badezimmer.jpg',
     '/Images/Aussenansicht/Aussenansicht_0.jpg',
+    '/Images/Aussenansicht/Aussenansicht_1.jpg',
+    '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
   ],
 };
 
 const buildingDescriptions: Record<string, string> = {
   '1': 'Offene Grundrisse, helle Räume und direkter Blick ins Grüne — optional auch als 3.5-Zimmer.',
-  '2': 'Grosszügige Wohnungen von 4.5 bis 5.5 Zimmern mit dem grössten Grundriss der Überbauung im Dachgeschoss.',
+  '2': 'Grosszügige 4.5-Zimmer-Wohnungen.',
   '3': 'Ruhige Südausrichtung mit direktem Bezug zur angrenzenden Landwirtschaftszone.',
 };
 
@@ -174,6 +180,7 @@ function BuildingCard({ building, units, onRequest }: {
   const maxSize = Math.max(...units.map(u => u.size));
 
   const available = units.filter(u => u.status === 'available');
+  const allSold = units.every(u => u.status === 'sold');
   const listingType = buildingListingType[building] ?? 'sale';
 
   const roomsLabel = minRooms === maxRooms ? `${minRooms}` : `${minRooms}–${maxRooms}`;
@@ -255,11 +262,12 @@ function BuildingCard({ building, units, onRequest }: {
       </div>
       <div className="p-6 md:p-8 flex flex-col flex-1">
         <h3 className="text-2xl md:text-3xl font-light mb-1">Gebäude {building}</h3>
-        <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">{roomsLabel} Zimmer · {sizeLabel} m²</p>
+        {!allSold && <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">{roomsLabel} Zimmer · {sizeLabel} m²</p>}
         <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">
           {buildingDescriptions[building]}
         </p>
         <div className="border-t border-gray-100 pt-4 mb-5 space-y-3">
+          {!allSold && <>
           <div className="flex justify-between items-baseline">
             <p className="text-[10px] uppercase tracking-widest text-gray-400">Wohnfläche</p>
             <p className="text-sm font-light">{sizeLabel} m²</p>
@@ -268,6 +276,7 @@ function BuildingCard({ building, units, onRequest }: {
             <p className="text-[10px] uppercase tracking-widest text-gray-400">Zimmer</p>
             <p className="text-sm font-light">{roomsLabel}</p>
           </div>
+          </>}
           {buildingShowPrice[building] && priceLabel ? (
             <div className="flex justify-between items-baseline">
               <p className="text-[10px] uppercase tracking-widest text-gray-400">{priceRowLabel}</p>
@@ -509,7 +518,7 @@ function App() {
         <div className="relative text-center px-6 max-w-5xl">
           <h1 className="text-4xl sm:text-6xl md:text-9xl font-light mb-4 md:mb-6 text-white drop-shadow-md">Ländlich wohnen</h1>
           <p className="text-base md:text-xl font-light text-gray-300 mb-0 px-2 max-w-xl mx-auto">
-            Neubauprojekt in Nesselnbach — 4.5- und 5.5-Zimmer-Wohnungen, umgeben von Natur und Stille.
+            Neubauprojekt in Nesselnbach — 4.5-Zimmer-Wohnungen, umgeben von Natur und Stille.
           </p>
           <a href="#apartments" className="inline-block mt-8 md:mt-12 px-8 py-4 bg-black text-white text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors">
             Wohnungen entdecken
@@ -529,8 +538,8 @@ function App() {
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
-            { value: '107 – 163 m²', label: 'Wohnfläche' },
-            { value: '4.5 – 5.5', label: 'Zimmer' },
+            { value: '134 – 143 m²', label: 'Wohnfläche (BWF)' },
+            { value: '4.5', label: 'Zimmer' },
           ].map(({ value, label }) => (
             <div key={label} className="md:px-10 first:md:pl-0 last:md:pr-0">
               <p className="text-xl md:text-2xl font-light mb-1 text-black">{value}</p>
@@ -594,6 +603,14 @@ function App() {
                       {apt.rooms} Zimmer · {apt.size} m²
                       {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
                     </p>
+                    {apt.building !== '2' && (
+                      <div className="text-xs text-gray-400 mt-1 space-y-0.5">
+                        {apt.sizeBrutto && <p>{apt.sizeBrutto} m² BWF</p>}
+                        {(apt.sizeBalkon ?? 0) > 0 && <p>{apt.sizeBalkon} m² Balkon</p>}
+                        {(apt.sizeGarden ?? 0) > 0 && <p>{apt.sizeGarden} m² Garten</p>}
+                        {(apt.sizeEstrich ?? 0) > 0 && <p>{apt.sizeEstrich} m² Estrich</p>}
+                      </div>
+                    )}
                   </div>
                   <StatusBadge status={apt.status} />
                 </div>
@@ -657,7 +674,15 @@ function App() {
                       {apt.note && <p className="text-xs text-gray-400 mt-0.5">{apt.note}</p>}
                     </td>
                     <td className="py-5 text-sm text-gray-600">{apt.rooms}</td>
-                    <td className="py-5 text-sm text-gray-600">{apt.size} m²</td>
+                    <td className="py-5 text-sm text-gray-600">
+                      <p>{apt.size} m²</p>
+                      {apt.building !== '2' && <>
+                        {apt.sizeBrutto && <p className="text-xs text-gray-400">{apt.sizeBrutto} m² BWF</p>}
+                        {(apt.sizeBalkon ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeBalkon} m² Balkon</p>}
+                        {(apt.sizeGarden ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeGarden} m² Garten</p>}
+                        {(apt.sizeEstrich ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeEstrich} m² Estrich</p>}
+                      </>}
+                    </td>
                     <td className="py-5 text-sm font-light">
                       {buildingShowPrice[apt.building] ? (
                         buildingListingType[apt.building] === 'rent'
@@ -685,8 +710,7 @@ function App() {
           </div>
 
           <div className="mt-10 md:mt-12 pt-8 border-t border-gray-200">
-            <p className="text-xs uppercase tracking-widest text-gray-400 mb-3">Tiefgarage</p>
-            <p className="text-base font-light">18 Einstellplätze · CHF 25'920 pro Platz</p>
+            <p className="text-sm font-light text-gray-500">Jede Wohnung verfügt über zwei Tiefgaragenplätze, im Kaufpreis inbegriffen.</p>
           </div>
         </div>
       </section>
@@ -699,27 +723,70 @@ function App() {
           <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8 md:mb-12">
             Funktionale Raumaufteilung mit Fokus auf Licht und Alltagstauglichkeit.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {[
-              { file: '/Images/Grundrisse/Grundriss_EGs.pdf', label: 'Erdgeschoss', sub: 'EG' },
-              { file: '/Images/Grundrisse/Grundriss_OGs.pdf', label: 'Obergeschoss', sub: 'OG' },
-              { file: '/Images/Grundrisse/Grundriss_DGs.pdf', label: 'Dachgeschoss', sub: 'DG' },
-              { file: '/Images/Grundrisse/Grundriss_UGs.pdf', label: 'Untergeschoss', sub: 'UG' },
-              { file: '/Images/Grundrisse/Grundriss_GalerieEstrich.pdf', label: 'Galerie / Estrich', sub: 'GAL' },
-            ].map(({ file, label, sub }) => (
-              <a
-                key={file}
-                href={file}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-gray-200 bg-white px-4 py-4 md:px-6 md:py-5 flex justify-between items-center hover:bg-gray-50 active:bg-gray-100 transition-colors last:col-span-2"
-              >
-                <div>
-                  <p className="font-light text-sm md:text-base">{label}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-0.5">PDF</p>
+              {
+                building: '1',
+                floors: [
+                  { file: '/Images/Grundrisse/Grundriss_EG_1.pdf', label: 'Erdgeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_OG_1.pdf', label: 'Obergeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_DG_1.pdf', label: 'Dachgeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_Estrich_1.pdf', label: 'Estrich' },
+                ],
+              },
+              {
+                building: '2',
+                floors: [
+                  { file: '/Images/Grundrisse/Grundriss_EG_2.pdf', label: 'Erdgeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_OG_2.pdf', label: 'Obergeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_DG_2.pdf', label: 'Dachgeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_Estrich_2.pdf', label: 'Estrich' },
+                ],
+              },
+              {
+                building: '3',
+                floors: [
+                  { file: '/Images/Grundrisse/Grundriss_EG_3.pdf', label: 'Erdgeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_OG_3.pdf', label: 'Obergeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_DG_3.pdf', label: 'Dachgeschoss' },
+                  { file: '/Images/Grundrisse/Grundriss_Estrich_3.pdf', label: 'Estrich' },
+                ],
+              },
+            ].map(({ building, floors }) => (
+              <div key={building}>
+                <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">Gebäude {building}</p>
+                <div className="space-y-2">
+                  {floors.map(({ file, label }) => {
+                    const disabled = building === '2';
+                    return disabled ? (
+                      <div
+                        key={file}
+                        className="border border-gray-100 bg-gray-50 px-4 py-4 flex justify-between items-center opacity-40 cursor-not-allowed"
+                      >
+                        <div>
+                          <p className="font-light text-sm text-gray-400">{label}</p>
+                          <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-0.5">PDF</p>
+                        </div>
+                        <Download className="w-4 h-4 text-gray-300 shrink-0" />
+                      </div>
+                    ) : (
+                      <a
+                        key={file}
+                        href={file}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="border border-gray-200 bg-white px-4 py-4 flex justify-between items-center hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                      >
+                        <div>
+                          <p className="font-light text-sm">{label}</p>
+                          <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-0.5">PDF</p>
+                        </div>
+                        <Download className="w-4 h-4 text-gray-400 shrink-0" />
+                      </a>
+                    );
+                  })}
                 </div>
-                <Download className="w-4 h-4 text-gray-400 shrink-0" />
-              </a>
+              </div>
             ))}
           </div>
         </div>
@@ -749,7 +816,7 @@ function App() {
         <div className="flex flex-col gap-3 md:flex-row md:gap-8 text-gray-500 text-sm mb-8">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 shrink-0" />
-            <span>Niederwilerstrasse, 5524 Nesselnbach</span>
+            <span>Niederwilerstrasse 1a/b/c, 5524 Nesselnbach</span>
           </div>
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 shrink-0" />
@@ -778,10 +845,6 @@ function App() {
               <Mail className="w-4 h-4" />
               kontakt@widematte.ch
             </a>
-            <a href="tel:+41795830089" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
-              <Phone className="w-4 h-4" />
-              +41 79 583 00 89
-            </a>
           </div>
           <ContactForm initialMessage={prefill} />
         </div>
@@ -800,8 +863,7 @@ function App() {
               <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-4">Kontakt</p>
               <div className="space-y-2 text-sm text-gray-400">
                 <a href="mailto:kontakt@widematte.ch" className="block hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
-                <a href="tel:+41795830089" className="block hover:opacity-60 transition-opacity">+41 79 583 00 89</a>
-                <p className="text-gray-600 pt-1">Niederwilerstrasse<br />5524 Nesselnbach</p>
+<p className="text-gray-600 pt-1">Niederwilerstrasse<br />5524 Nesselnbach</p>
               </div>
             </div>
             <div>
