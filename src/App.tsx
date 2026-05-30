@@ -277,6 +277,10 @@ function BuildingCard({ building, units, onRequest }: {
             <p className="text-sm font-light">{roomsLabel}</p>
           </div>
           </>}
+          <div className="flex justify-between items-baseline">
+            <p className="text-[10px] uppercase tracking-widest text-gray-400">Standard</p>
+            <p className="text-sm font-light">Minergie-P</p>
+          </div>
           {buildingShowPrice[building] && priceLabel ? (
             <div className="flex justify-between items-baseline">
               <p className="text-[10px] uppercase tracking-widest text-gray-400">{priceRowLabel}</p>
@@ -516,9 +520,9 @@ function App() {
         }}
       >
         <div className="relative text-center px-6 max-w-5xl">
-          <h1 className="text-4xl sm:text-6xl md:text-9xl font-light mb-4 md:mb-6 text-white drop-shadow-md">Ländlich wohnen</h1>
+          <h1 className="text-3xl sm:text-5xl md:text-7xl md:whitespace-nowrap font-light mb-4 md:mb-6 text-white drop-shadow-md">Wohnqualität mit Zukunft</h1>
           <p className="text-base md:text-xl font-light text-gray-300 mb-0 px-2 max-w-xl mx-auto">
-            Neubauprojekt in Nesselnbach — 4.5-Zimmer-Wohnungen, umgeben von Natur und Stille.
+           9 moderne Wohnungen mit durchdachten Grundrissen und nachhaltiger Bauweise – eingebettet zwischen Wald und Fluss.
           </p>
           <a href="#apartments" className="inline-block mt-8 md:mt-12 px-8 py-4 bg-black text-white text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors">
             Wohnungen entdecken
@@ -534,12 +538,13 @@ function App() {
 
       {/* Stats bar */}
       <div className="bg-gray-50 border-y border-gray-100 py-8 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x md:divide-gray-200">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-0 md:divide-x md:divide-gray-200">
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
             { value: '134 – 143 m²', label: 'Wohnfläche (BWF)' },
             { value: '4.5', label: 'Zimmer' },
+            { value: 'Minergie-P', label: 'Standard' },
           ].map(({ value, label }) => (
             <div key={label} className="md:px-10 first:md:pl-0 last:md:pr-0">
               <p className="text-xl md:text-2xl font-light mb-1 text-black">{value}</p>
