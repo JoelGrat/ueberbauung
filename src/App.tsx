@@ -10,6 +10,8 @@ interface Apartment {
   sizeBalkon?: number;
   sizeGarden?: number;
   sizeEstrich?: number;
+  sizeKeller?: number;
+  sizePP?: number;
   rooms: number;
   rent: number;
   price: number;
@@ -23,17 +25,17 @@ interface Apartment {
 
 const apartments: Apartment[] = [
   // Gebäude 1
-  { id: 1, building: '1', size: 107, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 116.96, sizeEstrich: 0, rooms: 4.5, rent: 30000, price: 1250000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 108, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 0, sizeEstrich: 0, rooms: 4.5, rent: 28000, price: 1150000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 23.74 },
-  { id: 3, building: '1', size: 107, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 0, sizeEstrich: 38.15, rooms: 4.5, rent: 30000, price: 1200000, floor: 2, status: 'available' },
+  { id: 1, building: '1', size: 107, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 116.96, sizeEstrich: 0,     sizeKeller: 14.67, sizePP: 35.52, rooms: 4.5, rent: 30000, price: 1390000, floor: 0, status: 'available' },
+  { id: 2, building: '1', size: 108, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 0,      sizeEstrich: 0,     sizeKeller: 12.91, sizePP: 29.16, rooms: 4.5, rent: 28000, price: 1200000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 23.74 },
+  { id: 3, building: '1', size: 107, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 0,      sizeEstrich: 38.15, sizeKeller: 12.91, sizePP: 32.20, rooms: 4.5, rent: 30000, price: 1380000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
-  { id: 4, building: '2', size: 127, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 282.00, sizeEstrich: 0, rooms: 4.5, rent: 34000, price: 1450000, floor: 0, status: 'sold', placeholder: true },
-  { id: 5, building: '2', size: 127, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 0, sizeEstrich: 0, rooms: 4.5, rent: 32000, price: 1250000, floor: 1, status: 'sold', placeholder: true },
-  { id: 6, building: '2', size: 163, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 0, sizeEstrich: 112.85, rooms: 5.5, rent: 36000, price: 1400000, floor: 2, status: 'sold', placeholder: true },
+  { id: 4, building: '2', size: 127, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 281.99, sizeEstrich: 0,      sizeKeller: 22.14, sizePP: 37.46, rooms: 4.5, rent: 34000, price: 0, floor: 0, status: 'sold', placeholder: true },
+  { id: 5, building: '2', size: 127, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 0,      sizeEstrich: 0,      sizeKeller: 12.86, sizePP: 29.14, rooms: 4.5, rent: 32000, price: 0, floor: 1, status: 'sold', placeholder: true },
+  { id: 6, building: '2', size: 163, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 0,      sizeEstrich: 112.85, sizeKeller: 16.07, sizePP: 37.04, rooms: 5.5, rent: 36000, price: 0, floor: 2, status: 'sold', placeholder: true },
   // Gebäude 3
-  { id: 7, building: '3', size: 115, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 167.97, sizeEstrich: 0, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true },
-  { id: 8, building: '3', size: 115, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 0, sizeEstrich: 0, rooms: 4.5, rent: 30000, price: 1250000, floor: 1, status: 'available' },
-  { id: 9, building: '3', size: 113, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 0, sizeEstrich: 50.04, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true  },
+  { id: 7, building: '3', size: 115, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 167.97, sizeEstrich: 0,     sizeKeller: 14.21, sizePP: 29.42, rooms: 4.5, rent: 32000, price: 1490000, floor: 0, status: 'available', placeholder: true },
+  { id: 8, building: '3', size: 115, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 0,      sizeEstrich: 0,     sizeKeller: 12.41, sizePP: 30.19, rooms: 4.5, rent: 30000, price: 1300000, floor: 1, status: 'available' },
+  { id: 9, building: '3', size: 113, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 0,      sizeEstrich: 50.04, sizeKeller: 13.95, sizePP: 35.74, rooms: 4.5, rent: 32000, price: 1450000, floor: 2, status: 'reserved', placeholder: true },
 ];
 
 const buildingListingType: Record<string, 'sale' | 'rent'> = {
@@ -614,6 +616,8 @@ function App() {
                         {(apt.sizeBalkon ?? 0) > 0 && <p>{apt.sizeBalkon} m² Balkon</p>}
                         {(apt.sizeGarden ?? 0) > 0 && <p>{apt.sizeGarden} m² Garten</p>}
                         {(apt.sizeEstrich ?? 0) > 0 && <p>{apt.sizeEstrich} m² Estrich</p>}
+                        {(apt.sizeKeller ?? 0) > 0 && <p>{apt.sizeKeller} m² Keller</p>}
+                        {(apt.sizePP ?? 0) > 0 && <p>{apt.sizePP} m² PP ×2</p>}
                       </div>
                     )}
                   </div>
@@ -686,6 +690,8 @@ function App() {
                         {(apt.sizeBalkon ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeBalkon} m² Balkon</p>}
                         {(apt.sizeGarden ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeGarden} m² Garten</p>}
                         {(apt.sizeEstrich ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeEstrich} m² Estrich</p>}
+                        {(apt.sizeKeller ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeKeller} m² Keller</p>}
+                        {(apt.sizePP ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizePP} m² PP ×2</p>}
                       </>}
                     </td>
                     <td className="py-5 text-sm font-light">
@@ -801,15 +807,18 @@ function App() {
       <section id="location" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">04 / Lage</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
-        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8 md:mb-10">
-          Nesselnbach bietet ländliche Ruhe mit schneller Anbindung an die grossen Zentren.
+        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-6 md:mb-8">
+          Niederwil AG – ÖV und Reuss vor der Tür
+        </p>
+        <p className="text-sm text-gray-500 leading-relaxed max-w-3xl mb-8 md:mb-10">
+          Niederwil (AG) mit Ortsteil Nesselnbach hat rund 4'200 Einwohner/innen und liegt im Reusstal bei Bremgarten/Mellingen; Fläche 6.3 km², Höhe 430 m ü. M. PostAuto fährt im 15–30-Min.-Takt nach Mellingen Heitersberg (S-Bahn) und Bremgarten, nach Baden via Birmenstorf; A1-Anschluss Mägenwil ca. 8 Min., Baden-West ca. 12 Min. Kita/Primar im Ort; Sek im Verbund; Kantonsschulen Baden/Wohlen. Volg vor Ort, Migros/Coop in Mellingen/Bremgarten (10 Min.). Reussuferwege, Heitersberg (3 km) und Flachsee (8 km) bieten Naherholung; Jobs bei KMU und im Reusspark Gnadenthal; Steuerfuss ca. 100–105%.
         </p>
         <div className="flex flex-wrap gap-3 mb-8">
           {[
-            { place: 'Lenzburg', time: '12 Min.' },
-            { place: 'Aarau', time: '20 Min.' },
-            { place: 'Baden', time: '22 Min.' },
-            { place: 'Zürich', time: '38 Min.' },
+            { place: 'Mägenwil A1', time: '8 Min.' },
+            { place: 'Baden', time: '12 Min.' },
+            { place: 'Mellingen / Bremgarten', time: '10 Min.' },
+            { place: 'Zürich', time: '35 Min.' },
             { place: 'Bern', time: '65 Min.' },
           ].map(({ place, time }) => (
             <div key={place} className="border border-gray-200 px-4 py-2 flex items-baseline gap-2">
@@ -818,6 +827,9 @@ function App() {
             </div>
           ))}
         </div>
+        <p className="text-sm text-gray-400 italic max-w-2xl mb-8 md:mb-10">
+          Die Gemeinde Niederwil bietet dichten ÖV und kurze Wege zur A1; Reussufer und Heitersberg liegen nah – Pendeln und Naherholung lassen sich gut verbinden.
+        </p>
         <div className="flex flex-col gap-3 md:flex-row md:gap-8 text-gray-500 text-sm mb-8">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 shrink-0" />
