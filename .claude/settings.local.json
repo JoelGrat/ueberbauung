@@ -13,7 +13,10 @@
       "Bash(git mv *)",
       "mcp__plugin_claude-mem_mcp-search__smart_search",
       "Bash(node -e ' *)",
-      "Bash(echo \"Exit: $?\")"
+      "Bash(echo \"Exit: $?\")",
+      "WebSearch",
+      "Bash(npm install *)",
+      "Bash(node *)"
     ]
   }
 }

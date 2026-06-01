@@ -1,6 +1,14 @@
-import { Building2, ChevronDown, ChevronLeft, ChevronRight, Download, Mail, MapPin, Menu, Upload, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { Building2, Bus, Car, ChevronDown, ChevronLeft, ChevronRight, Download, GraduationCap, Leaf, Mail, MapPin, Menu, ShoppingCart, Upload, X } from 'lucide-react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+const LocationMap = lazy(() => import('./LocationMap'));
+
+function ClientOnly({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted ? <>{children}</> : null;
+}
 
 interface Apartment {
   id: number;
@@ -807,29 +815,95 @@ function App() {
       <section id="location" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">04 / Lage</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
-        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-6 md:mb-8">
-          Niederwil AG – ÖV und Reuss vor der Tür
+        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-14">
+          Niederwil AG liegt im Reusstal zwischen Mellingen und Bremgarten — ländliche Ruhe mit dichtem ÖV und direktem A1-Anschluss.
         </p>
-        <p className="text-sm text-gray-500 leading-relaxed max-w-3xl mb-8 md:mb-10">
-          Niederwil (AG) mit Ortsteil Nesselnbach hat rund 4'200 Einwohner/innen und liegt im Reusstal bei Bremgarten/Mellingen; Fläche 6.3 km², Höhe 430 m ü. M. PostAuto fährt im 15–30-Min.-Takt nach Mellingen Heitersberg (S-Bahn) und Bremgarten, nach Baden via Birmenstorf; A1-Anschluss Mägenwil ca. 8 Min., Baden-West ca. 12 Min. Kita/Primar im Ort; Sek im Verbund; Kantonsschulen Baden/Wohlen. Volg vor Ort, Migros/Coop in Mellingen/Bremgarten (10 Min.). Reussuferwege, Heitersberg (3 km) und Flachsee (8 km) bieten Naherholung; Jobs bei KMU und im Reusspark Gnadenthal; Steuerfuss ca. 100–105%.
-        </p>
-        <div className="flex flex-wrap gap-3 mb-8">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 mb-10 md:mb-14">
           {[
-            { place: 'Mägenwil A1', time: '8 Min.' },
-            { place: 'Baden', time: '12 Min.' },
-            { place: 'Mellingen / Bremgarten', time: '10 Min.' },
-            { place: 'Zürich', time: '35 Min.' },
-            { place: 'Bern', time: '65 Min.' },
-          ].map(({ place, time }) => (
-            <div key={place} className="border border-gray-200 px-4 py-2 flex items-baseline gap-2">
-              <span className="text-xs text-gray-400">{time}</span>
-              <span className="text-sm font-light">{place}</span>
+            {
+              Icon: Bus,
+              label: 'Öffentlicher Verkehr',
+              text: 'PostAuto im 15–30-Min.-Takt nach Mellingen Heitersberg (S-Bahn), Bremgarten und Baden via Birmenstorf.',
+            },
+            {
+              Icon: Car,
+              label: 'Auto',
+              text: 'A1-Anschluss Mägenwil in 8 Min., Baden-West in 12 Min. Zürich Zentrum in rund 35 Min. erreichbar.',
+            },
+            {
+              Icon: ShoppingCart,
+              label: 'Einkauf & Alltag',
+              text: 'Volg mit Postagentur direkt im Ort. Migros und Coop in Mellingen und Bremgarten, je rund 10 Fahrminuten.',
+            },
+            {
+              Icon: GraduationCap,
+              label: 'Bildung',
+              text: 'Kita und Primarschule in Niederwil, Sekundarschule im Verbund. Kantonsschulen in Baden und Wohlen.',
+            },
+            {
+              Icon: Leaf,
+              label: 'Naherholung',
+              text: 'Reussuferwege direkt vor der Tür. Heitersberg (3 km) und Flachsee (8 km) für Ausflüge in die Natur.',
+            },
+            {
+              Icon: Building2,
+              label: 'Gemeinde',
+              text: 'Rund 4\'200 Einwohner, 430 m ü. M. Steuerfuss ca. 100–105 %. Arbeitsplätze bei lokalen KMU und im Reusspark Gnadenthal.',
+            },
+          ].map(({ Icon, label, text }) => (
+            <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
+              <Icon className="w-4 h-4 text-gray-400 mb-3" />
+              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-2">{label}</p>
+              <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
             </div>
           ))}
         </div>
-        <p className="text-sm text-gray-400 italic max-w-2xl mb-8 md:mb-10">
-          Die Gemeinde Niederwil bietet dichten ÖV und kurze Wege zur A1; Reussufer und Heitersberg liegen nah – Pendeln und Naherholung lassen sich gut verbinden.
+
+        <p className="text-sm text-gray-400 max-w-xl mb-10 md:mb-12 leading-relaxed">
+          Zwischen Reuss und Heitersberg — Alltagsnähe und Natur verbinden sich im Aargauer Reusstal auf besondere Weise.
         </p>
+
+        <div className="flex flex-col sm:flex-row gap-10 mb-10">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten ÖV</p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { place: 'Mellingen Heitersberg', time: '10 Min.', note: 'PostAuto' },
+                { place: 'Bremgarten',            time: '15 Min.', note: 'PostAuto' },
+                { place: 'Baden',                 time: '25 Min.', note: 'PostAuto' },
+                { place: 'Zürich HB',             time: '35 Min.', note: 'S-Bahn ab Mellingen' },
+              ].map(({ place, time, note }) => (
+                <div key={place} className="border border-gray-200 px-4 py-2">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs text-gray-400">{time}</span>
+                    <span className="text-sm font-light">{place}</span>
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-0.5">{note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten Auto</p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { place: 'Mägenwil A1',           time: '8 Min.'  },
+                { place: 'Baden',                  time: '12 Min.' },
+                { place: 'Mellingen / Bremgarten', time: '10 Min.' },
+                { place: 'Zürich',                 time: '35 Min.' },
+                { place: 'Bern',                   time: '65 Min.' },
+              ].map(({ place, time }) => (
+                <div key={place} className="border border-gray-200 px-4 py-2 flex items-baseline gap-2">
+                  <span className="text-xs text-gray-400">{time}</span>
+                  <span className="text-sm font-light">{place}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-3 md:flex-row md:gap-8 text-gray-500 text-sm mb-8">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 shrink-0" />
@@ -840,13 +914,11 @@ function App() {
             <a href="mailto:kontakt@widematte.ch" className="hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
           </div>
         </div>
-        <iframe
-          src="https://maps.google.com/maps?q=47.38690377766172,8.290382694997003&output=embed"
-          className="border-0 w-full h-64 md:h-96 mt-8"
-          title="Standort Widematte"
-          allowFullScreen
-          loading="lazy"
-        />
+        <ClientOnly>
+          <Suspense fallback={<div className="w-full h-64 md:h-96 mt-8 bg-gray-100" />}>
+            <LocationMap />
+          </Suspense>
+        </ClientOnly>
       </section>
 
       {/* Kontakt */}
