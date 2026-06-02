@@ -252,11 +252,11 @@ function BuildingCard({ building, units, onRequest }: {
         </div>
         {total > 1 && (
           <>
-            <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
-              <ChevronLeft className="w-4 h-4" />
+            <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 md:w-8 md:h-8 bg-black/40 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
+              <ChevronLeft className="w-5 h-5 md:w-4 md:h-4" />
             </button>
-            <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
-              <ChevronRight className="w-4 h-4" />
+            <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 md:w-8 md:h-8 bg-black/40 text-white flex items-center justify-center hover:bg-black/70 transition-colors">
+              <ChevronRight className="w-5 h-5 md:w-4 md:h-4" />
             </button>
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
               {imageUrls.map((_, i) => (
@@ -354,7 +354,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
     setSubmitted(true);
   };
 
-  const inputClass = "w-full px-4 py-3 bg-white text-black border border-gray-300 focus:outline-none focus:border-gray-800 disabled:opacity-40 placeholder:text-gray-400 transition-colors";
+  const inputClass = "w-full px-4 py-3 bg-white text-black text-base md:text-sm border border-gray-300 focus:outline-none focus:border-gray-800 disabled:opacity-40 placeholder:text-gray-400 transition-colors";
 
   if (submitted) {
     return (
@@ -567,13 +567,13 @@ function App() {
       </div>
 
       {/* Wohnungen */}
-      <section id="apartments" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
+      <section id="apartments" className="py-12 md:py-32 px-6 max-w-7xl mx-auto">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">01 / Wohnungen</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8">
           Hochwertige Neubauwohnungen in ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
         </p>
-        <div className="flex flex-wrap gap-2 mb-10 md:mb-16">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 mb-10 md:mb-16">
           {[
             'Ökologische Fertigholzbauweise',
             'Minergie-P',
@@ -582,7 +582,7 @@ function App() {
             'Max. 3 Wohnungen pro Gebäude',
             '2 Tiefgaragenplätze pro Wohnung',
           ].map(tag => (
-            <span key={tag} className="text-[10px] uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-1.5">{tag}</span>
+            <span key={tag} className="text-[10px] uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-2 sm:py-1.5">{tag}</span>
           ))}
         </div>
         <div className="grid md:grid-cols-3 gap-6 md:gap-8">
@@ -613,7 +613,7 @@ function App() {
       </div>
 
       {/* Verfügbarkeit */}
-      <section id="availability" className="py-16 md:py-32 px-6 bg-gray-50">
+      <section id="availability" className="py-12 md:py-32 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Verfügbarkeit</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Verfügbarkeit</h2>
@@ -751,7 +751,7 @@ function App() {
       </section>
 
       {/* Grundrisse */}
-      <section id="plans" className="py-16 md:py-32 px-6 bg-white border-t border-gray-100">
+      <section id="plans" className="py-12 md:py-32 px-6 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto">
           <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">03 / Grundrisse</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Grundrisse</h2>
@@ -828,7 +828,7 @@ function App() {
       </section>
 
       {/* Lage */}
-      <section id="location" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
+      <section id="location" className="py-12 md:py-32 px-6 max-w-7xl mx-auto">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">04 / Lage</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-14">
@@ -883,7 +883,7 @@ function App() {
         <div className="flex flex-col sm:flex-row gap-10 mb-10">
           <div>
             <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten ÖV</p>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3">
               {[
                 { place: 'Mellingen Heitersberg', time: '18 Min.',  note: 'PostAuto → S-Bahn' },
                 { place: 'Baden',                 time: '40 Min.',  note: 'PostAuto' },
@@ -903,7 +903,7 @@ function App() {
 
           <div>
             <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten Auto</p>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3">
               {[
                 { place: 'A1 Mägenwil',           time: '10 Min.' },
                 { place: 'Westumfahrung',          time: '15 Min.' },
@@ -931,14 +931,23 @@ function App() {
           </div>
         </div>
         <ClientOnly>
-          <Suspense fallback={<div className="w-full h-64 md:h-96 mt-8 bg-gray-100" />}>
+          <Suspense fallback={<div className="w-full h-72 md:h-[480px] mt-8 bg-gray-100" />}>
             <LocationMap />
           </Suspense>
         </ClientOnly>
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=47.38690,8.29038"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 mt-4 text-xs uppercase tracking-widest text-gray-400 hover:text-gray-700 transition-colors"
+        >
+          <MapPin className="w-3.5 h-3.5" />
+          In Google Maps öffnen
+        </a>
       </section>
 
       {/* Kontakt */}
-      <section id="contact" className="py-16 md:py-32 px-6 bg-gray-50 border-t border-gray-100">
+      <section id="contact" className="py-12 md:py-32 px-6 bg-gray-50 border-t border-gray-100">
         <div className="max-w-4xl mx-auto">
           <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">05 / Kontakt</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Kontakt</h2>

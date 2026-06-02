@@ -138,7 +138,7 @@ export default function LocationMap() {
       <MapContainer
         center={[47.390, 8.314]}
         zoom={12}
-        className="w-full h-64 md:h-[480px] mt-8"
+        className="w-full h-72 md:h-[480px] mt-8"
         scrollWheelZoom={false}
         touchZoom={true}
         style={{ zIndex: 0 }}
