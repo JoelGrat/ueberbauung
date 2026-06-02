@@ -287,10 +287,12 @@ function BuildingCard({ building, units, onRequest }: {
             <p className="text-sm font-light">{roomsLabel}</p>
           </div>
           </>}
-          <div className="flex justify-between items-baseline">
-            <p className="text-[10px] uppercase tracking-widest text-gray-400">Standard</p>
-            <p className="text-sm font-light">Minergie-P</p>
-          </div>
+          {building !== '2' && (
+            <div className="flex justify-between items-baseline">
+              <p className="text-[10px] uppercase tracking-widest text-gray-400">Standard</p>
+              <p className="text-sm font-light">Minergie-P</p>
+            </div>
+          )}
           {buildingShowPrice[building] && priceLabel ? (
             <div className="flex justify-between items-baseline">
               <p className="text-[10px] uppercase tracking-widest text-gray-400">{priceRowLabel}</p>
@@ -626,10 +628,12 @@ function App() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-lg font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {apt.rooms} Zimmer · {apt.size} m²
-                      {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
-                    </p>
+                    {apt.building !== '2' && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        {apt.rooms} Zimmer · {apt.size} m²
+                        {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
+                      </p>
+                    )}
                     {apt.building !== '2' && (
                       <div className="text-xs text-gray-400 mt-1 space-y-0.5">
                         {apt.sizeBrutto && <p>{apt.sizeBrutto} m² BWF</p>}
@@ -702,16 +706,20 @@ function App() {
                       <p className="text-base font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</p>
                       {apt.note && <p className="text-xs text-gray-400 mt-0.5">{apt.note}</p>}
                     </td>
-                    <td className="py-5 text-sm text-gray-600">{apt.rooms}</td>
                     <td className="py-5 text-sm text-gray-600">
-                      <p>{apt.size} m²</p>
-                      {apt.building !== '2' && <>
-                        {apt.sizeBrutto && <p className="text-xs text-gray-400">{apt.sizeBrutto} m² BWF</p>}
-                        {(apt.sizeBalkon ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeBalkon} m² Balkon</p>}
-                        {(apt.sizeGarden ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeGarden} m² Garten</p>}
-                        {(apt.sizeEstrich ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeEstrich} m² Estrich</p>}
-                        {(apt.sizeKeller ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeKeller} m² Keller</p>}
-                      </>}
+                      {apt.building !== '2' ? apt.rooms : <span className="text-gray-300">–</span>}
+                    </td>
+                    <td className="py-5 text-sm text-gray-600">
+                      {apt.building !== '2' ? (
+                        <>
+                          <p>{apt.size} m²</p>
+                          {apt.sizeBrutto && <p className="text-xs text-gray-400">{apt.sizeBrutto} m² BWF</p>}
+                          {(apt.sizeBalkon ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeBalkon} m² Balkon</p>}
+                          {(apt.sizeGarden ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeGarden} m² Garten</p>}
+                          {(apt.sizeEstrich ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeEstrich} m² Estrich</p>}
+                          {(apt.sizeKeller ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeKeller} m² Keller</p>}
+                        </>
+                      ) : <span className="text-gray-300">–</span>}
                     </td>
                     <td className="py-5 text-sm font-light">
                       {buildingShowPrice[apt.building] ? (
