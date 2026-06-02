@@ -532,7 +532,7 @@ function App() {
         <div className="relative text-center px-6 max-w-5xl">
           <h1 className="text-3xl sm:text-5xl md:text-7xl md:whitespace-nowrap font-light mb-4 md:mb-6 text-white drop-shadow-md">Wohnqualität mit Zukunft</h1>
           <p className="text-base md:text-xl font-light text-gray-300 mb-0 px-2 max-w-xl mx-auto">
-           9 moderne Wohnungen mit durchdachten Grundrissen und nachhaltiger Bauweise – eingebettet zwischen Wald und Fluss.
+            9 moderne Wohnungen an einer charmanten familienfreundlichen Wohnlage, mit durchdachten Grundrissen und direkt am Dorfrand.
           </p>
           <a href="#apartments" className="inline-block mt-8 md:mt-12 px-8 py-4 bg-black text-white text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors">
             Wohnungen entdecken
@@ -568,9 +568,21 @@ function App() {
       <section id="apartments" className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">01 / Wohnungen</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
-        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-16">
+        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8">
           Hochwertige Neubauwohnungen in ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
         </p>
+        <div className="flex flex-wrap gap-2 mb-10 md:mb-16">
+          {[
+            'Ökologische Fertigholzbauweise',
+            'Minergie-P',
+            'Solar-Panels & Erdsonde',
+            'Lift pro Gebäude',
+            'Max. 3 Wohnungen pro Gebäude',
+            '2 Tiefgaragenplätze pro Wohnung',
+          ].map(tag => (
+            <span key={tag} className="text-[10px] uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-1.5">{tag}</span>
+          ))}
+        </div>
         <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {grouped.map(({ building, units }) => (
             <BuildingCard
@@ -604,7 +616,7 @@ function App() {
           <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Verfügbarkeit</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Verfügbarkeit</h2>
           <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-16">
-            Aktuell verfügbare Wohnungen zum Kauf und zur Miete.
+            Aktuell verfügbare Wohnungen zum Kauf.
           </p>
 
           {/* Mobile: cards */}
@@ -625,7 +637,6 @@ function App() {
                         {(apt.sizeGarden ?? 0) > 0 && <p>{apt.sizeGarden} m² Garten</p>}
                         {(apt.sizeEstrich ?? 0) > 0 && <p>{apt.sizeEstrich} m² Estrich</p>}
                         {(apt.sizeKeller ?? 0) > 0 && <p>{apt.sizeKeller} m² Keller</p>}
-                        {(apt.sizePP ?? 0) > 0 && <p>{apt.sizePP} m² PP ×2</p>}
                       </div>
                     )}
                   </div>
@@ -642,6 +653,7 @@ function App() {
                       <>
                         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
                         <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
+                        <p className="text-[10px] text-gray-400 mt-1">inkl. 2 Tiefgaragenparkplätze</p>
                       </>
                     )
                   ) : buildingListingType[apt.building] === 'rent' ? (
@@ -699,14 +711,13 @@ function App() {
                         {(apt.sizeGarden ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeGarden} m² Garten</p>}
                         {(apt.sizeEstrich ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeEstrich} m² Estrich</p>}
                         {(apt.sizeKeller ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeKeller} m² Keller</p>}
-                        {(apt.sizePP ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizePP} m² PP ×2</p>}
                       </>}
                     </td>
                     <td className="py-5 text-sm font-light">
                       {buildingShowPrice[apt.building] ? (
                         buildingListingType[apt.building] === 'rent'
                           ? <>CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-xs text-gray-400">/ Mt.</span></>
-                          : <>CHF {apt.price.toLocaleString('de-CH')}</>
+                          : <><p>CHF {apt.price.toLocaleString('de-CH')}</p><p className="text-[10px] text-gray-400 mt-0.5">inkl. 2 Tiefgaragenparkplätze</p></>
                       ) : buildingListingType[apt.building] === 'rent' ? (
                         <span className="text-gray-400 font-light">Mietobjekt</span>
                       ) : (
@@ -728,9 +739,6 @@ function App() {
             </table>
           </div>
 
-          <div className="mt-10 md:mt-12 pt-8 border-t border-gray-200">
-            <p className="text-sm font-light text-gray-500">Jede Wohnung verfügt über zwei Tiefgaragenplätze, im Kaufpreis inbegriffen.</p>
-          </div>
         </div>
       </section>
 
@@ -816,7 +824,7 @@ function App() {
         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">04 / Lage</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-14">
-          Niederwil AG liegt im Reusstal zwischen Mellingen und Bremgarten — ländliche Ruhe mit dichtem ÖV und direktem A1-Anschluss.
+          Nesselnbach gehört zur Gemeinde Niederwil und liegt im Reusstal zwischen Mellingen und Bremgarten, eingebettet zwischen Wald und Reuss. Familienfreundliche, sonnige Lage direkt am Dorfrand und am kleinen Bach.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 mb-10 md:mb-14">
@@ -824,32 +832,32 @@ function App() {
             {
               Icon: Bus,
               label: 'Öffentlicher Verkehr',
-              text: 'PostAuto im 15–30-Min.-Takt nach Mellingen Heitersberg (S-Bahn), Bremgarten und Baden via Birmenstorf.',
+              text: 'PostAuto im 30-Min.-Takt nach Mellingen Heitersberg (S-Bahn, 18 Min.), nach Baden ca. 40 Min., via Bremgarten nach Sihl-City Zürich in 50 Min., nach Luzern via Wohlen in ca. 1h 15.',
             },
             {
               Icon: Car,
               label: 'Auto',
-              text: 'A1-Anschluss Mägenwil in 8 Min., Baden-West in 12 Min. Zürich Zentrum in rund 35 Min. erreichbar.',
+              text: 'A1 Mägenwil Richtung Bern in ca. 10 Min. erreichbar. Westumfahrung Richtung Zürich und Luzern via Oberwil Lieli in ca. 15 Min.',
             },
             {
               Icon: ShoppingCart,
               label: 'Einkauf & Alltag',
-              text: 'Volg mit Postagentur direkt im Ort. Migros und Coop in Mellingen und Bremgarten, je rund 10 Fahrminuten.',
+              text: 'Metzgerei, Bäckerei und Volg mit Postagentur in Niederwil, erreichbar in wenigen Fahrminuten. Migros und Coop in Mellingen und Bremgarten.',
             },
             {
               Icon: GraduationCap,
               label: 'Bildung',
-              text: 'Kita und Primarschule in Niederwil, Sekundarschule im Verbund. Kantonsschulen in Baden und Wohlen.',
+              text: 'Kindergarten, Primar- und Sekundarschule zu Fuss in 15 Min. erreichbar (Niederwil). Kantonsschulen in Baden und Wohlen.',
             },
             {
               Icon: Leaf,
               label: 'Naherholung',
-              text: 'Reussuferwege direkt vor der Tür. Heitersberg (3 km) und Flachsee (8 km) für Ausflüge in die Natur.',
+              text: 'Wald und Reussufer direkt vor der Haustür. Flachsee in Bremgarten für Ausflüge in die Natur.',
             },
             {
               Icon: Building2,
               label: 'Gemeinde',
-              text: 'Rund 4\'200 Einwohner, 430 m ü. M. Steuerfuss ca. 100–105 %. Arbeitsplätze bei lokalen KMU und im Reusspark Gnadenthal.',
+              text: '4\'200 Einwohner, 430 m ü. M. Vielseitiges Vereinsleben: Musikverein, Fussballverein, Turnverein, Feuerwehr, Kirchenchor u.v.m.',
             },
           ].map(({ Icon, label, text }) => (
             <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
@@ -861,7 +869,7 @@ function App() {
         </div>
 
         <p className="text-sm text-gray-400 max-w-xl mb-10 md:mb-12 leading-relaxed">
-          Zwischen Reuss und Heitersberg — Alltagsnähe und Natur verbinden sich im Aargauer Reusstal auf besondere Weise.
+          Eingebettet zwischen Wald und Reuss — eine familienfreundliche Wohnlage mit kurzen Wegen zu Natur, Schule und ÖV.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-10 mb-10">
@@ -869,10 +877,10 @@ function App() {
             <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten ÖV</p>
             <div className="flex flex-wrap gap-3">
               {[
-                { place: 'Mellingen Heitersberg', time: '10 Min.', note: 'PostAuto' },
-                { place: 'Bremgarten',            time: '15 Min.', note: 'PostAuto' },
-                { place: 'Baden',                 time: '25 Min.', note: 'PostAuto' },
-                { place: 'Zürich HB',             time: '35 Min.', note: 'S-Bahn ab Mellingen' },
+                { place: 'Mellingen Heitersberg', time: '18 Min.',  note: 'PostAuto → S-Bahn' },
+                { place: 'Baden',                 time: '40 Min.',  note: 'PostAuto' },
+                { place: 'Zürich Sihl-City',      time: '50 Min.',  note: 'via Bremgarten' },
+                { place: 'Luzern',                time: '1h 15',    note: 'via Wohlen' },
               ].map(({ place, time, note }) => (
                 <div key={place} className="border border-gray-200 px-4 py-2">
                   <div className="flex items-baseline gap-2">
@@ -889,8 +897,8 @@ function App() {
             <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten Auto</p>
             <div className="flex flex-wrap gap-3">
               {[
-                { place: 'Mägenwil A1',           time: '8 Min.'  },
-                { place: 'Baden',                  time: '12 Min.' },
+                { place: 'A1 Mägenwil',           time: '10 Min.' },
+                { place: 'Westumfahrung',          time: '15 Min.' },
                 { place: 'Mellingen / Bremgarten', time: '10 Min.' },
                 { place: 'Zürich',                 time: '35 Min.' },
                 { place: 'Bern',                   time: '65 Min.' },

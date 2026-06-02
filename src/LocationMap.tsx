@@ -56,17 +56,29 @@ function fmtDist(lat: number, lng: number): string {
 }
 
 const pois: { lat: number; lng: number; name: string; sub: string; type: PoiType }[] = [
-  { lat: PROJECT_LAT, lng: PROJECT_LNG, name: 'Überbauung Widematte',        sub: 'Niederwilerstrasse 1a/b/c, Nesselnbach', type: 'projekt' },
-  { lat: 47.37646,    lng: 8.29441,     name: 'Volg Niederwil',               sub: 'Hauptstrasse 33, Niederwil',            type: 'einkauf' },
-  { lat: 47.38710,    lng: 8.28740,     name: 'Kinderlaube Nesselnbach',       sub: 'Landstrasse 1a, Nesselnbach',           type: 'kita'    },
-  { lat: 47.37700,    lng: 8.28950,     name: 'Primarschule Niederwil',        sub: 'Im Dorf, Niederwil',                   type: 'schule'  },
-  { lat: 47.41420,    lng: 8.26710,     name: 'Migros Mellingen',              sub: 'Lenzburgerstrasse 50, Mellingen',      type: 'einkauf' },
-  { lat: 47.35100,    lng: 8.33630,     name: 'Migros Bremgarten',             sub: 'Zufikerstrasse 2, Bremgarten',         type: 'einkauf' },
-  { lat: 47.34940,    lng: 8.33870,     name: 'Coop Bremgarten',               sub: 'Sonnengutstrasse 2–4, Bremgarten',     type: 'einkauf' },
-  { lat: 47.38750,    lng: 8.29150,     name: 'PostAuto Haltestelle Nesselnbach', sub: 'Landstrasse, Nesselnbach',          type: 'ov'      },
-  { lat: 47.42010,    lng: 8.26450,     name: 'S-Bahn Mellingen Heitersberg',  sub: 'Bahnhof Mellingen Heitersberg',        type: 'ov'      },
-  { lat: 47.37600,    lng: 8.27400,     name: 'Reuss Uferweg',                 sub: 'Naherholung, Niederwil',               type: 'natur'   },
-  { lat: 47.40200,    lng: 8.25200,     name: 'Heitersberg',                   sub: 'Wandergebiet, 3 km',                   type: 'natur'   },
+  // Projekt
+  { lat: PROJECT_LAT, lng: PROJECT_LNG, name: 'Überbauung Widematte',           sub: 'Niederwilerstrasse 1a/b/c, Nesselnbach', type: 'projekt' },
+  // Einkauf
+  { lat: 47.37948,    lng: 8.29372,     name: 'Reussthal Metzgerei',              sub: 'Hauptstrasse 2, Niederwil',              type: 'einkauf' },
+  { lat: 47.37697,    lng: 8.29463,     name: 'Bäckerei Wirth',                   sub: 'Niederwil',                              type: 'einkauf' },
+  { lat: 47.37644,    lng: 8.29449,     name: 'Volg Niederwil',                   sub: 'Hauptstrasse 33, Niederwil',             type: 'einkauf' },
+  { lat: 47.41312,    lng: 8.26672,     name: 'Migros Mellingen',                 sub: 'Lenzburgerstrasse 50, Mellingen',        type: 'einkauf' },
+  { lat: 47.41823,    lng: 8.27009,     name: 'Coop Mellingen',                   sub: 'Birrfeldstrasse, Mellingen',             type: 'einkauf' },
+  { lat: 47.35263,    lng: 8.34967,     name: 'Migros Bremgarten',                sub: 'Zufikerstrasse 2, Bremgarten',           type: 'einkauf' },
+  { lat: 47.35174,    lng: 8.34859,     name: 'Coop Bremgarten',                  sub: 'Sonnengutstrasse, Bremgarten',           type: 'einkauf' },
+  { lat: 47.34941,    lng: 8.27248,     name: 'Migros Wohlen',                    sub: 'Bahnhofstrasse, Anglikon/Wohlen',        type: 'einkauf' },
+  { lat: 47.35022,    lng: 8.27064,     name: 'Coop Wohlen',                      sub: 'Alte Bahnhofstrasse, Anglikon/Wohlen',   type: 'einkauf' },
+  // Bildung
+  { lat: 47.38791,    lng: 8.29483,     name: 'Kinderlaube Nesselnbach',          sub: 'Landstrasse 1a, Nesselnbach',            type: 'kita'    },
+  { lat: 47.38018,    lng: 8.29152,     name: 'Kindergarten Niederwil',           sub: 'Schulanlage Althau, Niederwil',          type: 'kita'    },
+  { lat: 47.37882,    lng: 8.29223,     name: 'Primarschule Niederwil',           sub: 'Schulweg, Niederwil',                    type: 'schule'  },
+  // ÖV
+  { lat: 47.38883,    lng: 8.29118,     name: 'PostAuto Nesselnbach Mitteldorf',  sub: 'Haltestelle Nesselnbach Mitteldorf',     type: 'ov'      },
+  { lat: 47.42833,    lng: 8.27646,     name: 'S-Bahn Mellingen Heitersberg',     sub: 'Bahnhof Mellingen Heitersberg',          type: 'ov'      },
+  { lat: 47.34724,    lng: 8.27175,     name: 'Bahnhof Wohlen',                   sub: 'Untere Farnbühlstrasse, Wohlen',         type: 'ov'      },
+  // Natur
+  { lat: 47.38918,    lng: 8.30530,     name: 'Reuss Uferweg',                    sub: 'Naherholung direkt beim Dorf',           type: 'natur'   },
+  { lat: 47.39163,    lng: 8.36106,     name: 'Heitersberg',                      sub: 'Wandergebiet Bellikon, ca. 3 km',        type: 'natur'   },
 ];
 
 function makePin(type: PoiType) {
@@ -124,7 +136,7 @@ export default function LocationMap() {
   return (
     <div>
       <MapContainer
-        center={[47.384, 8.295]}
+        center={[47.390, 8.314]}
         zoom={12}
         className="w-full h-64 md:h-[480px] mt-8"
         scrollWheelZoom={false}
