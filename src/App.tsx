@@ -664,7 +664,7 @@ function App() {
           <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Angebot</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Unser Angebot</h2>
           <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-16">
-            Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Wohnflächen von 107 bis 115 m². Jede Wohnung verfügt über einen eigenen Parkplatz, Kellerabteil sowie privaten Aussenbereich.
+            Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Wohnflächen von 107 bis 115 m². Jede Wohnung verfügt über zwei Tiefgaragenparkplätze, Kellerabteil sowie privaten Aussenbereich.
           </p>
 
           {/* Mobile: cards */}
@@ -825,6 +825,21 @@ function App() {
           <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8 md:mb-12">
             Funktionale Raumaufteilung mit Fokus auf Licht und Alltagstauglichkeit.
           </p>
+          <div className="mb-8 md:mb-10">
+            <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">Alle Gebäude</p>
+            <a
+              href="/Images/Grundrisse/Grundriss_UGs.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-between border border-gray-200 bg-white px-4 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors w-full md:w-72"
+            >
+              <div>
+                <p className="font-light text-sm">Untergeschoss</p>
+                <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-0.5">Kellerabteile & Tiefgarage · PDF</p>
+              </div>
+              <Download className="w-4 h-4 text-gray-400 shrink-0" />
+            </a>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {[
               {
