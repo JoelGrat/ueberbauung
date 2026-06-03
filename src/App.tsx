@@ -33,17 +33,17 @@ interface Apartment {
 
 const apartments: Apartment[] = [
   // Gebäude 1
-  { id: 1, building: '1', size: 107, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 116.96, sizeEstrich: 0,     sizeKeller: 14.67, sizePP: 35.52, rooms: 4.5, rent: 30000, price: 1390000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 108, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 0,      sizeEstrich: 0,     sizeKeller: 12.91, sizePP: 29.16, rooms: 4.5, rent: 28000, price: 1200000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 23.74 },
-  { id: 3, building: '1', size: 107, sizeBrutto: 134.48, sizeBalkon: 23.74, sizeGarden: 0,      sizeEstrich: 38.15, sizeKeller: 12.91, sizePP: 32.20, rooms: 4.5, rent: 30000, price: 1380000, floor: 2, status: 'available' },
+  { id: 1, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 117, sizeEstrich: 0,   sizeKeller: 15, sizePP: 36, rooms: 4.5, rent: 30000, price: 1390000, floor: 0, status: 'available' },
+  { id: 2, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1200000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
+  { id: 3, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 38,  sizeKeller: 13, sizePP: 32, rooms: 4.5, rent: 30000, price: 1380000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
-  { id: 4, building: '2', size: 127, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 281.99, sizeEstrich: 0,      sizeKeller: 22.14, sizePP: 37.46, rooms: 4.5, rent: 34000, price: 0, floor: 0, status: 'sold', placeholder: true },
-  { id: 5, building: '2', size: 127, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 0,      sizeEstrich: 0,      sizeKeller: 12.86, sizePP: 29.14, rooms: 4.5, rent: 32000, price: 0, floor: 1, status: 'sold', placeholder: true },
-  { id: 6, building: '2', size: 163, sizeBrutto: 156.43, sizeBalkon: 27.08, sizeGarden: 0,      sizeEstrich: 112.85, sizeKeller: 16.07, sizePP: 37.04, rooms: 5.5, rent: 36000, price: 0, floor: 2, status: 'sold', placeholder: true },
+  { id: 4, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 282, sizeEstrich: 0,   sizeKeller: 22, sizePP: 37, rooms: 4.5, rent: 34000, price: 0, floor: 0, status: 'sold', placeholder: true },
+  { id: 5, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 32000, price: 0, floor: 1, status: 'sold', placeholder: true },
+  { id: 6, building: '2', size: 163, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 0,   sizeEstrich: 113, sizeKeller: 16, sizePP: 37, rooms: 5.5, rent: 36000, price: 0, floor: 2, status: 'sold', placeholder: true },
   // Gebäude 3
-  { id: 7, building: '3', size: 115, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 167.97, sizeEstrich: 0,     sizeKeller: 14.21, sizePP: 29.42, rooms: 4.5, rent: 32000, price: 1490000, floor: 0, status: 'available', placeholder: true },
-  { id: 8, building: '3', size: 115, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 0,      sizeEstrich: 0,     sizeKeller: 12.41, sizePP: 30.19, rooms: 4.5, rent: 30000, price: 1300000, floor: 1, status: 'available' },
-  { id: 9, building: '3', size: 113, sizeBrutto: 142.92, sizeBalkon: 23.96, sizeGarden: 0,      sizeEstrich: 50.04, sizeKeller: 13.95, sizePP: 35.74, rooms: 4.5, rent: 32000, price: 1450000, floor: 2, status: 'reserved', placeholder: true },
+  { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1490000, floor: 0, status: 'available', placeholder: true },
+  { id: 8, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 12, sizePP: 30, rooms: 4.5, rent: 30000, price: 1300000, floor: 1, status: 'available' },
+  { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 50,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1450000, floor: 2, status: 'reserved', placeholder: true },
 ];
 
 const buildingListingType: Record<string, 'sale' | 'rent'> = {
@@ -97,6 +97,11 @@ function floorLabel(floor: number) {
   if (floor === 0) return 'EG';
   if (floor === 2) return 'DG';
   return `${floor}. OG`;
+}
+
+function grundrissUrl(building: string, floor: number): string {
+  const code = floor === 0 ? 'EG' : floor === 2 ? 'DG' : 'OG';
+  return `/Images/Grundrisse/Grundriss_${code}_${building}.pdf`;
 }
 
 function StatusBadge({ status }: { status: Apartment['status'] }) {
@@ -472,7 +477,7 @@ function App() {
 
   const navLinks = [
     { href: '#apartments', label: 'Wohnungen' },
-    { href: '#availability', label: 'Verfügbarkeit' },
+    { href: '#availability', label: 'Angebot' },
     { href: '#plans', label: 'Grundrisse' },
     { href: '#location', label: 'Lage' },
     { href: '#contact', label: 'Kontakt' },
@@ -554,7 +559,7 @@ function App() {
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
-            { value: '134 – 143 m²', label: 'Wohnfläche (BWF)' },
+            { value: '108 – 128 m²', label: 'Wohnfläche' },
             { value: '4.5', label: 'Zimmer' },
             { value: 'Minergie-P', label: 'Standard' },
           ].map(({ value, label }) => (
@@ -571,7 +576,7 @@ function App() {
         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">01 / Wohnungen</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8">
-          Hochwertige Neubauwohnungen in ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
+          Hochwertige Neubauwohnungen an ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
         </p>
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 mb-10 md:mb-16">
           {[
@@ -612,13 +617,54 @@ function App() {
         </div>
       </div>
 
+      {/* Innenraumgestaltung */}
+      <section className="py-12 md:py-32 px-6 bg-white">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-20 items-center">
+          <div className="md:w-1/2 shrink-0 overflow-hidden">
+            <img
+              src="/Images/Innenansicht/Geb1_EG_Livingroom.jpg"
+              alt="Innenansicht Wohnbereich"
+              className="w-full h-72 md:h-[520px] object-cover"
+            />
+          </div>
+          <div className="md:w-1/2">
+            <h2 className="text-3xl md:text-5xl font-light mb-6 md:mb-8">Individuelle Innenraumgestaltung</h2>
+            <p className="text-base text-gray-500 leading-relaxed mb-6">
+              Ein moderner, klarer Stil prägt das Bild der Innenräume. Warme Parkettböden oder moderne Plattenböden schaffen eine einladende Atmosphäre ganz auf die Bedürfnisse der Käufer zugeschnitten. Die gezielt eingesetzte Beleuchtung aus Einbauspots verstärkt die Eleganz der Räume. Die grosszügigen, bodentiefen Fenster lassen viel Licht herein und bieten einen nahtlosen Übergang zur natürlichen Umgebung. Die offene Gestaltung von Küche und Wohnbereich fördert ein geselliges Zusammensein in stilvollem Ambiente.
+            </p>
+            <p className="text-base text-gray-500 leading-relaxed">
+              Im Mittelpunkt steht der Mensch: Bereits während der Planungs- und Bauphase erhalten Sie als künftige Eigentümerinnen und Eigentümer individuelle Mitgestaltungsmöglichkeiten – abgestimmt auf persönliche Wünsche und Lebensstile.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Aussenbereiche */}
+      <section className="py-12 md:py-32 px-6 bg-gray-50">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse gap-12 md:gap-20 items-center">
+          <div className="md:w-1/2 shrink-0 overflow-hidden">
+            <img
+              src="/Images/Aussenansicht/Aussenansicht_1.jpg"
+              alt="Aussenbereich Garten und Balkone"
+              className="w-full h-72 md:h-[520px] object-cover"
+            />
+          </div>
+          <div className="md:w-1/2">
+            <h2 className="text-3xl md:text-5xl font-light mb-6 md:mb-8">Privater Gartenanteil und Balkone</h2>
+            <p className="text-base text-gray-500 leading-relaxed">
+              Die Résidenz bietet vielfältige Aussenbereiche, die perfekt auf entspannte Stunden im Freien und Kundenwünsche abgestimmt sind. Private Balkone im Obergeschoss und ebenso private, grosse Gartenanteile der Gartenwohnungen sind ideal für ruhige Momente oder geselliges Beisammensein. Diese Freiräume ermöglichen, die Natur in ihrer ganzen Vielfalt zu geniessen.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Verfügbarkeit */}
       <section id="availability" className="py-12 md:py-32 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Verfügbarkeit</p>
-          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Verfügbarkeit</h2>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Angebot</p>
+          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Unser Angebot</h2>
           <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-16">
-            Aktuell verfügbare Wohnungen zum Kauf.
+            Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Wohnflächen von 107 bis 115 m². Jede Wohnung verfügt über einen eigenen Parkplatz, Kellerabteil sowie privaten Aussenbereich.
           </p>
 
           {/* Mobile: cards */}
@@ -692,7 +738,7 @@ function App() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b-2 border-gray-200">
-                  {['Wohnung', 'Zimmer', 'Fläche', 'Preis', 'Status', ''].map((h) => (
+                  {['Wohnung', 'Zimmer', 'Fläche', 'Preis', 'Status', 'Grundriss', ''].map((h) => (
                     <th key={h} className={`pb-4 text-[10px] font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
                   ))}
                 </tr>
@@ -733,6 +779,27 @@ function App() {
                       )}
                     </td>
                     <td className="py-5"><StatusBadge status={apt.status} /></td>
+                    <td className="py-5">
+                      {apt.building !== '2' ? (
+                        <a
+                          href={grundrissUrl(apt.building, apt.floor)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Grundriss als PDF öffnen"
+                          className="inline-flex items-center justify-center w-8 h-8 text-gray-400 hover:text-black transition-colors"
+                        >
+                          <svg aria-hidden="true" viewBox="0 0 512 512" className="h-5 w-5" fill="currentColor">
+                            <path d="M501.333,21.333H10.667C4.779,21.333,0,26.112,0,32v277.333C0,315.221,4.779,320,10.667,320h170.667 c5.888,0,10.667-4.779,10.667-10.667v-42.667c0-5.888-4.779-10.667-10.667-10.667s-10.667,4.779-10.667,10.667v32H21.333V181.333 V42.667h149.333V48c0,5.888,4.779,10.667,10.667,10.667S192,53.888,192,48v-5.333h298.667v128H288 c-5.888,0-10.667,4.779-10.667,10.667V224c0,5.888,4.779,10.667,10.667,10.667s10.667-4.779,10.667-10.667v-32h192v170.667H352 c-5.888,0-10.667,4.779-10.667,10.667v96h-320v-32c0-5.888-4.779-10.667-10.667-10.667S0,431.445,0,437.333V480 c0,5.888,4.779,10.667,10.667,10.667H352c5.888,0,10.667-4.779,10.667-10.667v-96h138.667c5.888,0,10.667-4.779,10.667-10.667V32 C512,26.112,507.221,21.333,501.333,21.333z"/>
+                            <path d="M181.333,132.267c5.888,0,10.667-4.757,10.667-10.667V97.067c0-5.888-4.779-10.667-10.667-10.667 s-10.667,4.757-10.667,10.667V121.6C170.667,127.509,175.445,132.267,181.333,132.267z"/>
+                            <path d="M160,170.667c-5.888,0-10.667,4.779-10.667,10.667S154.112,192,160,192h21.333c5.888,0,10.667-4.779,10.667-10.667 v-10.667c0-5.888-4.779-10.667-10.667-10.667s-10.667,4.779-10.667,10.667H160z"/>
+                            <path d="M96,170.667c-5.888,0-10.667,4.779-10.667,10.667S90.112,192,96,192h21.333c5.888,0,10.667-4.779,10.667-10.667 s-4.779-10.667-10.667-10.667H96z"/>
+                            <path d="M32,192h21.333C59.221,192,64,187.221,64,181.333s-4.779-10.667-10.667-10.667H32c-5.888,0-10.667,4.779-10.667,10.667 S26.112,192,32,192z"/>
+                          </svg>
+                        </a>
+                      ) : (
+                        <span className="text-gray-200">–</span>
+                      )}
+                    </td>
                     <td className="py-5 text-right">
                       {apt.status === 'available' ? (
                         <button onClick={() => requestInfo(apt)} className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5">Anfragen</button>
