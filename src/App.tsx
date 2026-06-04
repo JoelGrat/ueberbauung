@@ -99,7 +99,7 @@ const supabase: SupabaseClient | null = supabaseUrl && supabaseKey ? createClien
 function floorLabel(floor: number) {
   if (floor === 0) return 'EG';
   if (floor === 2) return 'DG';
-  return `${floor}. OG`;
+  return 'OG';
 }
 
 function grundrissUrl(building: string, floor: number): string {
@@ -454,7 +454,7 @@ function App() {
   }, []);
 
   const requestInfo = (apt: Apartment) => {
-    setPrefill(`Ich interessiere mich für die Wohnung Gebäude ${apt.building} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Kontaktaufnahme.`);
+    setPrefill(`Ich interessiere mich für die Wohnung Gebäude ${apt.building}.${apt.floor + 1} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Kontaktaufnahme.`);
     closeMenu();
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -466,7 +466,7 @@ function App() {
   };
 
   const requestWaitlist = (apt: Apartment) => {
-    setPrefill(`Ich interessiere mich für Gebäude ${apt.building} · ${floorLabel(apt.floor)} und möchte auf die Warteliste gesetzt werden.`);
+    setPrefill(`Ich interessiere mich für Gebäude ${apt.building}.${apt.floor + 1} · ${floorLabel(apt.floor)} und möchte auf die Warteliste gesetzt werden.`);
     closeMenu();
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -692,7 +692,7 @@ function App() {
               <div key={apt.id} className="bg-white border border-gray-200 p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <p className="text-lg font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</p>
+                    <p className="text-lg font-light">Gebäude {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
                     {apt.building !== '2' && (
                       <p className="text-sm text-gray-500 mt-1">
                         {apt.rooms} Zimmer · {apt.size} m²
@@ -768,7 +768,7 @@ function App() {
                   return (
                   <tr key={apt.id} className={`border-b border-gray-100 hover:bg-white transition-colors ${isFirstOfBuilding ? 'border-t-2 border-gray-200' : ''}`}>
                     <td className="py-5">
-                      <p className="text-base font-light">Gebäude {apt.building} · {floorLabel(apt.floor)}</p>
+                      <p className="text-base font-light">Gebäude {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
                       {apt.note && <p className="text-xs text-gray-400 mt-0.5">{apt.note}</p>}
                     </td>
                     <td className="py-5 text-sm text-gray-600">
