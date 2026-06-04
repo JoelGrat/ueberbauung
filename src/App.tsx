@@ -532,33 +532,27 @@ function App() {
 
       {/* Hero */}
       <section
-        className="relative h-screen bg-gray-900"
+        className="relative h-screen flex items-center justify-center bg-gray-900"
         style={{
-          backgroundImage: `url(${heroBackgroundUrl})`,
+          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.65) 100%), url(${heroBackgroundUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
-        {/* Gradient: subtle top, strong bottom */}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.0) 40%, rgba(0,0,0,0.6) 75%, rgba(0,0,0,0.82) 100%)' }} />
-
-        {/* Availability badge */}
+        <div className="relative text-center px-6 max-w-5xl">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl md:whitespace-nowrap font-light mb-4 md:mb-6 text-white drop-shadow-md">Wohnqualität mit Zukunft</h1>
+          <p className="text-base md:text-xl font-light text-gray-300 mb-0 px-2 max-w-xl mx-auto">
+            9 moderne Wohnungen an einer charmanten familienfreundlichen Wohnlage, mit durchdachten Grundrissen und direkt am Dorfrand.
+          </p>
+          <a href="#apartments" className="inline-block mt-8 md:mt-12 px-8 py-4 bg-black text-white text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors">
+            Wohnungen entdecken
+          </a>
+        </div>
         <div className="absolute top-20 md:top-24 right-4 md:right-12">
           <div className="bg-black/70 backdrop-blur-sm text-white px-3 py-2 md:px-4 md:py-2.5 flex items-center gap-2 border border-white/10">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
             <span className="text-xs font-light tracking-widest uppercase whitespace-nowrap">{availableCount} von {apartments.length} verfügbar</span>
           </div>
-        </div>
-
-        {/* Title + subtitle + CTA anchored to bottom */}
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-12 md:pb-16 flex flex-col items-center text-center">
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-light mb-4 md:mb-5 text-white">Wohnqualität mit Zukunft</h1>
-          <p className="text-base md:text-xl font-light text-gray-300 max-w-2xl mb-8 md:mb-10">
-            9 moderne Wohnungen an einer charmanten familienfreundlichen Wohnlage, mit durchdachten Grundrissen und direkt am Dorfrand.
-          </p>
-          <a href="#apartments" className="inline-block px-8 py-4 bg-white text-black text-xs tracking-widest uppercase hover:bg-black hover:text-white transition-colors">
-            Wohnungen entdecken
-          </a>
         </div>
       </section>
 
