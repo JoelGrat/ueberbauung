@@ -34,7 +34,7 @@ interface Apartment {
 const apartments: Apartment[] = [
   // Gebäude 1
   { id: 1, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 117, sizeEstrich: 0,   sizeKeller: 15, sizePP: 36, rooms: 4.5, rent: 30000, price: 1390000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1200000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
+  { id: 2, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1200000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
   { id: 3, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 38,  sizeKeller: 13, sizePP: 32, rooms: 4.5, rent: 30000, price: 1380000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
   { id: 4, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 282, sizeEstrich: 0,   sizeKeller: 22, sizePP: 37, rooms: 4.5, rent: 34000, price: 0, floor: 0, status: 'sold', placeholder: true },
@@ -64,11 +64,13 @@ const buildingImagePaths: Record<string, string[]> = {
     '/Images/Aussenansicht/Gebeaude_1_Highlight.png',
     '/Images/Innenansicht/Geb1_EG_Livingroom.jpg',
     '/Images/Innenansicht/Geb1_DG_Livingroom.jpg',
+    '/Images/Aussenansicht/Foto_Richtung_Berge.png',
     '/Images/Aussenansicht/Aussenansicht_0.jpg',
     '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
   ],
   '2': [
     '/Images/Aussenansicht/Gebeaude_2_Highlight.png',
+    '/Images/Aussenansicht/Foto_Richtung_Berge.png',
     '/Images/Aussenansicht/Aussenansicht_2.jpg',
     '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
   ],
@@ -76,6 +78,7 @@ const buildingImagePaths: Record<string, string[]> = {
     '/Images/Aussenansicht/Gebeaude_3_Highlight.png',
     '/Images/Innenansicht/Geb3_OG_Livingroom.jpg',
     //'/Images/Innenansicht/Geb3_EG_Badezimmer.jpg',
+    '/Images/Aussenansicht/Foto_Richtung_Berge.png',
     '/Images/Aussenansicht/Aussenansicht_0.jpg',
     '/Images/Aussenansicht/Aussenansicht_1.jpg',
     '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
@@ -277,7 +280,7 @@ function BuildingCard({ building, units, onRequest }: {
       </div>
       <div className="p-6 md:p-8 flex flex-col flex-1">
         <h3 className="text-2xl md:text-3xl font-light mb-1">Gebäude {building}</h3>
-        {!allSold && <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">{roomsLabel} Zimmer · {sizeLabel} m²</p>}
+        {!allSold && <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">{roomsLabel} Zimmer · {sizeLabel} <span className="normal-case">m²</span></p>}
         <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">
           {buildingDescriptions[building]}
         </p>
@@ -555,13 +558,14 @@ function App() {
 
       {/* Stats bar */}
       <div className="bg-gray-50 border-y border-gray-100 py-8 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-0 md:divide-x md:divide-gray-200">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-6 gap-6 md:gap-0 md:divide-x md:divide-gray-200">
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
-            { value: '108 – 128 m²', label: 'Wohnfläche' },
+            { value: '107 m²', label: 'Wohnfläche' },
             { value: '4.5', label: 'Zimmer' },
             { value: 'Minergie-P', label: 'Standard' },
+            { value: '2027', label: 'Bezug' },
           ].map(({ value, label }) => (
             <div key={label} className="md:px-10 first:md:pl-0 last:md:pr-0">
               <p className="text-xl md:text-2xl font-light mb-1 text-black">{value}</p>
@@ -657,6 +661,21 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* Divider Bergblick */}
+      <div
+        className="relative h-56 md:h-96 w-full overflow-hidden"
+        style={{
+          backgroundImage: `url('/Images/Aussenansicht/Foto_Richtung_Berge.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10">
+          <p className="text-white/80 text-[10px] uppercase tracking-widest">Ausblick Richtung Berge</p>
+        </div>
+      </div>
 
       {/* Verfügbarkeit */}
       <section id="availability" className="py-12 md:py-32 px-6 bg-gray-50">
@@ -932,7 +951,7 @@ function App() {
             {
               Icon: ShoppingCart,
               label: 'Einkauf & Alltag',
-              text: 'Metzgerei, Bäckerei und Volg mit Postagentur in Niederwil, erreichbar in wenigen Fahrminuten. Migros und Coop in Mellingen und Bremgarten.',
+              text: 'Metzgerei, Bäckerei und Volg mit Postagentur in Niederwil, erreichbar in wenigen Fahrminuten. Einkaufen: Migros und Coop in Bremgarten, Mellingen und Wohlen.',
             },
             {
               Icon: GraduationCap,
