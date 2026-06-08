@@ -64,7 +64,6 @@ const buildingImagePaths: Record<string, string[]> = {
     '/Images/Aussenansicht/Gebeaude_1_Highlight.png',
     '/Images/Innenansicht/Geb1_EG_Livingroom.jpg',
     '/Images/Innenansicht/Geb1_DG_Livingroom.jpg',
-    '/Images/Aussenansicht/Foto_Richtung_Berge.png',
     '/Images/Aussenansicht/Aussenansicht_0.jpg',
     '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
   ],
@@ -177,13 +176,20 @@ function Lightbox({ images, startIndex, onClose }: { images: string[]; startInde
   );
 }
 
-function BuildingCard({ building, units, onRequest }: {
+function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
   building: string;
   units: Apartment[];
-  onRequest: (building: string) => void;
+  onRequestUnit: (apt: Apartment) => void;
+  onWaitlistUnit: (apt: Apartment) => void;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [openUnits, setOpenUnits] = useState<Set<number>>(new Set());
+  const toggleUnit = (id: number) => setOpenUnits(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
 
   const imageUrls = buildingImagePaths[building] ?? [];
 
@@ -204,25 +210,23 @@ function BuildingCard({ building, units, onRequest }: {
   const roomsLabel = minRooms === maxRooms ? `${minRooms}` : `${minRooms}–${maxRooms}`;
   const sizeLabel = minSize === maxSize ? `${minSize}` : `${minSize}–${maxSize}`;
 
-  const priceLabel = (() => {
-    if (available.length === 0) return null;
-    if (listingType === 'rent') {
-      const rents = available.map(u => Math.round(u.rent / 12));
-      const min = Math.min(...rents);
-      const max = Math.max(...rents);
-      return min === max
-        ? `CHF ${min.toLocaleString('de-CH')} / Monat`
-        : `CHF ${min.toLocaleString('de-CH')} – ${max.toLocaleString('de-CH')} / Monat`;
+  const renderUnitPrice = (apt: Apartment) => {
+    if (buildingShowPrice[building]) {
+      if (listingType === 'rent') {
+        return <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-xs text-gray-400">/ Mt.</span></p>;
+      }
+      return (
+        <>
+          <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
+          <p className="text-[10px] text-gray-400 mt-0.5">inkl. 2 Tiefgaragenparkplätze</p>
+        </>
+      );
     }
-    const prices = available.map(u => u.price);
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    return min === max
-      ? `CHF ${min.toLocaleString('de-CH')}`
-      : `CHF ${min.toLocaleString('de-CH')} – ${max.toLocaleString('de-CH')}`;
-  })();
+    if (listingType === 'rent') return <p className="text-sm font-light text-gray-500">Mietobjekt</p>;
+    return null;
+  };
 
-  const priceRowLabel = listingType === 'rent' ? 'Mietpreis ab' : 'Verkaufspreis ab';
+  const actionLinkClass = "text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5";
 
   return (
     <div className="overflow-hidden bg-white border border-gray-200 hover:border-gray-400 transition-colors flex flex-col">
@@ -284,47 +288,90 @@ function BuildingCard({ building, units, onRequest }: {
         <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">
           {buildingDescriptions[building]}
         </p>
-        <div className="border-t border-gray-100 pt-4 mb-5 space-y-3">
-          {!allSold && <>
-          <div className="flex justify-between items-baseline">
-            <p className="text-[10px] uppercase tracking-widest text-gray-400">Wohnfläche</p>
-            <p className="text-sm font-light">{sizeLabel} m²</p>
-          </div>
-          <div className="flex justify-between items-baseline">
-            <p className="text-[10px] uppercase tracking-widest text-gray-400">Zimmer</p>
-            <p className="text-sm font-light">{roomsLabel}</p>
-          </div>
-          </>}
+        {/* Wohnungen des Gebäudes */}
+        <div className="border-t border-gray-200 mt-2">
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 pt-4 pb-1">{units.length} Wohnungen</p>
+          {units.map((apt) => {
+            const hasDetails = apt.building !== '2';
+            const isOpen = openUnits.has(apt.id);
+            return (
+              <div key={apt.id} className="border-b border-gray-100 last:border-b-0">
+                <button
+                  type="button"
+                  onClick={() => hasDetails && toggleUnit(apt.id)}
+                  aria-expanded={hasDetails ? isOpen : undefined}
+                  disabled={!hasDetails}
+                  className={`w-full flex justify-between items-start gap-3 py-4 text-left group ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`}
+                >
+                  <div>
+                    <p className="text-sm font-light">Gebäude {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
+                    {hasDetails && (
+                      <p className="text-[11px] text-gray-400 mt-0.5">
+                        {apt.rooms} Zimmer · {apt.size} m²{apt.note ? ` · ${apt.note}` : ''}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <StatusBadge status={apt.status} />
+                    {hasDetails && (
+                      <ChevronDown className={`w-4 h-4 text-gray-400 group-hover:text-black transition-all ${isOpen ? 'rotate-180' : ''}`} />
+                    )}
+                  </div>
+                </button>
+
+                {hasDetails && isOpen && (
+                  <div className="pb-4">
+                    <p className="text-[11px] text-gray-400">
+                      {[
+                        apt.sizeBrutto && `${apt.sizeBrutto} m² BWF`,
+                        (apt.sizeBalkon ?? 0) > 0 && `${apt.sizeBalkon} m² Balkon`,
+                        (apt.sizeGarden ?? 0) > 0 && `${apt.sizeGarden} m² Garten`,
+                        (apt.sizeEstrich ?? 0) > 0 && `${apt.sizeEstrich} m² Estrich`,
+                        (apt.sizeKeller ?? 0) > 0 && `${apt.sizeKeller} m² Keller`,
+                      ].filter(Boolean).join(' · ')}
+                    </p>
+
+                    <div className="flex justify-between items-end gap-3 mt-3">
+                      <div>{renderUnitPrice(apt)}</div>
+                      <div className="flex items-center gap-4 shrink-0">
+                        <a
+                          href={grundrissUrl(apt.building, apt.floor)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={actionLinkClass}
+                        >
+                          Grundriss
+                        </a>
+                        {apt.status === 'available' && (
+                          <button onClick={() => onRequestUnit(apt)} className={actionLinkClass}>Anfragen</button>
+                        )}
+                        {apt.status === 'reserved' && (
+                          <button onClick={() => onWaitlistUnit(apt)} className={actionLinkClass}>Warteliste</button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
           {building !== '2' && (
-            <div className="flex justify-between items-baseline">
-              <p className="text-[10px] uppercase tracking-widest text-gray-400">Standard</p>
-              <p className="text-sm font-light">Minergie-P</p>
-            </div>
+            <a
+              href="/Images/Grundrisse/Grundriss_UGs.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex justify-between items-center py-4 border-t border-gray-200 group"
+            >
+              <div>
+                <p className="text-sm font-light group-hover:text-black transition-colors">Untergeschoss</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">Kellerabteile & Tiefgarage · PDF</p>
+              </div>
+              <Download className="w-4 h-4 text-gray-400 group-hover:text-black transition-colors shrink-0" />
+            </a>
           )}
-          {buildingShowPrice[building] && priceLabel ? (
-            <div className="flex justify-between items-baseline">
-              <p className="text-[10px] uppercase tracking-widest text-gray-400">{priceRowLabel}</p>
-              <p className="text-sm font-light">{priceLabel}</p>
-            </div>
-          ) : listingType === 'rent' ? (
-            <div className="flex justify-between items-baseline">
-              <p className="text-[10px] uppercase tracking-widest text-gray-400">Typ</p>
-              <p className="text-sm font-light text-gray-500">Mietobjekt</p>
-            </div>
-          ) : null}
         </div>
-        {available.length > 0 ? (
-          <button
-            onClick={() => onRequest(building)}
-            className="w-full py-3.5 bg-black text-white text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
-          >
-            Jetzt anfragen
-          </button>
-        ) : (
-          <p className="w-full py-3.5 border border-gray-200 text-xs uppercase tracking-widest text-gray-300 text-center">
-            Vollständig verkauft
-          </p>
-        )}
+
       </div>
     </div>
   );
@@ -438,7 +485,7 @@ function App() {
 
   const [activeSection, setActiveSection] = useState('');
   useEffect(() => {
-    const ids = ['apartments', 'availability', 'plans', 'location', 'contact'];
+    const ids = ['apartments', 'location', 'contact'];
     const onScroll = () => {
       const y = window.scrollY + 100;
       let current = '';
@@ -459,12 +506,6 @@ function App() {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const requestBuildingInfo = (building: string) => {
-    setPrefill(`Ich interessiere mich für Wohnungen in Gebäude ${building} und bitte um Kontaktaufnahme sowie Zusendung der Unterlagen.`);
-    closeMenu();
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const requestWaitlist = (apt: Apartment) => {
     setPrefill(`Ich interessiere mich für Gebäude ${apt.building}.${apt.floor + 1} · ${floorLabel(apt.floor)} und möchte auf die Warteliste gesetzt werden.`);
     closeMenu();
@@ -480,8 +521,6 @@ function App() {
 
   const navLinks = [
     { href: '#apartments', label: 'Wohnungen' },
-    { href: '#availability', label: 'Angebot' },
-    { href: '#plans', label: 'Grundrisse' },
     { href: '#location', label: 'Lage' },
     { href: '#contact', label: 'Kontakt' },
   ];
@@ -562,13 +601,13 @@ function App() {
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
-            { value: '107 m²', label: 'Wohnfläche' },
+            { value: '107 - 115 m²', label: 'Wohnfläche' },
             { value: '4.5', label: 'Zimmer' },
             { value: 'Minergie-P', label: 'Standard' },
             { value: '2027', label: 'Bezug' },
           ].map(({ value, label }) => (
             <div key={label} className="md:px-10 first:md:pl-0 last:md:pr-0">
-              <p className="text-xl md:text-2xl font-light mb-1 text-black">{value}</p>
+              <p className="text-xl md:text-2xl font-light mb-1 text-black whitespace-nowrap">{value}</p>
               <p className="text-[10px] uppercase tracking-widest text-gray-400">{label}</p>
             </div>
           ))}
@@ -579,8 +618,11 @@ function App() {
       <section id="apartments" className="py-12 md:py-32 px-6 max-w-7xl mx-auto">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">01 / Wohnungen</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
-        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8">
+        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-4">
           Hochwertige Neubauwohnungen an ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
+        </p>
+        <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8">
+          Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Wohnflächen von 107 bis 115 m². Jede Wohnung verfügt über zwei Tiefgaragenparkplätze, Kellerabteil sowie privaten Aussenbereich.
         </p>
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 mb-10 md:mb-16">
           {[
@@ -600,7 +642,8 @@ function App() {
               key={building}
               building={building}
               units={units}
-              onRequest={requestBuildingInfo}
+              onRequestUnit={requestInfo}
+              onWaitlistUnit={requestWaitlist}
             />
           ))}
         </div>
@@ -677,260 +720,9 @@ function App() {
         </div>
       </div>
 
-      {/* Verfügbarkeit */}
-      <section id="availability" className="py-12 md:py-32 px-6 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Angebot</p>
-          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Unser Angebot</h2>
-          <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-16">
-            Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Wohnflächen von 107 bis 115 m². Jede Wohnung verfügt über zwei Tiefgaragenparkplätze, Kellerabteil sowie privaten Aussenbereich.
-          </p>
-
-          {/* Mobile: cards */}
-          <div className="md:hidden space-y-4">
-            {apartments.map((apt) => (
-              <div key={apt.id} className="bg-white border border-gray-200 p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <p className="text-lg font-light">Gebäude {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
-                    {apt.building !== '2' && (
-                      <p className="text-sm text-gray-500 mt-1">
-                        {apt.rooms} Zimmer · {apt.size} m²
-                        {apt.note && <span className="block text-xs text-gray-400">{apt.note}</span>}
-                      </p>
-                    )}
-                    {apt.building !== '2' && (
-                      <div className="text-xs text-gray-400 mt-1 space-y-0.5">
-                        {apt.sizeBrutto && <p>{apt.sizeBrutto} m² BWF</p>}
-                        {(apt.sizeBalkon ?? 0) > 0 && <p>{apt.sizeBalkon} m² Balkon</p>}
-                        {(apt.sizeGarden ?? 0) > 0 && <p>{apt.sizeGarden} m² Garten</p>}
-                        {(apt.sizeEstrich ?? 0) > 0 && <p>{apt.sizeEstrich} m² Estrich</p>}
-                        {(apt.sizeKeller ?? 0) > 0 && <p>{apt.sizeKeller} m² Keller</p>}
-                      </div>
-                    )}
-                  </div>
-                  <StatusBadge status={apt.status} />
-                </div>
-                <div className="mb-5">
-                  {buildingShowPrice[apt.building] ? (
-                    buildingListingType[apt.building] === 'rent' ? (
-                      <>
-                        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Mietpreis</p>
-                        <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} / Monat</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">Verkaufspreis</p>
-                        <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
-                        <p className="text-[10px] text-gray-400 mt-1">inkl. 2 Tiefgaragenparkplätze</p>
-                      </>
-                    )
-                  ) : buildingListingType[apt.building] === 'rent' ? (
-                    <p className="text-sm font-light text-gray-500">Mietobjekt</p>
-                  ) : null}
-                </div>
-                {apt.status === 'available' && (
-                  <button
-                    onClick={() => requestInfo(apt)}
-                    className="w-full py-3 border border-black text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
-                  >
-                    Jetzt anfragen
-                  </button>
-                )}
-                {apt.status === 'reserved' && (
-                  <button
-                    onClick={() => requestWaitlist(apt)}
-                    className="w-full py-3 border border-black text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
-                  >
-                    Warteliste
-                  </button>
-                )}
-                {apt.status === 'sold' && (
-                  <p className="text-xs uppercase tracking-widest text-gray-400 text-center py-3 border border-gray-200">Verkauft</p>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop: table */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b-2 border-gray-200">
-                  {['Wohnung', 'Zimmer', 'Fläche', 'Preis', 'Status', 'Grundriss', ''].map((h) => (
-                    <th key={h} className={`pb-4 text-[10px] font-normal uppercase tracking-widest text-gray-400${h === '' ? ' text-right' : ''}`}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {apartments.map((apt, idx) => {
-                  const isFirstOfBuilding = idx > 0 && apartments[idx - 1].building !== apt.building;
-                  return (
-                  <tr key={apt.id} className={`border-b border-gray-100 hover:bg-white transition-colors ${isFirstOfBuilding ? 'border-t-2 border-gray-200' : ''}`}>
-                    <td className="py-5">
-                      <p className="text-base font-light">Gebäude {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
-                      {apt.note && <p className="text-xs text-gray-400 mt-0.5">{apt.note}</p>}
-                    </td>
-                    <td className="py-5 text-sm text-gray-600">
-                      {apt.building !== '2' ? apt.rooms : <span className="text-gray-300">–</span>}
-                    </td>
-                    <td className="py-5 text-sm text-gray-600">
-                      {apt.building !== '2' ? (
-                        <>
-                          <p>{apt.size} m²</p>
-                          {apt.sizeBrutto && <p className="text-xs text-gray-400">{apt.sizeBrutto} m² BWF</p>}
-                          {(apt.sizeBalkon ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeBalkon} m² Balkon</p>}
-                          {(apt.sizeGarden ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeGarden} m² Garten</p>}
-                          {(apt.sizeEstrich ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeEstrich} m² Estrich</p>}
-                          {(apt.sizeKeller ?? 0) > 0 && <p className="text-xs text-gray-400">{apt.sizeKeller} m² Keller</p>}
-                        </>
-                      ) : <span className="text-gray-300">–</span>}
-                    </td>
-                    <td className="py-5 text-sm font-light">
-                      {buildingShowPrice[apt.building] ? (
-                        buildingListingType[apt.building] === 'rent'
-                          ? <>CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-xs text-gray-400">/ Mt.</span></>
-                          : <><p>CHF {apt.price.toLocaleString('de-CH')}</p><p className="text-[10px] text-gray-400 mt-0.5">inkl. 2 Tiefgaragenparkplätze</p></>
-                      ) : buildingListingType[apt.building] === 'rent' ? (
-                        <span className="text-gray-400 font-light">Mietobjekt</span>
-                      ) : (
-                        <span className="text-gray-300">–</span>
-                      )}
-                    </td>
-                    <td className="py-5"><StatusBadge status={apt.status} /></td>
-                    <td className="py-5">
-                      {apt.building !== '2' ? (
-                        <a
-                          href={grundrissUrl(apt.building, apt.floor)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title="Grundriss als PDF öffnen"
-                          className="inline-flex items-center justify-center w-8 h-8 text-gray-400 hover:text-black transition-colors"
-                        >
-                          <svg aria-hidden="true" viewBox="0 0 512 512" className="h-5 w-5" fill="currentColor">
-                            <path d="M501.333,21.333H10.667C4.779,21.333,0,26.112,0,32v277.333C0,315.221,4.779,320,10.667,320h170.667 c5.888,0,10.667-4.779,10.667-10.667v-42.667c0-5.888-4.779-10.667-10.667-10.667s-10.667,4.779-10.667,10.667v32H21.333V181.333 V42.667h149.333V48c0,5.888,4.779,10.667,10.667,10.667S192,53.888,192,48v-5.333h298.667v128H288 c-5.888,0-10.667,4.779-10.667,10.667V224c0,5.888,4.779,10.667,10.667,10.667s10.667-4.779,10.667-10.667v-32h192v170.667H352 c-5.888,0-10.667,4.779-10.667,10.667v96h-320v-32c0-5.888-4.779-10.667-10.667-10.667S0,431.445,0,437.333V480 c0,5.888,4.779,10.667,10.667,10.667H352c5.888,0,10.667-4.779,10.667-10.667v-96h138.667c5.888,0,10.667-4.779,10.667-10.667V32 C512,26.112,507.221,21.333,501.333,21.333z"/>
-                            <path d="M181.333,132.267c5.888,0,10.667-4.757,10.667-10.667V97.067c0-5.888-4.779-10.667-10.667-10.667 s-10.667,4.757-10.667,10.667V121.6C170.667,127.509,175.445,132.267,181.333,132.267z"/>
-                            <path d="M160,170.667c-5.888,0-10.667,4.779-10.667,10.667S154.112,192,160,192h21.333c5.888,0,10.667-4.779,10.667-10.667 v-10.667c0-5.888-4.779-10.667-10.667-10.667s-10.667,4.779-10.667,10.667H160z"/>
-                            <path d="M96,170.667c-5.888,0-10.667,4.779-10.667,10.667S90.112,192,96,192h21.333c5.888,0,10.667-4.779,10.667-10.667 s-4.779-10.667-10.667-10.667H96z"/>
-                            <path d="M32,192h21.333C59.221,192,64,187.221,64,181.333s-4.779-10.667-10.667-10.667H32c-5.888,0-10.667,4.779-10.667,10.667 S26.112,192,32,192z"/>
-                          </svg>
-                        </a>
-                      ) : (
-                        <span className="text-gray-200">–</span>
-                      )}
-                    </td>
-                    <td className="py-5 text-right">
-                      {apt.status === 'available' ? (
-                        <button onClick={() => requestInfo(apt)} className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5">Anfragen</button>
-                      ) : apt.status === 'reserved' ? (
-                        <button onClick={() => requestWaitlist(apt)} className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors border-b border-gray-300 hover:border-black pb-0.5">Warteliste</button>
-                      ) : null}
-                    </td>
-                  </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Grundrisse */}
-      <section id="plans" className="py-12 md:py-32 px-6 bg-white border-t border-gray-100">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">03 / Grundrisse</p>
-          <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Grundrisse</h2>
-          <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8 md:mb-12">
-            Funktionale Raumaufteilung mit Fokus auf Licht und Alltagstauglichkeit.
-          </p>
-          <div className="mb-8 md:mb-10">
-            <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">Alle Gebäude</p>
-            <a
-              href="/Images/Grundrisse/Grundriss_UGs.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-between border border-gray-200 bg-white px-4 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors w-full md:w-72"
-            >
-              <div>
-                <p className="font-light text-sm">Untergeschoss</p>
-                <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-0.5">Kellerabteile & Tiefgarage · PDF</p>
-              </div>
-              <Download className="w-4 h-4 text-gray-400 shrink-0" />
-            </a>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-            {[
-              {
-                building: '1',
-                floors: [
-                  { file: '/Images/Grundrisse/Grundriss_EG_1.pdf', label: 'Erdgeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_OG_1.pdf', label: 'Obergeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_DG_1.pdf', label: 'Dachgeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_Estrich_1.pdf', label: 'Estrich' },
-                ],
-              },
-              {
-                building: '2',
-                floors: [
-                  { file: '/Images/Grundrisse/Grundriss_EG_2.pdf', label: 'Erdgeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_OG_2.pdf', label: 'Obergeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_DG_2.pdf', label: 'Dachgeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_Estrich_2.pdf', label: 'Estrich' },
-                ],
-              },
-              {
-                building: '3',
-                floors: [
-                  { file: '/Images/Grundrisse/Grundriss_EG_3.pdf', label: 'Erdgeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_OG_3.pdf', label: 'Obergeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_DG_3.pdf', label: 'Dachgeschoss' },
-                  { file: '/Images/Grundrisse/Grundriss_Estrich_3.pdf', label: 'Estrich' },
-                ],
-              },
-            ].map(({ building, floors }) => (
-              <div key={building}>
-                <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">Gebäude {building}</p>
-                <div className="space-y-2">
-                  {floors.map(({ file, label }) => {
-                    const disabled = building === '2';
-                    return disabled ? (
-                      <div
-                        key={file}
-                        className="border border-gray-100 bg-gray-50 px-4 py-4 flex justify-between items-center opacity-40 cursor-not-allowed"
-                      >
-                        <div>
-                          <p className="font-light text-sm text-gray-400">{label}</p>
-                          <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-0.5">PDF</p>
-                        </div>
-                        <Download className="w-4 h-4 text-gray-300 shrink-0" />
-                      </div>
-                    ) : (
-                      <a
-                        key={file}
-                        href={file}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="border border-gray-200 bg-white px-4 py-4 flex justify-between items-center hover:bg-gray-50 active:bg-gray-100 transition-colors"
-                      >
-                        <div>
-                          <p className="font-light text-sm">{label}</p>
-                          <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-0.5">PDF</p>
-                        </div>
-                        <Download className="w-4 h-4 text-gray-400 shrink-0" />
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Lage */}
       <section id="location" className="py-12 md:py-32 px-6 max-w-7xl mx-auto">
-        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">04 / Lage</p>
+        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Lage</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-14">
           Nesselnbach gehört zur Gemeinde Niederwil und liegt im Reusstal zwischen Mellingen und Bremgarten, eingebettet zwischen Wald und Reuss. Familienfreundliche, sonnige Lage direkt am Dorfrand und am kleinen Bach.
@@ -1050,12 +842,13 @@ function App() {
       {/* Kontakt */}
       <section id="contact" className="py-12 md:py-32 px-6 bg-gray-50 border-t border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">05 / Kontakt</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">03 / Kontakt</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Kontakt</h2>
           <p className="text-base md:text-xl text-gray-500 mb-6">
             Wir begleiten Sie gerne — sprechen Sie mit uns.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-gray-600 text-sm mb-10 md:mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 text-gray-600 text-sm mb-10 md:mb-12">
+            <span className="font-light">Joel und Yves Gratwohl</span>
             <a href="mailto:kontakt@widematte.ch" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
               <Mail className="w-4 h-4" />
               kontakt@widematte.ch

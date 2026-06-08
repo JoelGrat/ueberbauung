@@ -20,7 +20,16 @@
       "WebFetch(domain:nominatim.openstreetmap.org)",
       "WebFetch(domain:overpass-api.de)",
       "WebFetch(domain:residenceaurora.ch)",
-      "WebFetch(domain:www.residenceaurora.ch)"
+      "WebFetch(domain:www.residenceaurora.ch)",
+      "Bash(sed -i '703,861d' src/App.tsx)",
+      "Bash(sed -n '700,710p' src/App.tsx)",
+      "Bash(perl -0pi -e \"s/\\\\s*\\\\{ href: '#availability', label: 'Angebot' \\\\},\\\\n//\" src/App.tsx)",
+      "Bash(perl -0pi -e \"s/const ids = \\\\['apartments', 'availability', 'plans', 'location', 'contact'\\\\];/const ids = ['apartments', 'plans', 'location', 'contact'];/\" src/App.tsx)",
+      "Bash(sed -i '723,814d' src/App.tsx)",
+      "Bash(sed -n '719,726p' src/App.tsx)",
+      "Bash(perl -0pi -e \"s/\\\\s*\\\\{ href: '#plans', label: 'Grundrisse' \\\\},\\\\n//\" src/App.tsx)",
+      "Bash(perl -0pi -e \"s/const ids = \\\\['apartments', 'plans', 'location', 'contact'\\\\];/const ids = ['apartments', 'location', 'contact'];/\" src/App.tsx)",
+      "Bash(sed -i 's#>03 / Lage<#>02 / Lage<#; s#>04 / Kontakt<#>03 / Kontakt<#' src/App.tsx)"
     ]
   }
 }
