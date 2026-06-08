@@ -848,7 +848,6 @@ function App() {
             Wir begleiten Sie gerne — sprechen Sie mit uns.
           </p>
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 text-gray-600 text-sm mb-10 md:mb-12">
-            <span className="font-light">Joel und Yves Gratwohl</span>
             <a href="mailto:kontakt@widematte.ch" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
               <Mail className="w-4 h-4" />
               kontakt@widematte.ch
@@ -871,7 +870,7 @@ function App() {
               <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-4">Kontakt</p>
               <div className="space-y-2 text-sm text-gray-400">
                 <a href="mailto:kontakt@widematte.ch" className="block hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
-<p className="text-gray-600 pt-1">Niederwilerstrasse<br />5524 Nesselnbach</p>
+<p className="text-gray-600 pt-1">Joel und Yves Gratwohl<br />Niederwilerstrasse<br />5524 Nesselnbach</p>
               </div>
             </div>
             <div>
