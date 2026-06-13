@@ -506,13 +506,13 @@ function App() {
   }, []);
 
   const requestInfo = (apt: Apartment) => {
-    setPrefill(`Ich interessiere mich für die Wohnung Gebäude ${apt.building}.${apt.floor + 1} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Kontaktaufnahme.`);
+    setPrefill(`Ich interessiere mich für die Wohnung ${apt.building}.${apt.floor + 1} · ${floorLabel(apt.floor)} (${apt.rooms} Zimmer, ${apt.size} m²) und bitte um Kontaktaufnahme.`);
     closeMenu();
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const requestWaitlist = (apt: Apartment) => {
-    setPrefill(`Ich interessiere mich für Gebäude ${apt.building}.${apt.floor + 1} · ${floorLabel(apt.floor)} und möchte auf die Warteliste gesetzt werden.`);
+    setPrefill(`Ich interessiere mich für die Wohnung ${apt.building}.${apt.floor + 1} · ${floorLabel(apt.floor)} und möchte auf die Warteliste gesetzt werden.`);
     closeMenu();
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -586,15 +586,22 @@ function App() {
         <div className="relative text-center px-6 max-w-5xl">
           <h1 className="text-3xl sm:text-5xl md:text-7xl md:whitespace-nowrap font-light mb-4 md:mb-6 text-white drop-shadow-md">Wohnqualität mit Zukunft</h1>
           <p className="text-base md:text-xl font-light text-gray-300 mb-0 px-2 max-w-xl mx-auto">
-            9 moderne Wohnungen an einer charmanten familienfreundlichen Wohnlage, mit durchdachten Grundrissen und direkt am Dorfrand.
+            9 moderne Wohnungen an sonniger, familienfreundlicher Lage — mit durchdachten Grundrissen, direkt am Dorfrand und am Bach.
           </p>
         </div>
-        <div className="absolute top-20 md:top-24 right-4 md:right-12">
-          <div className="bg-black/70 backdrop-blur-sm text-white px-3 py-2 md:px-4 md:py-2.5 flex items-center gap-2 border border-white/10">
+        <a href="#apartments" className="absolute top-20 md:top-24 right-4 md:right-12 group">
+          <div className="bg-black/70 backdrop-blur-sm text-white px-3 py-2 md:px-4 md:py-2.5 flex items-center gap-2 border border-white/10 group-hover:border-white/30 transition-colors">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
             <span className="text-xs font-light tracking-widest uppercase whitespace-nowrap">{availableCount} von {apartments.length} verfügbar</span>
           </div>
-        </div>
+        </a>
+        <a
+          href="#apartments"
+          aria-label="Zu den Wohnungen scrollen"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 hover:text-white transition-colors"
+        >
+          <ChevronDown className="w-7 h-7 animate-bounce" />
+        </a>
       </section>
 
       {/* Stats bar */}
@@ -618,7 +625,7 @@ function App() {
 
       {/* Wohnungen */}
       <section id="apartments" className="py-12 md:py-32 px-6 max-w-7xl mx-auto">
-        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">01 / Wohnungen</p>
+        <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">01 / Wohnungen</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Wohnungen</h2>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-4">
           Hochwertige Neubauwohnungen an ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
@@ -675,10 +682,12 @@ function App() {
             <img
               src="/Images/Innenansicht/Geb1_EG_Livingroom.jpg"
               alt="Innenansicht Wohnbereich"
+              loading="lazy"
               className="w-full h-72 md:h-[520px] object-cover"
             />
           </div>
           <div className="md:w-1/2">
+            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">02 / Innenraum</p>
             <h2 className="text-3xl md:text-5xl font-light mb-6 md:mb-8">Individuelle Innenraumgestaltung</h2>
             <p className="text-base text-gray-500 leading-relaxed mb-6">
               Ein moderner, klarer Stil prägt das Bild der Innenräume. Warme Parkettböden oder moderne Plattenböden schaffen eine einladende Atmosphäre ganz auf die Bedürfnisse der Käufer zugeschnitten. Die gezielt eingesetzte Beleuchtung aus Einbauspots verstärkt die Eleganz der Räume. Die grosszügigen, bodentiefen Fenster lassen viel Licht herein und bieten einen nahtlosen Übergang zur natürlichen Umgebung. Die offene Gestaltung von Küche und Wohnbereich fördert ein geselliges Zusammensein in stilvollem Ambiente.
@@ -697,13 +706,15 @@ function App() {
             <img
               src="/Images/Aussenansicht/Aussenansicht_1.jpg"
               alt="Aussenbereich Garten und Balkone"
+              loading="lazy"
               className="w-full h-72 md:h-[520px] object-cover"
             />
           </div>
           <div className="md:w-1/2">
+            <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">03 / Aussenbereiche</p>
             <h2 className="text-3xl md:text-5xl font-light mb-6 md:mb-8">Privater Gartenanteil und Balkone</h2>
             <p className="text-base text-gray-500 leading-relaxed">
-              Die Résidenz bietet vielfältige Aussenbereiche, die perfekt auf entspannte Stunden im Freien und Kundenwünsche abgestimmt sind. Private Balkone im Obergeschoss und ebenso private, grosse Gartenanteile der Gartenwohnungen sind ideal für ruhige Momente oder geselliges Beisammensein. Diese Freiräume ermöglichen, die Natur in ihrer ganzen Vielfalt zu geniessen.
+              Die Wohnungen bieten vielfältige Aussenbereiche, perfekt abgestimmt auf entspannte Stunden im Freien. Private Balkone im Obergeschoss und grosse, private Gartenanteile der Gartenwohnungen sind ideal für ruhige Momente oder geselliges Beisammensein. Diese Freiräume lassen die Umgebung in ihrer ganzen Vielfalt geniessen.
             </p>
           </div>
         </div>
@@ -726,7 +737,7 @@ function App() {
 
       {/* Lage */}
       <section id="location" className="py-12 md:py-32 px-6 max-w-7xl mx-auto">
-        <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">02 / Lage</p>
+        <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">04 / Lage</p>
         <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Lage</h2>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-10 md:mb-14">
           Nesselnbach gehört zur Gemeinde Niederwil und liegt im Reusstal zwischen Mellingen und Bremgarten, eingebettet zwischen Wald und Reuss. Familienfreundliche, sonnige Lage direkt am Dorfrand und am kleinen Bach.
@@ -843,7 +854,7 @@ function App() {
       {/* Kontakt */}
       <section id="contact" className="py-12 md:py-32 px-6 bg-gray-50 border-t border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">03 / Kontakt</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">05 / Kontakt</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Kontakt</h2>
           <p className="text-base md:text-xl text-gray-500 mb-6">
             Wir begleiten Sie gerne — sprechen Sie mit uns.
