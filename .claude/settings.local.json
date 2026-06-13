@@ -29,7 +29,8 @@
       "Bash(sed -n '719,726p' src/App.tsx)",
       "Bash(perl -0pi -e \"s/\\\\s*\\\\{ href: '#plans', label: 'Grundrisse' \\\\},\\\\n//\" src/App.tsx)",
       "Bash(perl -0pi -e \"s/const ids = \\\\['apartments', 'plans', 'location', 'contact'\\\\];/const ids = ['apartments', 'location', 'contact'];/\" src/App.tsx)",
-      "Bash(sed -i 's#>03 / Lage<#>02 / Lage<#; s#>04 / Kontakt<#>03 / Kontakt<#' src/App.tsx)"
+      "Bash(sed -i 's#>03 / Lage<#>02 / Lage<#; s#>04 / Kontakt<#>03 / Kontakt<#' src/App.tsx)",
+      "Bash(npm i *)"
     ]
   }
 }
