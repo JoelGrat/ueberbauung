@@ -295,7 +295,12 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
             const hasDetails = apt.building !== '2';
             const isOpen = openUnits.has(apt.id);
             return (
-              <div key={apt.id} className="border-b border-gray-100 last:border-b-0">
+              <div
+                key={apt.id}
+                className={`-mx-6 md:-mx-8 px-6 md:px-8 border-b border-gray-100 last:border-b-0 border-l-2 border-l-transparent transition-colors ${
+                  isOpen ? 'bg-gray-50 border-l-black' : hasDetails ? 'hover:bg-gray-50/70' : ''
+                }`}
+              >
                 <button
                   type="button"
                   onClick={() => hasDetails && toggleUnit(apt.id)}
@@ -314,7 +319,7 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
                   <div className="flex items-center gap-3 shrink-0">
                     <StatusBadge status={apt.status} />
                     {hasDetails && (
-                      <ChevronDown className={`w-4 h-4 text-gray-400 group-hover:text-black transition-all ${isOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-4 h-4 transition-all group-hover:text-black ${isOpen ? 'rotate-180 text-black' : 'text-gray-400'}`} />
                     )}
                   </div>
                 </button>
