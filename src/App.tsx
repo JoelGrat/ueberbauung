@@ -1,5 +1,5 @@
 import { Building2, Bus, Car, ChevronDown, ChevronLeft, ChevronRight, Download, GraduationCap, Leaf, Mail, MapPin, Menu, ShoppingCart, Upload, X } from 'lucide-react';
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { Fragment, lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 const LocationMap = lazy(() => import('./LocationMap'));
@@ -85,7 +85,7 @@ const buildingImagePaths: Record<string, string[]> = {
 };
 
 const buildingDescriptions: Record<string, string> = {
-  '1': 'Offene Grundrisse, helle Räume und direkter Blick ins Grüne — optional auch als 3.5-Zimmer.',
+  '1': 'Offene Grundrisse, helle Räume und direkter Blick ins Grüne und auf den Bach — optional auch als 3.5-Zimmer.',
   '2': 'Grosszügige 4.5-Zimmer-Wohnungen.',
   '3': 'Ruhige Südausrichtung mit direktem Bezug zur angrenzenden Landwirtschaftszone.',
 };
@@ -304,7 +304,7 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
                   className={`w-full flex justify-between items-start gap-3 py-4 text-left group ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`}
                 >
                   <div>
-                    <p className="text-sm font-light">Gebäude {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
+                    <p className="text-sm font-light">Wohnung {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
                     {hasDetails && (
                       <p className="text-[11px] text-gray-400 mt-0.5">
                         {apt.rooms} Zimmer · {apt.size} m²{apt.note ? ` · ${apt.note}` : ''}
@@ -583,9 +583,6 @@ function App() {
           <p className="text-base md:text-xl font-light text-gray-300 mb-0 px-2 max-w-xl mx-auto">
             9 moderne Wohnungen an einer charmanten familienfreundlichen Wohnlage, mit durchdachten Grundrissen und direkt am Dorfrand.
           </p>
-          <a href="#apartments" className="inline-block mt-8 md:mt-12 px-8 py-4 bg-black text-white text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors">
-            Wohnungen entdecken
-          </a>
         </div>
         <div className="absolute top-20 md:top-24 right-4 md:right-12">
           <div className="bg-black/70 backdrop-blur-sm text-white px-3 py-2 md:px-4 md:py-2.5 flex items-center gap-2 border border-white/10">
@@ -636,15 +633,17 @@ function App() {
             <span key={tag} className="text-[10px] uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-2 sm:py-1.5">{tag}</span>
           ))}
         </div>
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-          {grouped.map(({ building, units }) => (
-            <BuildingCard
-              key={building}
-              building={building}
-              units={units}
-              onRequestUnit={requestInfo}
-              onWaitlistUnit={requestWaitlist}
-            />
+        <div className="grid md:grid-cols-3 gap-12 md:gap-8">
+          {grouped.map(({ building, units }, i) => (
+            <Fragment key={building}>
+              {i > 0 && <div aria-hidden="true" className="md:hidden h-px bg-gray-200 mx-8 -my-2" />}
+              <BuildingCard
+                building={building}
+                units={units}
+                onRequestUnit={requestInfo}
+                onWaitlistUnit={requestWaitlist}
+              />
+            </Fragment>
           ))}
         </div>
       </section>
@@ -770,7 +769,7 @@ function App() {
         </div>
 
         <p className="text-sm text-gray-400 max-w-xl mb-10 md:mb-12 leading-relaxed">
-          Eingebettet zwischen Wald und Reuss — eine familienfreundliche Wohnlage mit kurzen Wegen zu Natur, Schule und ÖV.
+          Eine familienfreundliche Wohnlage mit kurzen Wegen zu Natur, Schule und ÖV.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-10 mb-10">
@@ -818,10 +817,10 @@ function App() {
             <MapPin className="w-4 h-4 shrink-0" />
             <span>Niederwilerstrasse 1a/b/c, 5524 Nesselnbach</span>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 shrink-0" />
             <a href="mailto:kontakt@widematte.ch" className="hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
-          </div>
+          </div> */}
         </div>
         <ClientOnly>
           <Suspense fallback={<div className="w-full h-72 md:h-[480px] mt-8 bg-gray-100" />}>
