@@ -118,8 +118,8 @@ function StatusBadge({ status }: { status: Apartment['status'] }) {
     </span>
   );
   return (
-    <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-widests text-gray-400">
-      <span className="w-1.5 h-1.5 rounded-full bg-gray-300 shrink-0" />Verkauft
+    <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-gray-500">
+      <span className="w-1.5 h-1.5 rounded-full bg-gray-400 shrink-0" />Verkauft
     </span>
   );
 }
@@ -213,12 +213,12 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
   const renderUnitPrice = (apt: Apartment) => {
     if (buildingShowPrice[building]) {
       if (listingType === 'rent') {
-        return <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-xs text-gray-400">/ Mt.</span></p>;
+        return <p className="text-sm font-light">CHF {Math.round(apt.rent / 12).toLocaleString('de-CH')} <span className="text-xs text-gray-500">/ Mt.</span></p>;
       }
       return (
         <>
           <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
-          <p className="text-[10px] text-gray-400 mt-0.5">inkl. 2 Tiefgaragenparkplätze</p>
+          <p className="text-[10px] text-gray-500 mt-0.5">inkl. 2 Tiefgaragenparkplätze</p>
         </>
       );
     }
@@ -284,13 +284,13 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
       </div>
       <div className="p-6 md:p-8 flex flex-col flex-1">
         <h3 className="text-2xl md:text-3xl font-light mb-1">Gebäude {building}</h3>
-        {!allSold && <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">{roomsLabel} Zimmer · {sizeLabel} <span className="normal-case">m²</span></p>}
+        {!allSold && <p className="text-xs uppercase tracking-widest text-gray-500 mb-4">{roomsLabel} Zimmer · {sizeLabel} <span className="normal-case">m²</span></p>}
         <p className="text-sm text-gray-500 leading-relaxed mb-6 flex-1">
           {buildingDescriptions[building]}
         </p>
         {/* Wohnungen des Gebäudes */}
         <div className="border-t border-gray-200 mt-2">
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 pt-4 pb-1">{units.length} Wohnungen</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-500 pt-4 pb-1">{units.length} Wohnungen</p>
           {units.map((apt) => {
             const hasDetails = apt.building !== '2';
             const isOpen = openUnits.has(apt.id);
@@ -311,7 +311,7 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
                   <div>
                     <p className="text-sm font-light">Wohnung {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
                     {hasDetails && (
-                      <p className="text-[11px] text-gray-400 mt-0.5">
+                      <p className="text-[11px] text-gray-500 mt-0.5">
                         {apt.rooms} Zimmer · {apt.size} m²{apt.note ? ` · ${apt.note}` : ''}
                       </p>
                     )}
@@ -326,7 +326,7 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
 
                 {hasDetails && isOpen && (
                   <div className="pb-4">
-                    <p className="text-[11px] text-gray-400">
+                    <p className="text-[11px] text-gray-500">
                       {[
                         apt.sizeBrutto && `${apt.sizeBrutto} m² BWF`,
                         (apt.sizeBalkon ?? 0) > 0 && `${apt.sizeBalkon} m² Balkon`,
@@ -370,7 +370,7 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
             >
               <div>
                 <p className="text-sm font-light group-hover:text-black transition-colors">Untergeschoss</p>
-                <p className="text-[11px] text-gray-400 mt-0.5">Kellerabteile & Tiefgarage · PDF</p>
+                <p className="text-[11px] text-gray-500 mt-0.5">Kellerabteile & Tiefgarage · PDF</p>
               </div>
               <Download className="w-4 h-4 text-gray-400 group-hover:text-black transition-colors shrink-0" />
             </a>
@@ -466,7 +466,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
       >
         {submitting ? 'Wird gesendet…' : 'Senden'}
       </button>
-      <p className="md:col-span-2 text-xs text-gray-400">
+      <p className="md:col-span-2 text-xs text-gray-500">
         Ihre Angaben werden vertraulich behandelt.{' '}
         <a href="/datenschutz.html" className="underline hover:opacity-60 transition-opacity">Datenschutz</a>
       </p>
@@ -617,7 +617,7 @@ function App() {
           ].map(({ value, label }) => (
             <div key={label} className="md:px-10 first:md:pl-0 last:md:pr-0">
               <p className="text-xl md:text-2xl font-light mb-1 text-black whitespace-nowrap">{value}</p>
-              <p className="text-[10px] uppercase tracking-widest text-gray-400">{label}</p>
+              <p className="text-[10px] uppercase tracking-widest text-gray-500">{label}</p>
             </div>
           ))}
         </div>
@@ -778,7 +778,7 @@ function App() {
           ].map(({ Icon, label, text }) => (
             <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
               <Icon className="w-4 h-4 text-gray-400 mb-3" />
-              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-2">{label}</p>
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2">{label}</p>
               <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
             </div>
           ))}
@@ -788,7 +788,7 @@ function App() {
           {/* Fahrzeiten + Adresse */}
           <div className="flex flex-col gap-8">
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten ÖV</p>
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">Fahrzeiten ÖV</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { place: 'Mellingen Heitersberg', time: '18 Min.',  note: 'PostAuto → S-Bahn' },
@@ -798,17 +798,17 @@ function App() {
                 ].map(({ place, time, note }) => (
                   <div key={place} className="border border-gray-200 px-4 py-2">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs text-gray-400">{time}</span>
+                      <span className="text-xs text-gray-500">{time}</span>
                       <span className="text-sm font-light">{place}</span>
                     </div>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{note}</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">{note}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten Auto</p>
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">Fahrzeiten Auto</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { place: 'A1 Mägenwil',           time: '10 Min.' },
@@ -818,7 +818,7 @@ function App() {
                   { place: 'Bern',                   time: '65 Min.' },
                 ].map(({ place, time }) => (
                   <div key={place} className="border border-gray-200 px-4 py-2 flex items-baseline gap-2">
-                    <span className="text-xs text-gray-400">{time}</span>
+                    <span className="text-xs text-gray-500">{time}</span>
                     <span className="text-sm font-light">{place}</span>
                   </div>
                 ))}
@@ -842,7 +842,7 @@ function App() {
               href="https://www.google.com/maps/search/?api=1&query=47.38690,8.29038"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-4 text-xs uppercase tracking-widest text-gray-400 hover:text-gray-700 transition-colors"
+              className="inline-flex items-center gap-2 mt-4 text-xs uppercase tracking-widest text-gray-500 hover:text-gray-700 transition-colors"
             >
               <MapPin className="w-3.5 h-3.5" />
               In Google Maps öffnen
