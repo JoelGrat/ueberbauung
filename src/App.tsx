@@ -737,12 +737,12 @@ function App() {
             {
               Icon: Bus,
               label: 'Öffentlicher Verkehr',
-              text: 'PostAuto im 30-Min.-Takt nach Mellingen Heitersberg (S-Bahn, 18 Min.), nach Baden ca. 40 Min., via Bremgarten nach Sihl-City Zürich in 50 Min., nach Luzern via Wohlen in ca. 1h 15.',
+              text: 'PostAuto im 30-Min.-Takt zur S-Bahn-Station Mellingen Heitersberg — von dort direkte Verbindungen nach Baden, Zürich und Luzern.',
             },
             {
               Icon: Car,
               label: 'Auto',
-              text: 'A1 Mägenwil Richtung Bern in ca. 10 Min. erreichbar. Westumfahrung Richtung Zürich und Luzern via Oberwil Lieli in ca. 15 Min.',
+              text: 'Direkter Anschluss an die A1 bei Mägenwil sowie an die Westumfahrung Richtung Zürich und Luzern via Oberwil-Lieli.',
             },
             {
               Icon: ShoppingCart,
@@ -773,74 +773,71 @@ function App() {
           ))}
         </div>
 
-        <p className="text-sm text-gray-400 max-w-xl mb-10 md:mb-12 leading-relaxed">
-          Eine familienfreundliche Wohnlage mit kurzen Wegen zu Natur, Schule und ÖV.
-        </p>
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+          {/* Fahrzeiten + Adresse */}
+          <div className="flex flex-col gap-8">
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten ÖV</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { place: 'Mellingen Heitersberg', time: '18 Min.',  note: 'PostAuto → S-Bahn' },
+                  { place: 'Baden',                 time: '40 Min.',  note: 'PostAuto' },
+                  { place: 'Zürich Sihl-City',      time: '50 Min.',  note: 'via Bremgarten' },
+                  { place: 'Luzern',                time: '1h 15',    note: 'via Wohlen' },
+                ].map(({ place, time, note }) => (
+                  <div key={place} className="border border-gray-200 px-4 py-2">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs text-gray-400">{time}</span>
+                      <span className="text-sm font-light">{place}</span>
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-0.5">{note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-        <div className="flex flex-col sm:flex-row gap-10 mb-10">
-          <div>
-            <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten ÖV</p>
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3">
-              {[
-                { place: 'Mellingen Heitersberg', time: '18 Min.',  note: 'PostAuto → S-Bahn' },
-                { place: 'Baden',                 time: '40 Min.',  note: 'PostAuto' },
-                { place: 'Zürich Sihl-City',      time: '50 Min.',  note: 'via Bremgarten' },
-                { place: 'Luzern',                time: '1h 15',    note: 'via Wohlen' },
-              ].map(({ place, time, note }) => (
-                <div key={place} className="border border-gray-200 px-4 py-2">
-                  <div className="flex items-baseline gap-2">
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten Auto</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { place: 'A1 Mägenwil',           time: '10 Min.' },
+                  { place: 'Westumfahrung',          time: '15 Min.' },
+                  { place: 'Mellingen / Bremgarten', time: '10 Min.' },
+                  { place: 'Zürich',                 time: '35 Min.' },
+                  { place: 'Bern',                   time: '65 Min.' },
+                ].map(({ place, time }) => (
+                  <div key={place} className="border border-gray-200 px-4 py-2 flex items-baseline gap-2">
                     <span className="text-xs text-gray-400">{time}</span>
                     <span className="text-sm font-light">{place}</span>
                   </div>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{note}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <MapPin className="w-4 h-4 shrink-0" />
+              <span>Niederwilerstrasse 1a/b/c, 5524 Nesselnbach</span>
             </div>
           </div>
 
-          <div>
-            <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-3">Fahrzeiten Auto</p>
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3">
-              {[
-                { place: 'A1 Mägenwil',           time: '10 Min.' },
-                { place: 'Westumfahrung',          time: '15 Min.' },
-                { place: 'Mellingen / Bremgarten', time: '10 Min.' },
-                { place: 'Zürich',                 time: '35 Min.' },
-                { place: 'Bern',                   time: '65 Min.' },
-              ].map(({ place, time }) => (
-                <div key={place} className="border border-gray-200 px-4 py-2 flex items-baseline gap-2">
-                  <span className="text-xs text-gray-400">{time}</span>
-                  <span className="text-sm font-light">{place}</span>
-                </div>
-              ))}
-            </div>
+          {/* Karte */}
+          <div className="lg:sticky lg:top-24">
+            <ClientOnly>
+              <Suspense fallback={<div className="w-full h-72 md:h-[480px] bg-gray-100" />}>
+                <LocationMap />
+              </Suspense>
+            </ClientOnly>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=47.38690,8.29038"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-4 text-xs uppercase tracking-widest text-gray-400 hover:text-gray-700 transition-colors"
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              In Google Maps öffnen
+            </a>
           </div>
         </div>
-
-        <div className="flex flex-col gap-3 md:flex-row md:gap-8 text-gray-500 text-sm mb-8">
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 shrink-0" />
-            <span>Niederwilerstrasse 1a/b/c, 5524 Nesselnbach</span>
-          </div>
-          {/* <div className="flex items-center gap-2">
-            <Mail className="w-4 h-4 shrink-0" />
-            <a href="mailto:kontakt@widematte.ch" className="hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
-          </div> */}
-        </div>
-        <ClientOnly>
-          <Suspense fallback={<div className="w-full h-72 md:h-[480px] mt-8 bg-gray-100" />}>
-            <LocationMap />
-          </Suspense>
-        </ClientOnly>
-        <a
-          href="https://www.google.com/maps/search/?api=1&query=47.38690,8.29038"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 mt-4 text-xs uppercase tracking-widest text-gray-400 hover:text-gray-700 transition-colors"
-        >
-          <MapPin className="w-3.5 h-3.5" />
-          In Google Maps öffnen
-        </a>
       </section>
 
       {/* Kontakt */}
