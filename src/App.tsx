@@ -33,16 +33,16 @@ interface Apartment {
 
 const apartments: Apartment[] = [
   // Gebäude 1
-  { id: 1, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 117, sizeEstrich: 0,   sizeKeller: 15, sizePP: 36, rooms: 4.5, rent: 30000, price: 1390000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1200000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
-  { id: 3, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 38,  sizeKeller: 13, sizePP: 32, rooms: 4.5, rent: 30000, price: 1380000, floor: 2, status: 'available' },
+  { id: 1, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 117, sizeEstrich: 0,   sizeKeller: 15, sizePP: 36, rooms: 4.5, rent: 30000, price: 1200000, floor: 0, status: 'available' },
+  { id: 2, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
+  { id: 3, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 38,  sizeKeller: 13, sizePP: 32, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'available' },
   // Gebäude 2 – verkauft
   { id: 4, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 282, sizeEstrich: 0,   sizeKeller: 22, sizePP: 37, rooms: 4.5, rent: 34000, price: 0, floor: 0, status: 'sold', placeholder: true },
   { id: 5, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 32000, price: 0, floor: 1, status: 'sold', placeholder: true },
   { id: 6, building: '2', size: 163, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 0,   sizeEstrich: 113, sizeKeller: 16, sizePP: 37, rooms: 5.5, rent: 36000, price: 0, floor: 2, status: 'sold', placeholder: true },
   // Gebäude 3
-  { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1490000, floor: 0, status: 'available', placeholder: true },
-  { id: 8, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 12, sizePP: 30, rooms: 4.5, rent: 30000, price: 1300000, floor: 1, status: 'available' },
+  { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true },
+  { id: 8, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 12, sizePP: 30, rooms: 4.5, rent: 30000, price: 1200000, floor: 1, status: 'available' },
   { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 50,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1450000, floor: 2, status: 'reserved', placeholder: true },
 ];
 
@@ -99,6 +99,12 @@ function floorLabel(floor: number) {
   if (floor === 0) return 'EG';
   if (floor === 2) return 'DG';
   return 'OG';
+}
+
+function floorName(floor: number) {
+  if (floor === 0) return 'Erdgeschoss';
+  if (floor === 2) return 'Dachgeschoss';
+  return 'Obergeschoss';
 }
 
 function grundrissUrl(building: string, floor: number): string {
@@ -289,84 +295,90 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
           {buildingDescriptions[building]}
         </p>
         {/* Wohnungen des Gebäudes */}
-        <div className="border-t border-gray-200 mt-2">
-          <p className="text-[10px] uppercase tracking-widest text-gray-500 pt-4 pb-1">{units.length} Wohnungen</p>
-          {units.map((apt) => {
-            const hasDetails = apt.building !== '2';
-            const isOpen = openUnits.has(apt.id);
-            return (
-              <div
-                key={apt.id}
-                className={`-mx-6 md:-mx-8 px-6 md:px-8 border-b border-gray-100 last:border-b-0 border-l-2 border-l-transparent transition-colors ${
-                  isOpen ? 'bg-gray-50 border-l-black' : hasDetails ? 'hover:bg-gray-50/70' : ''
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => hasDetails && toggleUnit(apt.id)}
-                  aria-expanded={hasDetails ? isOpen : undefined}
-                  disabled={!hasDetails}
-                  className={`w-full flex justify-between items-start gap-3 py-4 text-left group ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`}
+        <div className="border-t border-gray-200 mt-2 pt-5">
+          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">{units.length} Wohnungen</p>
+          <div className="space-y-2">
+            {units.map((apt) => {
+              const hasDetails = apt.building !== '2';
+              const isOpen = openUnits.has(apt.id);
+              return (
+                <div
+                  key={apt.id}
+                  className={`transition-all ${
+                    isOpen
+                      ? 'bg-white ring-1 ring-gray-900 shadow-sm'
+                      : hasDetails
+                        ? 'bg-gray-50 hover:bg-gray-100'
+                        : 'bg-gray-50'
+                  }`}
                 >
-                  <div>
-                    <p className="text-sm font-light">Wohnung {apt.building}.{apt.floor + 1} · {floorLabel(apt.floor)}</p>
-                    {hasDetails && (
-                      <p className="text-[11px] text-gray-500 mt-0.5">
-                        {apt.rooms} Zimmer · {apt.size} m²{apt.note ? ` · ${apt.note}` : ''}
+                  <button
+                    type="button"
+                    onClick={() => hasDetails && toggleUnit(apt.id)}
+                    aria-expanded={hasDetails ? isOpen : undefined}
+                    disabled={!hasDetails}
+                    className={`w-full flex items-center justify-between gap-2 px-3.5 sm:px-4 py-4 text-left group ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`}
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm tracking-wide">Wohnung {apt.building}.{apt.floor + 1}</p>
+                      <p className="text-[11px] text-gray-500 mt-1 truncate">
+                        {floorName(apt.floor)}{hasDetails ? ` · ${apt.rooms} Zi. · ${apt.size} m²` : ''}{apt.note ? ` · ${apt.note}` : ''}
                       </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <StatusBadge status={apt.status} />
-                    {hasDetails && (
-                      <ChevronDown className={`w-4 h-4 transition-all group-hover:text-black ${isOpen ? 'rotate-180 text-black' : 'text-gray-400'}`} />
-                    )}
-                  </div>
-                </button>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <StatusBadge status={apt.status} />
+                      {hasDetails && (
+                        <ChevronDown className={`w-4 h-4 transition-all group-hover:text-black ${isOpen ? 'rotate-180 text-black' : 'text-gray-400'}`} />
+                      )}
+                    </div>
+                  </button>
 
-                {hasDetails && isOpen && (
-                  <div className="pb-4">
-                    <p className="text-[11px] text-gray-500">
-                      {[
-                        apt.sizeBrutto && `${apt.sizeBrutto} m² BWF`,
-                        (apt.sizeBalkon ?? 0) > 0 && `${apt.sizeBalkon} m² Balkon`,
-                        (apt.sizeGarden ?? 0) > 0 && `${apt.sizeGarden} m² Garten`,
-                        (apt.sizeEstrich ?? 0) > 0 && `${apt.sizeEstrich} m² Estrich`,
-                        (apt.sizeKeller ?? 0) > 0 && `${apt.sizeKeller} m² Keller`,
-                      ].filter(Boolean).join(' · ')}
-                    </p>
+                  {hasDetails && isOpen && (
+                    <div className="px-3.5 sm:px-4 pb-4 pt-1">
+                      <div className="border-t border-gray-100 pt-3">
+                        <p className="text-[11px] text-gray-500">
+                          {[
+                            apt.sizeBrutto && `${apt.sizeBrutto} m² BWF`,
+                            (apt.sizeBalkon ?? 0) > 0 && `${apt.sizeBalkon} m² Balkon`,
+                            (apt.sizeGarden ?? 0) > 0 && `${apt.sizeGarden} m² Garten`,
+                            (apt.sizeEstrich ?? 0) > 0 && `${apt.sizeEstrich} m² Estrich`,
+                            (apt.sizeKeller ?? 0) > 0 && `${apt.sizeKeller} m² Keller`,
+                          ].filter(Boolean).join(' · ')}
+                        </p>
 
-                    <div className="flex justify-between items-end gap-3 mt-3">
-                      <div>{renderUnitPrice(apt)}</div>
-                      <div className="flex items-center gap-4 shrink-0">
-                        <a
-                          href={grundrissUrl(apt.building, apt.floor)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={actionLinkClass}
-                        >
-                          Grundriss
-                        </a>
-                        {apt.status === 'available' && (
-                          <button onClick={() => onRequestUnit(apt)} className={actionLinkClass}>Anfragen</button>
-                        )}
-                        {apt.status === 'reserved' && (
-                          <button onClick={() => onWaitlistUnit(apt)} className={actionLinkClass}>Warteliste</button>
-                        )}
+                        <div className="flex flex-wrap justify-between items-end gap-x-4 gap-y-3 mt-3">
+                          <div>{renderUnitPrice(apt)}</div>
+                          <div className="flex items-center gap-4 shrink-0">
+                            <a
+                              href={grundrissUrl(apt.building, apt.floor)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={actionLinkClass}
+                            >
+                              Grundriss
+                            </a>
+                            {apt.status === 'available' && (
+                              <button onClick={() => onRequestUnit(apt)} className={actionLinkClass}>Anfragen</button>
+                            )}
+                            {apt.status === 'reserved' && (
+                              <button onClick={() => onWaitlistUnit(apt)} className={actionLinkClass}>Warteliste</button>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
           {building !== '2' && (
             <a
               href="/Images/Grundrisse/Grundriss_UGs.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex justify-between items-center py-4 border-t border-gray-200 group"
+              className="flex justify-between items-center gap-3 mt-4 pt-4 border-t border-gray-200 group"
             >
               <div>
                 <p className="text-sm font-light group-hover:text-black transition-colors">Untergeschoss</p>

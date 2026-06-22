@@ -31,7 +31,8 @@
       "Bash(perl -0pi -e \"s/const ids = \\\\['apartments', 'plans', 'location', 'contact'\\\\];/const ids = ['apartments', 'location', 'contact'];/\" src/App.tsx)",
       "Bash(sed -i 's#>03 / Lage<#>02 / Lage<#; s#>04 / Kontakt<#>03 / Kontakt<#' src/App.tsx)",
       "Bash(npm i *)",
-      "Bash(awk '{printf \"%.1f MB  %s\\\\n\", $1/1048576, $2}')"
+      "Bash(awk '{printf \"%.1f MB  %s\\\\n\", $1/1048576, $2}')",
+      "Bash(timeout 6 powershell -NoProfile -Command \"Start-Sleep -Seconds 4\")"
     ]
   }
 }
