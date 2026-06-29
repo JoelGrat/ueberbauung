@@ -43,7 +43,7 @@ const apartments: Apartment[] = [
   // Gebäude 3
   { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true },
   { id: 8, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 12, sizePP: 30, rooms: 4.5, rent: 30000, price: 1200000, floor: 1, status: 'available' },
-  { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 50,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1450000, floor: 2, status: 'reserved', placeholder: true },
+  { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 50,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true },
 ];
 
 const buildingListingType: Record<string, 'sale' | 'rent'> = {
@@ -107,9 +107,16 @@ function floorName(floor: number) {
   return 'Obergeschoss';
 }
 
-function grundrissUrl(building: string, floor: number): string {
+// Buildings whose Grundrisse have been replaced by the new Verkaufspläne.
+// Add '2' / '3' here once their Verkaufspläne are available.
+const buildingsWithVerkaufsplan = new Set<string>(['1']);
+
+function planLink(building: string, floor: number): { href: string; label: string } {
+  if (buildingsWithVerkaufsplan.has(building)) {
+    return { href: `/Images/Verkaufsplaene/Wohnung${building}.${floor + 1}.pdf`, label: 'Verkaufsplan' };
+  }
   const code = floor === 0 ? 'EG' : floor === 2 ? 'DG' : 'OG';
-  return `/Images/Grundrisse/Grundriss_${code}_${building}.pdf`;
+  return { href: `/Images/Grundrisse/Grundriss_${code}_${building}.pdf`, label: 'Grundriss' };
 }
 
 function StatusBadge({ status }: { status: Apartment['status'] }) {
@@ -167,6 +174,9 @@ function Lightbox({ images, startIndex, onClose }: { images: string[]; startInde
         className="max-h-[90vh] max-w-[90vw] object-contain select-none"
         onClick={e => e.stopPropagation()}
       />
+      <p className="absolute bottom-2 left-1/2 -translate-x-1/2 w-full px-6 text-center text-[11px] text-white/50 italic">
+        Die angezeigten Bilder können von der Wohnung abweichen — es handelt sich um Visualisierungen.
+      </p>
       {total > 1 && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
           {images.map((_, i) => (
@@ -349,14 +359,19 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
                         <div className="flex flex-wrap justify-between items-end gap-x-4 gap-y-3 mt-3">
                           <div>{renderUnitPrice(apt)}</div>
                           <div className="flex items-center gap-4 shrink-0">
-                            <a
-                              href={grundrissUrl(apt.building, apt.floor)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={actionLinkClass}
-                            >
-                              Grundriss
-                            </a>
+                            {(() => {
+                              const plan = planLink(apt.building, apt.floor);
+                              return (
+                                <a
+                                  href={plan.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={actionLinkClass}
+                                >
+                                  {plan.label}
+                                </a>
+                              );
+                            })()}
                             {apt.status === 'available' && (
                               <button onClick={() => onRequestUnit(apt)} className={actionLinkClass}>Anfragen</button>
                             )}
@@ -539,6 +554,7 @@ function App() {
   const navLinks = [
     { href: '#apartments', label: 'Wohnungen' },
     { href: '#location', label: 'Lage' },
+    { href: '#details', label: 'Projekt' },
     { href: '#contact', label: 'Kontakt' },
   ];
 
@@ -657,6 +673,9 @@ function App() {
             <span key={tag} className="text-[10px] uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-2 sm:py-1.5">{tag}</span>
           ))}
         </div>
+        <p className="text-xs text-gray-400 italic max-w-2xl mb-10 md:mb-16 -mt-4 md:-mt-10">
+          Die angezeigten Bilder können von der Wohnung abweichen — es handelt sich um Visualisierungen.
+        </p>
         <div className="grid md:grid-cols-3 gap-12 md:gap-8">
           {grouped.map(({ building, units }, i) => (
             <Fragment key={building}>
@@ -863,10 +882,51 @@ function App() {
         </div>
       </section>
 
+      {/* Beteiligte & Konditionen */}
+      <section id="details" className="py-12 md:py-32 px-6 bg-white border-t border-gray-100">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">05 / Projekt</p>
+          <h2 className="text-3xl md:text-6xl font-light mb-10 md:mb-16">Beteiligte &amp; Konditionen</h2>
+
+          {/* Beteiligte */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 mb-12 md:mb-20">
+            {[
+              { label: 'Bauherrschaft & Verkauf', name: 'Joel und Yves Gratwohl', address: ['Niederwilerstrasse', '5524 Nesselnbach'], email: 'kontakt@widematte.ch' },
+              { label: 'Architektur',   name: 'Christ Architektur',     address: ['Vorstadtstrasse 31', '4717 Mümliswil'],   email: 'info@christ-architektur.ch' },
+              { label: 'Holzbau',       name: 'Bodenseehaus Bau AG',    address: ['Hofwisenstrasse 13', '8260 Stein am Rhein'], email: 'hans.imboden@bodenseehaus.ch' },
+            ].map(({ label, name, address, email }) => (
+              <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
+                <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">{label}</p>
+                <p className="text-sm font-light mb-2">{name}</p>
+                <p className="text-sm text-gray-500 leading-relaxed mb-2">
+                  {address.map((line, i) => <Fragment key={i}>{line}<br /></Fragment>)}
+                </p>
+                <a href={`mailto:${email}`} className="text-sm text-gray-500 hover:text-black transition-colors break-words">{email}</a>
+              </div>
+            ))}
+          </div>
+
+          {/* Konditionen */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-gray-200">
+            {[
+              { label: 'Konditionen', text: 'Ab CHF 30\'000 bei Reservation. 20% bei Vertragsunterzeichnung. Restbetrag via unwiderrufliches Zahlungsversprechen einer CH-Bank gemäss Baufortschritt.' },
+              { label: 'Handänderung', text: 'Kosten je hälftig, ca. 0.5% des Kaufpreises. Kosten für Schuldbriefe zu Lasten der Käuferschaft.' },
+              { label: 'Ausbau', text: 'Bei frühzeitigem Kaufentscheid kann der Innenausbau von der Käuferschaft weitgehend mitbestimmt werden.' },
+              { label: 'Bauqualität', text: 'Durch Verwendung von qualitativ hochstehenden, ökologischen Materialien garantiert die Bodenseehaus Bau AG herausragende Wohnqualität.' },
+            ].map(({ label, text }) => (
+              <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
+                <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">{label}</p>
+                <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Kontakt */}
       <section id="contact" className="py-12 md:py-32 px-6 bg-gray-50 border-t border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">05 / Kontakt</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">06 / Kontakt</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Kontakt</h2>
           <p className="text-base md:text-xl text-gray-500 mb-6">
             Wir begleiten Sie gerne — sprechen Sie mit uns.
