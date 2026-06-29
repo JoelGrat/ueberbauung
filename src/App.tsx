@@ -33,17 +33,17 @@ interface Apartment {
 
 const apartments: Apartment[] = [
   // Gebäude 1
-  { id: 1, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 117, sizeEstrich: 0,   sizeKeller: 15, sizePP: 36, rooms: 4.5, rent: 30000, price: 1200000, floor: 0, status: 'available' },
-  { id: 2, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
-  { id: 3, building: '1', size: 107, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 38,  sizeKeller: 13, sizePP: 32, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'available' },
+  { id: 1, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 117, sizeEstrich: 0,   sizeKeller: 15, sizePP: 36, rooms: 4.5, rent: 30000, price: 1200000, floor: 0, status: 'available', note: 'mit grossem Gartenanteil' },
+  { id: 2, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
+  { id: 3, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 38,  sizeKeller: 13, sizePP: 32, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'available', note: 'mit Estrich' },
   // Gebäude 2 – verkauft
   { id: 4, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 282, sizeEstrich: 0,   sizeKeller: 22, sizePP: 37, rooms: 4.5, rent: 34000, price: 0, floor: 0, status: 'sold', placeholder: true },
   { id: 5, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 32000, price: 0, floor: 1, status: 'sold', placeholder: true },
   { id: 6, building: '2', size: 163, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 0,   sizeEstrich: 113, sizeKeller: 16, sizePP: 37, rooms: 5.5, rent: 36000, price: 0, floor: 2, status: 'sold', placeholder: true },
   // Gebäude 3
-  { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true },
+  { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true, note: 'mit grossem Gartenanteil' },
   { id: 8, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 12, sizePP: 30, rooms: 4.5, rent: 30000, price: 1200000, floor: 1, status: 'available' },
-  { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 50,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true },
+  { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 50,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true, note: 'mit Estrich' },
 ];
 
 const buildingListingType: Record<string, 'sale' | 'rent'> = {
@@ -332,8 +332,9 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
                     <div className="min-w-0">
                       <p className="text-sm tracking-wide">Wohnung {apt.building}.{apt.floor + 1}</p>
                       <p className="text-[11px] text-gray-500 mt-1 truncate">
-                        {floorName(apt.floor)}{hasDetails ? ` · ${apt.rooms} Zi. · ${apt.size} m²` : ''}{apt.note ? ` · ${apt.note}` : ''}
+                        {floorName(apt.floor)}{hasDetails ? ` · ${apt.rooms} Zi. · ${apt.size} m²` : ''}
                       </p>
+                      {apt.note && <p className="text-[11px] text-gray-400 mt-0.5 truncate">{apt.note}</p>}
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                       <StatusBadge status={apt.status} />
@@ -638,7 +639,7 @@ function App() {
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
-            { value: '107 - 115 m²', label: 'Wohnfläche' },
+            { value: '108 - 115 m²', label: 'Wohnfläche' },
             { value: '4.5', label: 'Zimmer' },
             { value: 'Minergie-P', label: 'Standard' },
             { value: '2027', label: 'Bezug' },
@@ -659,7 +660,7 @@ function App() {
           Hochwertige Neubauwohnungen an ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
         </p>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8">
-          Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Wohnflächen von 107 bis 115 m². Jede Wohnung verfügt über zwei Tiefgaragenparkplätze, Kellerabteil sowie privaten Aussenbereich.
+          Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Wohnflächen von 108 bis 115 m². Jede Wohnung verfügt über zwei Tiefgaragenparkplätze, Kellerabteil sowie privaten Aussenbereich.
         </p>
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 mb-10 md:mb-16">
           {[
