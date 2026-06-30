@@ -108,8 +108,8 @@ function floorName(floor: number) {
 }
 
 // Buildings whose Grundrisse have been replaced by the new Verkaufspläne.
-// Add '2' / '3' here once their Verkaufspläne are available.
-const buildingsWithVerkaufsplan = new Set<string>(['1']);
+// Add '2' here once its Verkaufspläne are available.
+const buildingsWithVerkaufsplan = new Set<string>(['1', '3']);
 
 function planLink(building: string, floor: number): { href: string; label: string } {
   if (buildingsWithVerkaufsplan.has(building)) {
