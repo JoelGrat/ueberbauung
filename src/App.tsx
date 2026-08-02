@@ -33,16 +33,16 @@ interface Apartment {
 
 const apartments: Apartment[] = [
   // Gebäude 1
-  { id: 1, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 117, sizeEstrich: 0,   sizeKeller: 15, sizePP: 36, rooms: 4.5, rent: 30000, price: 1200000, floor: 0, status: 'available', note: 'mit grossem Gartenanteil' },
-  { id: 2, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1100000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
-  { id: 3, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 38,  sizeKeller: 13, sizePP: 32, rooms: 4.5, rent: 30000, price: 1150000, floor: 2, status: 'available', note: 'mit Estrich' },
+  { id: 1, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 117, sizeEstrich: 0,   sizeKeller: 15, sizePP: 36, rooms: 4.5, rent: 30000, price: 1220000, floor: 0, status: 'available', note: 'mit grossem Gartenanteil' },
+  { id: 2, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 28000, price: 1120000, floor: 1, status: 'available', note: 'Optional 3.5 Zimmer', placeholder: true, outdoor: 24 },
+  { id: 3, building: '1', size: 108, sizeBrutto: 134, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 38,  sizeKeller: 13, sizePP: 32, rooms: 4.5, rent: 30000, price: 1130000, floor: 2, status: 'available', note: 'mit Estrich' },
   // Gebäude 2 – verkauft
   { id: 4, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 282, sizeEstrich: 0,   sizeKeller: 22, sizePP: 37, rooms: 4.5, rent: 34000, price: 0, floor: 0, status: 'sold', placeholder: true },
   { id: 5, building: '2', size: 127, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 13, sizePP: 29, rooms: 4.5, rent: 32000, price: 0, floor: 1, status: 'sold', placeholder: true },
   { id: 6, building: '2', size: 163, sizeBrutto: 156, sizeBalkon: 27, sizeGarden: 0,   sizeEstrich: 113, sizeKeller: 16, sizePP: 37, rooms: 5.5, rent: 36000, price: 0, floor: 2, status: 'sold', placeholder: true },
   // Gebäude 3
-  { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1300000, floor: 0, status: 'available', placeholder: true, note: 'mit grossem Gartenanteil' },
-  { id: 8, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 12, sizePP: 30, rooms: 4.5, rent: 30000, price: 1200000, floor: 1, status: 'available' },
+  { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1330000, floor: 0, status: 'available', placeholder: true, note: 'mit grossem Gartenanteil' },
+  { id: 8, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 12, sizePP: 30, rooms: 4.5, rent: 30000, price: 1210000, floor: 1, status: 'available' },
   { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 50,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1300000, floor: 2, status: 'reserved', placeholder: true, note: 'mit Estrich' },
 ];
 
