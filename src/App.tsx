@@ -1029,7 +1029,6 @@ function App() {
           <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-gray-200">
             {[
               { label: 'Zahlungskonditionen', text: 'Reservationsvertrag CHF 40\'000. 30% bei Baustart, 40% nach Rohbaufertigstellung, Restzahlung bei Bauvollendung.' },
-              { label: 'Handänderung', text: 'Kosten je hälftig, ca. 0.5% des Kaufpreises. Kosten für Schuldbriefe zu Lasten der Käuferschaft.' },
               { label: 'Ausbau', text: 'Die Käuferschaft kann den Innenausbau weitgehend mitbestimmen.' },
               { label: 'Bauqualität', text: 'Qualitativ hochstehende, ökologische Materialien garantieren herausragende Wohnqualität.' },
             ].map(({ label, text }) => (
