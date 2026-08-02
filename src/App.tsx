@@ -767,7 +767,7 @@ function App() {
           Hochwertige Neubauwohnungen an ruhiger Lage — für anspruchsvolles Wohnen im Einklang mit der Natur.
         </p>
         <p className="text-base md:text-xl text-gray-500 max-w-2xl mb-8">
-          Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Wohnflächen von 108 bis 115 m². Jede Wohnung verfügt über zwei Tiefgaragenparkplätze, Kellerabteil sowie privaten Aussenbereich.
+          Neun Eigentumswohnungen in drei Gebäuden — mit je 4.5 Zimmern und Nettowohnflächen von 108 bis 115 m². Jede Wohnung verfügt über zwei Tiefgaragenparkplätze, Kellerabteil sowie privaten Aussenbereich.
         </p>
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 mb-10 md:mb-16">
           {[
