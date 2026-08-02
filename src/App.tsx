@@ -746,7 +746,7 @@ function App() {
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
-            { value: '108 - 115 m² netto', label: 'Wohnfläche' },
+            { value: '108 - 115 m²', label: 'Wohnfläche netto' },
             { value: '4.5', label: 'Zimmer' },
             { value: 'Minergie-P', label: 'Standard' },
             { value: '2027', label: 'Bezug' },
