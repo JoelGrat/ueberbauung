@@ -789,7 +789,7 @@ function App() {
         <div className="border border-gray-200 bg-gray-50 p-6 md:p-8 mb-6 max-w-3xl">
           <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">Energie & Betriebskosten</p>
           <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-            Niedrige Energiekosten dank Minergie-P, Erdsonden-Wärmepumpe und Photovoltaik — für nachhaltiges Wohnen mit tiefen Betriebskosten das ganze Jahr über.
+            Niedrige Energiekosten dank Minergie-P, Erdsonden-Wärmepumpe und Photovoltaik.
           </p>
         </div>
 
