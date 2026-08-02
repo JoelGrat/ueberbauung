@@ -699,6 +699,27 @@ function App() {
         </a>
       </section>
 
+      {/* 3D-Rundgang CTA */}
+      <button
+        onClick={() => setTourOpen(true)}
+        className="group w-full bg-black text-white"
+      >
+        <div className="max-w-7xl mx-auto px-6 py-5 md:py-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 md:gap-4 text-left">
+            <Building2 className="w-5 h-5 shrink-0 text-white/70" />
+            <div>
+              <p className="text-sm md:text-base font-light">Virtueller Rundgang durch die Musterwohnung 3.2</p>
+              <p className="text-[11px] uppercase tracking-widest text-white/50 mt-0.5">360°-Panorama · durch alle Räume</p>
+            </div>
+          </div>
+          <span className="flex items-center gap-2 text-xs uppercase tracking-widest whitespace-nowrap border-b border-white/40 group-hover:border-white pb-0.5 transition-colors">
+            <span className="hidden sm:inline">3D-Rundgang starten</span>
+            <span className="sm:hidden">Starten</span>
+            <ChevronRight className="w-4 h-4" />
+          </span>
+        </div>
+      </button>
+
       {/* Stats bar */}
       <div className="bg-gray-50 border-y border-gray-100 py-8 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-6 gap-6 md:gap-0 md:divide-x md:divide-gray-200">
@@ -977,9 +998,9 @@ function App() {
           {/* Konditionen */}
           <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-gray-200">
             {[
-              { label: 'Konditionen', text: 'Ab CHF 30\'000 bei Reservation. 20% bei Vertragsunterzeichnung. Restbetrag via unwiderrufliches Zahlungsversprechen einer CH-Bank gemäss Baufortschritt.' },
+              { label: 'Zahlungskonditionen', text: 'Reservationsvertrag CHF 40\'000. 30% bei Baustart, 40% nach Rohbaufertigstellung, Restzahlung bei Bauvollendung.' },
               { label: 'Handänderung', text: 'Kosten je hälftig, ca. 0.5% des Kaufpreises. Kosten für Schuldbriefe zu Lasten der Käuferschaft.' },
-              { label: 'Ausbau', text: 'Bei frühzeitigem Kaufentscheid kann der Innenausbau von der Käuferschaft weitgehend mitbestimmt werden.' },
+              { label: 'Ausbau', text: 'Die Käuferschaft kann den Innenausbau weitgehend mitbestimmen.' },
               { label: 'Bauqualität', text: 'Durch Verwendung von qualitativ hochstehenden, ökologischen Materialien garantiert die Bodenseehaus Bau AG herausragende Wohnqualität.' },
             ].map(({ label, text }) => (
               <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
