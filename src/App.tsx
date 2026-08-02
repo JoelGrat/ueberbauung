@@ -599,6 +599,12 @@ function App() {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const requestDocs = () => {
+    setPrefill('Bitte senden Sie mir die vollständige Verkaufsdokumentation zur Überbauung Widematte (Baubeschrieb, Grundrisse und Preisliste).');
+    closeMenu();
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const grouped = useMemo(() =>
     ['1', '2', '3'].map((building) => ({
       building,
@@ -680,9 +686,23 @@ function App() {
       >
         <div className="relative text-center px-6 max-w-5xl">
           <h1 className="text-3xl sm:text-5xl md:text-7xl md:whitespace-nowrap font-light mb-4 md:mb-6 text-white drop-shadow-md">Wohnqualität mit Zukunft</h1>
-          <p className="text-base md:text-xl font-light text-gray-300 mb-0 px-2 max-w-xl mx-auto">
+          <p className="text-base md:text-xl font-light text-gray-300 mb-8 md:mb-10 px-2 max-w-xl mx-auto">
             9 moderne Wohnungen an sonniger, familienfreundlicher Lage — mit durchdachten Grundrissen, direkt am Dorfrand und am Bach.
           </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={requestDocs}
+              className="inline-flex items-center gap-2 bg-white text-black px-6 py-3 text-xs uppercase tracking-widest hover:bg-gray-100 transition-colors"
+            >
+              Unterlagen anfordern
+            </button>
+            <a
+              href="#apartments"
+              className="text-xs uppercase tracking-widest text-white/80 hover:text-white transition-colors border-b border-white/40 hover:border-white pb-0.5"
+            >
+              Wohnungen ansehen
+            </a>
+          </div>
         </div>
         <a href="#apartments" className="absolute top-20 md:top-24 right-4 md:right-12 group">
           <div className="bg-black/70 backdrop-blur-sm text-white px-3 py-2 md:px-4 md:py-2.5 flex items-center gap-2 border border-white/10 group-hover:border-white/30 transition-colors">
@@ -726,7 +746,7 @@ function App() {
           {[
             { value: '9', label: 'Wohnungen' },
             { value: '3', label: 'Gebäude' },
-            { value: '108 - 115 m²', label: 'Wohnfläche' },
+            { value: '108 - 115 m² netto', label: 'Wohnfläche' },
             { value: '4.5', label: 'Zimmer' },
             { value: 'Minergie-P', label: 'Standard' },
             { value: '2027', label: 'Bezug' },
@@ -761,9 +781,29 @@ function App() {
             <span key={tag} className="text-[10px] uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-2 sm:py-1.5">{tag}</span>
           ))}
         </div>
-        <p className="text-xs text-gray-400 italic max-w-2xl mb-10 md:mb-16 -mt-4 md:-mt-10">
+        <p className="text-xs text-gray-400 italic max-w-2xl mb-8 md:mb-10 -mt-4 md:-mt-10">
           Die angezeigten Bilder können von der Wohnung abweichen — es handelt sich um Visualisierungen.
         </p>
+
+        {/* Energie & Betriebskosten */}
+        <div className="border border-gray-200 bg-gray-50 p-6 md:p-8 mb-6 max-w-3xl">
+          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">Energie & Betriebskosten</p>
+          <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+            Niedrige Energiekosten dank Minergie-P, Erdsonden-Wärmepumpe und Photovoltaik — für nachhaltiges Wohnen mit tiefen Betriebskosten das ganze Jahr über.
+          </p>
+        </div>
+
+        {/* Baubeschrieb */}
+        <a
+          href="/Images/Baubeschrieb/Baubeschrieb_Widematte.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 mb-10 md:mb-16 text-xs uppercase tracking-widest text-gray-600 hover:text-black border-b border-gray-300 hover:border-black pb-0.5 transition-colors"
+        >
+          <Download className="w-4 h-4" />
+          Baubeschrieb (PDF)
+        </a>
+
         <div className="grid md:grid-cols-3 gap-12 md:gap-8">
           {grouped.map(({ building, units }, i) => (
             <Fragment key={building}>
@@ -982,7 +1022,7 @@ function App() {
             {[
               { label: 'Bauherrschaft & Verkauf', name: 'Joel und Yves Gratwohl', address: ['Niederwilerstrasse', '5524 Nesselnbach'], email: 'kontakt@widematte.ch' },
               { label: 'Architektur',   name: 'Christ Architektur',     address: ['Vorstadtstrasse 31', '4717 Mümliswil'],   email: 'info@christ-architektur.ch' },
-              { label: 'Holzbau',       name: 'Bodenseehaus Bau AG',    address: ['Hofwisenstrasse 13', '8260 Stein am Rhein'], email: 'hans.imboden@bodenseehaus.ch' },
+              { label: 'Bauleiter',     name: 'Hans Imboden',           address: ['Baumanagement für Systemhäuser', 'Ausserfeldstrasse 1', '5036 Oberentfelden'], email: 'imboden.hans@bluewin.ch' },
             ].map(({ label, name, address, email }) => (
               <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">{label}</p>
