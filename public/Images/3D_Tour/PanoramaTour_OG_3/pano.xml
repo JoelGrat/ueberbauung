@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tour apprev="15996" appversion="5.2.4" start="node1">
+  <panorama id="node1">
+    <input levelbiashidpi="0.400" height="1000" levelingpitch="0" width="1000" leveltileurl="tiles/node1/cf_%c/l_%l/c_%x/tile_%y.jpg" levelingroll="0" overlap="1" leveltilesize="510" levelbias="0.400">
+      <level predecode="0" height="1000" preload="0" width="1000"/>
+      <level predecode="1" height="500" preload="1" width="500"/>
+      <preview strip="1" color="0x808080"/>
+    </input>
+    <view pannorth="0" fovmode="0">
+      <start projection="4" tilt="0" pan="0" fov="70"/>
+      <flyin projection="9" tilt="-90" pan="0" fov="170"/>
+      <min tilt="-90" pan="0" fov="5"/>
+      <max fovfisheye="360" scaletofit="1" fovstereographic="270" tilt="90" pan="360" fov="120"/>
+    </view>
+    <userdata customnodeid="" longitude="" comment="" author="" description="" tags="6747_Panorama" title="" datetime="7/2/2026 2:17 PM" copyright="" source="" latitude="" info=""/>
+    <hotspots height="20" wordwrap="1" width="180">
+      <label height="20" borderradius="1" bordercolor="0x000000" backgroundalpha="1" enabled="1" backgroundcolor="0xffffff" textcolor="0x000000" wordwrap="1" width="180" borderalpha="1" background="1" textalpha="1" border="1"/>
+      <polystyle handcursor="1" bordercolor="0x0000ff" backgroundalpha="0.2509803921568627" backgroundcolor="0x0000ff" mode="0" borderalpha="1"/>
+      <hotspot id="Living room" url="{node2}" skinid="ht_node" tilt="0.18" description="" title="Living room" target="" pan="-0.5"/>
+      <hotspot id="Bathroom" url="{node3}" skinid="ht_node" tilt="-1.67" description="" title="Bathroom" target="" pan="-177.27"/>
+      <hotspot id="Bedroom1" url="{node4}" skinid="ht_node" tilt="-2.21" description="" title="Bedroom" target="" pan="111.65"/>
+      <hotspot id="Bedroom2" url="{node5}" skinid="ht_node" tilt="-6.17" description="" title="Bedroom2" target="" pan="-111.17"/>
+    </hotspots>
+    <media/>
+    <transition type="crossdissolve" blendtime="1" zoomin="0" enabled="0" softedge="0" zoomfov="20" zoomspeed="2" zoomout="0" zoomoutpause="1" blendcolor="0x000000"/>
+    <control lockedmouse="0" invertcontrol="1" lockedkeyboard="0" rubberband="0" contextprojections="0" lockedkeyboardzoom="0" dblclickfullscreen="0" simulatemass="1" invertwheel="0" hideabout="0" lockedwheel="0" sensitivity="8" speedwheel="1" contextfullscreen="0"/>
+  </panorama>
+  <panorama id="node2">
+    <input levelbiashidpi="0.400" height="1000" levelingpitch="0" width="1000" leveltileurl="tiles/node2/cf_%c/l_%l/c_%x/tile_%y.jpg" levelingroll="0" overlap="1" leveltilesize="510" levelbias="0.400">
+      <level predecode="0" height="1000" preload="0" width="1000"/>
+      <level predecode="1" height="500" preload="1" width="500"/>
+      <preview strip="1" color="0x808080"/>
+    </input>
+    <view pannorth="0" fovmode="0">
+      <start projection="4" tilt="0" pan="0" fov="70"/>
+      <flyin projection="9" tilt="-90" pan="0" fov="170"/>
+      <min tilt="-90" pan="0" fov="5"/>
+      <max fovfisheye="360" scaletofit="1" fovstereographic="270" tilt="90" pan="360" fov="120"/>
+    </view>
+    <userdata customnodeid="" longitude="" comment="" author="" description="" tags="6747_Panorama" title="" datetime="7/2/2026 9:30 AM" copyright="" source="" latitude="" info=""/>
+    <hotspots height="20" wordwrap="1" width="180">
+      <label height="20" borderradius="1" bordercolor="0x000000" backgroundalpha="1" enabled="1" backgroundcolor="0xffffff" textcolor="0x000000" wordwrap="1" width="180" borderalpha="1" background="1" textalpha="1" border="1"/>
+      <polystyle handcursor="1" bordercolor="0x0000ff" backgroundalpha="0.2509803921568627" backgroundcolor="0x0000ff" mode="0" borderalpha="1"/>
+      <hotspot id="Entrance" url="{node1}" skinid="ht_node" tilt="-0.68" description="" title="Entrance" target="" pan="180.2"/>
+    </hotspots>
+    <media/>
+    <transition type="crossdissolve" blendtime="1" zoomin="0" enabled="0" softedge="0" zoomfov="20" zoomspeed="2" zoomout="0" zoomoutpause="1" blendcolor="0x000000"/>
+    <control lockedmouse="0" invertcontrol="1" lockedkeyboard="0" rubberband="0" contextprojections="0" lockedkeyboardzoom="0" dblclickfullscreen="0" simulatemass="1" invertwheel="0" hideabout="0" lockedwheel="0" sensitivity="8" speedwheel="1" contextfullscreen="0"/>
+  </panorama>
+  <panorama id="node3">
+    <input levelbiashidpi="0.400" height="1000" levelingpitch="0" width="1000" leveltileurl="tiles/node3/cf_%c/l_%l/c_%x/tile_%y.jpg" levelingroll="0" overlap="1" leveltilesize="510" levelbias="0.400">
+      <level predecode="0" height="1000" preload="0" width="1000"/>
+      <level predecode="1" height="500" preload="1" width="500"/>
+      <preview strip="1" color="0x808080"/>
+    </input>
+    <view pannorth="0" fovmode="0">
+      <start projection="4" tilt="0" pan="0" fov="70"/>
+      <flyin projection="9" tilt="-90" pan="0" fov="170"/>
+      <min tilt="-90" pan="0" fov="5"/>
+      <max fovfisheye="360" scaletofit="1" fovstereographic="270" tilt="90" pan="360" fov="120"/>
+    </view>
+    <userdata customnodeid="" longitude="" comment="" author="" description="" tags="6747_Panorama" title="" datetime="7/2/2026 7:18 PM" copyright="" source="" latitude="" info=""/>
+    <hotspots height="20" wordwrap="1" width="180">
+      <label height="20" borderradius="1" bordercolor="0x000000" backgroundalpha="1" enabled="1" backgroundcolor="0xffffff" textcolor="0x000000" wordwrap="1" width="180" borderalpha="1" background="1" textalpha="1" border="1"/>
+      <polystyle handcursor="1" bordercolor="0x0000ff" backgroundalpha="0.2509803921568627" backgroundcolor="0x0000ff" mode="0" borderalpha="1"/>
+      <hotspot id="Entrance" url="{node1}" skinid="ht_node" tilt="3.55" description="" title="Entrance" target="" pan="-165.29"/>
+    </hotspots>
+    <media/>
+    <transition type="crossdissolve" blendtime="1" zoomin="0" enabled="0" softedge="0" zoomfov="20" zoomspeed="2" zoomout="0" zoomoutpause="1" blendcolor="0x000000"/>
+    <control lockedmouse="0" invertcontrol="1" lockedkeyboard="0" rubberband="0" contextprojections="0" lockedkeyboardzoom="0" dblclickfullscreen="0" simulatemass="1" invertwheel="0" hideabout="0" lockedwheel="0" sensitivity="8" speedwheel="1" contextfullscreen="0"/>
+  </panorama>
+  <panorama id="node4">
+    <input levelbiashidpi="0.400" height="1000" levelingpitch="0" width="1000" leveltileurl="tiles/node4/cf_%c/l_%l/c_%x/tile_%y.jpg" levelingroll="0" overlap="1" leveltilesize="510" levelbias="0.400">
+      <level predecode="0" height="1000" preload="0" width="1000"/>
+      <level predecode="1" height="500" preload="1" width="500"/>
+      <preview strip="1" color="0x808080"/>
+    </input>
+    <view pannorth="0" fovmode="0">
+      <start projection="4" tilt="0" pan="0" fov="70"/>
+      <flyin projection="9" tilt="-90" pan="0" fov="170"/>
+      <min tilt="-90" pan="0" fov="5"/>
+      <max fovfisheye="360" scaletofit="1" fovstereographic="270" tilt="90" pan="360" fov="120"/>
+    </view>
+    <userdata customnodeid="" longitude="" comment="" author="" description="" tags="6747_Panorama" title="" datetime="7/3/2026 4:59 PM" copyright="" source="" latitude="" info=""/>
+    <hotspots height="20" wordwrap="1" width="180">
+      <label height="20" borderradius="1" bordercolor="0x000000" backgroundalpha="1" enabled="1" backgroundcolor="0xffffff" textcolor="0x000000" wordwrap="1" width="180" borderalpha="1" background="1" textalpha="1" border="1"/>
+      <polystyle handcursor="1" bordercolor="0x0000ff" backgroundalpha="0.2509803921568627" backgroundcolor="0x0000ff" mode="0" borderalpha="1"/>
+      <hotspot id="Entrance" url="{node1}" skinid="ht_node" tilt="-4.06" description="" title="Entrance" target="" pan="96.54"/>
+    </hotspots>
+    <media/>
+    <transition type="crossdissolve" blendtime="1" zoomin="0" enabled="0" softedge="0" zoomfov="20" zoomspeed="2" zoomout="0" zoomoutpause="1" blendcolor="0x000000"/>
+    <control lockedmouse="0" invertcontrol="1" lockedkeyboard="0" rubberband="0" contextprojections="0" lockedkeyboardzoom="0" dblclickfullscreen="0" simulatemass="1" invertwheel="0" hideabout="0" lockedwheel="0" sensitivity="8" speedwheel="1" contextfullscreen="0"/>
+  </panorama>
+  <panorama id="node5">
+    <input levelbiashidpi="0.400" height="1000" levelingpitch="0" width="1000" leveltileurl="tiles/node5/cf_%c/l_%l/c_%x/tile_%y.jpg" levelingroll="0" overlap="1" leveltilesize="510" levelbias="0.400">
+      <level predecode="0" height="1000" preload="0" width="1000"/>
+      <level predecode="1" height="500" preload="1" width="500"/>
+      <preview strip="1" color="0x808080"/>
+    </input>
+    <view pannorth="0" fovmode="0">
+      <start projection="4" tilt="0" pan="0" fov="70"/>
+      <flyin projection="9" tilt="-90" pan="0" fov="170"/>
+      <min tilt="-90" pan="0" fov="5"/>
+      <max fovfisheye="360" scaletofit="1" fovstereographic="270" tilt="90" pan="360" fov="120"/>
+    </view>
+    <userdata customnodeid="" longitude="" comment="" author="" description="" tags="6747_Panorama" title="" datetime="7/3/2026 4:59 PM" copyright="" source="" latitude="" info=""/>
+    <hotspots height="20" wordwrap="1" width="180">
+      <label height="20" borderradius="1" bordercolor="0x000000" backgroundalpha="1" enabled="1" backgroundcolor="0xffffff" textcolor="0x000000" wordwrap="1" width="180" borderalpha="1" background="1" textalpha="1" border="1"/>
+      <polystyle handcursor="1" bordercolor="0x0000ff" backgroundalpha="0.2509803921568627" backgroundcolor="0x0000ff" mode="0" borderalpha="1"/>
+      <hotspot id="Point01" url="{node1}" skinid="ht_node" tilt="-4.16" description="" title="Entrance" target="" pan="-93.88"/>
+    </hotspots>
+    <media/>
+    <transition type="crossdissolve" blendtime="1" zoomin="0" enabled="0" softedge="0" zoomfov="20" zoomspeed="2" zoomout="0" zoomoutpause="1" blendcolor="0x000000"/>
+    <control lockedmouse="0" invertcontrol="1" lockedkeyboard="0" rubberband="0" contextprojections="0" lockedkeyboardzoom="0" dblclickfullscreen="0" simulatemass="1" invertwheel="0" hideabout="0" lockedwheel="0" sensitivity="8" speedwheel="1" contextfullscreen="0"/>
+  </panorama>
+</tour>

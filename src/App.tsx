@@ -192,11 +192,47 @@ function Lightbox({ images, startIndex, onClose }: { images: string[]; startInde
   );
 }
 
-function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
+// 3D-Panoramarundgang (Pano2VR-Export) — gehört zur Wohnung 3.2 (Gebäude 3, OG)
+const TOUR_URL = '/Images/3D_Tour/PanoramaTour_OG_3/index.html';
+const TOUR_BUILDING = '3';
+const TOUR_APT_ID = 8;
+
+function TourModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+      <div className="flex items-center justify-between px-4 md:px-6 py-3 text-white/80 shrink-0">
+        <span className="text-sm tracking-wide">3D-Rundgang · Wohnung 3.2</span>
+        <button onClick={onClose} className="p-2 text-white/70 hover:text-white transition-colors" aria-label="Rundgang schliessen">
+          <X className="w-7 h-7" />
+        </button>
+      </div>
+      <iframe
+        src={TOUR_URL}
+        title="3D-Rundgang Wohnung 3.2"
+        className="flex-1 w-full border-0"
+        allow="fullscreen; accelerometer; gyroscope; xr-spatial-tracking"
+      />
+    </div>
+  );
+}
+
+function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit, onOpenTour }: {
   building: string;
   units: Apartment[];
   onRequestUnit: (apt: Apartment) => void;
   onWaitlistUnit: (apt: Apartment) => void;
+  onOpenTour: () => void;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -373,6 +409,9 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
                                 </a>
                               );
                             })()}
+                            {apt.id === TOUR_APT_ID && (
+                              <button onClick={onOpenTour} className={actionLinkClass}>3D-Rundgang</button>
+                            )}
                             {apt.status === 'available' && (
                               <button onClick={() => onRequestUnit(apt)} className={actionLinkClass}>Anfragen</button>
                             )}
@@ -388,6 +427,20 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit }: {
               );
             })}
           </div>
+
+          {building === TOUR_BUILDING && (
+            <button
+              type="button"
+              onClick={onOpenTour}
+              className="w-full flex justify-between items-center gap-3 mt-4 pt-4 border-t border-gray-200 group text-left"
+            >
+              <div>
+                <p className="text-sm font-light group-hover:text-black transition-colors">3D-Rundgang</p>
+                <p className="text-[11px] text-gray-500 mt-0.5">Virtueller Panorama-Rundgang · Wohnung 3.2</p>
+              </div>
+              <Building2 className="w-4 h-4 text-gray-400 group-hover:text-black transition-colors shrink-0" />
+            </button>
+          )}
 
           {building !== '2' && (
             <a
@@ -511,6 +564,7 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
 function App() {
   const [prefill, setPrefill] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -580,6 +634,12 @@ function App() {
                 {l.label}
               </a>
             ))}
+            <button
+              onClick={() => setTourOpen(true)}
+              className="transition-opacity hover:opacity-60 pb-0.5"
+            >
+              3D-Rundgang
+            </button>
           </div>
           {/* Mobile burger */}
           <button className="md:hidden p-1" onClick={() => setMenuOpen((o) => !o)} aria-label="Menü">
@@ -599,6 +659,12 @@ function App() {
                 {l.label}
               </a>
             ))}
+            <button
+              onClick={() => { setTourOpen(true); closeMenu(); }}
+              className="block w-full text-left px-6 py-4 text-sm tracking-wide border-b border-gray-100 last:border-0"
+            >
+              3D-Rundgang
+            </button>
           </div>
         )}
       </nav>
@@ -686,6 +752,7 @@ function App() {
                 units={units}
                 onRequestUnit={requestInfo}
                 onWaitlistUnit={requestWaitlist}
+                onOpenTour={() => setTourOpen(true)}
               />
             </Fragment>
           ))}
@@ -971,6 +1038,8 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {tourOpen && <TourModal onClose={() => setTourOpen(false)} />}
     </div>
   );
 }
