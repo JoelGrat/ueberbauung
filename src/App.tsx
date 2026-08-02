@@ -781,9 +781,6 @@ function App() {
             <span key={tag} className="text-[10px] uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-2 sm:py-1.5">{tag}</span>
           ))}
         </div>
-        <p className="text-xs text-gray-400 italic max-w-2xl mb-8 md:mb-10 -mt-4 md:-mt-10">
-          Die angezeigten Bilder können von der Wohnung abweichen — es handelt sich um Visualisierungen.
-        </p>
 
         {/* Energie & Betriebskosten */}
         <div className="border border-gray-200 bg-gray-50 p-6 md:p-8 mb-6 max-w-3xl">
@@ -793,16 +790,9 @@ function App() {
           </p>
         </div>
 
-        {/* Baubeschrieb */}
-        <a
-          href="/Images/Baubeschrieb/Baubeschrieb_Widematte.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 mb-10 md:mb-16 text-xs uppercase tracking-widest text-gray-600 hover:text-black border-b border-gray-300 hover:border-black pb-0.5 transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          Baubeschrieb (PDF)
-        </a>
+        <p className="text-xs text-gray-400 italic max-w-2xl mb-8 mt-10 md:mt-16">
+          Die angezeigten Bilder können von der Wohnung abweichen — es handelt sich um Visualisierungen.
+        </p>
 
         <div className="grid md:grid-cols-3 gap-12 md:gap-8">
           {grouped.map(({ building, units }, i) => (
