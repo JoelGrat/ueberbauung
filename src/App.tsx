@@ -62,10 +62,10 @@ const buildingShowPrice: Record<string, boolean> = {
 const buildingImagePaths: Record<string, string[]> = {
   '1': [
     '/Images/Aussenansicht/Gebeaude_1_Highlight.png',
-    '/Images/Innenansicht/Geb1_EG_Livingroom.jpg',
-    '/Images/Innenansicht/Geb1_DG_Livingroom.jpg',
     '/Images/Aussenansicht/Aussenansicht_0.jpg',
     '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
+    '/Images/Innenansicht/Geb1_EG_Livingroom.jpg',
+    '/Images/Innenansicht/Geb1_DG_Livingroom.jpg',
   ],
   '2': [
     '/Images/Aussenansicht/Gebeaude_2_Highlight.png',
@@ -75,12 +75,12 @@ const buildingImagePaths: Record<string, string[]> = {
   ],
   '3': [
     '/Images/Aussenansicht/Gebeaude_3_Highlight.png',
-    '/Images/Innenansicht/Geb3_OG_Livingroom.jpg',
     //'/Images/Innenansicht/Geb3_EG_Badezimmer.jpg',
     '/Images/Aussenansicht/Foto_Richtung_Berge.png',
     '/Images/Aussenansicht/Aussenansicht_0.jpg',
     '/Images/Aussenansicht/Aussenansicht_1.jpg',
     '/Images/Aussenansicht/Aussenansicht_BirdView.jpg',
+    '/Images/Innenansicht/Geb3_OG_Livingroom.jpg',
   ],
 };
 
