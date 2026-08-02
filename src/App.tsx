@@ -1041,7 +1041,7 @@ function App() {
               { label: 'Zahlungskonditionen', text: 'Reservationsvertrag CHF 40\'000. 30% bei Baustart, 40% nach Rohbaufertigstellung, Restzahlung bei Bauvollendung.' },
               { label: 'Handänderung', text: 'Kosten je hälftig, ca. 0.5% des Kaufpreises. Kosten für Schuldbriefe zu Lasten der Käuferschaft.' },
               { label: 'Ausbau', text: 'Die Käuferschaft kann den Innenausbau weitgehend mitbestimmen.' },
-              { label: 'Bauqualität', text: 'Durch Verwendung von qualitativ hochstehenden, ökologischen Materialien garantiert die Bodenseehaus Bau AG herausragende Wohnqualität.' },
+              { label: 'Bauqualität', text: 'Qualitativ hochstehende, ökologische Materialien garantieren herausragende Wohnqualität.' },
             ].map(({ label, text }) => (
               <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">{label}</p>
