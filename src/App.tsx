@@ -1008,11 +1008,12 @@ function App() {
           <h2 className="text-3xl md:text-6xl font-light mb-10 md:mb-16">Beteiligte &amp; Konditionen</h2>
 
           {/* Beteiligte */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-gray-200 mb-12 md:mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-gray-200 mb-12 md:mb-20">
             {[
               { label: 'Bauherrschaft & Verkauf', name: 'Joel und Yves Gratwohl', address: ['Niederwilerstrasse', '5524 Nesselnbach'], email: 'kontakt@widematte.ch' },
               { label: 'Architektur',   name: 'Christ Architektur',     address: ['Vorstadtstrasse 31', '4717 Mümliswil'],   email: 'info@christ-architektur.ch' },
-              { label: 'Bauleiter',     name: 'Hans Imboden',           address: ['Baumanagement für Systemhäuser', 'Ausserfeldstrasse 1', '5036 Oberentfelden'], email: 'imboden.hans@bluewin.ch' },
+              { label: 'Bauleiter',     name: 'Raffael Eggmann',        address: ['Bauplan 360° AG', 'Grenzweg 4', '5726 Unterkulm'], email: '' },
+              { label: 'Bautreuhand',   name: 'Hans Imboden',           address: ['Baumanagement für Systemhäuser', 'Ausserfeldstrasse 1', '5036 Oberentfelden'], email: 'imboden.hans@bluewin.ch' },
             ].map(({ label, name, address, email }) => (
               <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">{label}</p>
@@ -1020,7 +1021,7 @@ function App() {
                 <p className="text-sm text-gray-500 leading-relaxed mb-2">
                   {address.map((line, i) => <Fragment key={i}>{line}<br /></Fragment>)}
                 </p>
-                <a href={`mailto:${email}`} className="text-sm text-gray-500 hover:text-black transition-colors break-words">{email}</a>
+                {email && <a href={`mailto:${email}`} className="text-sm text-gray-500 hover:text-black transition-colors break-words">{email}</a>}
               </div>
             ))}
           </div>
