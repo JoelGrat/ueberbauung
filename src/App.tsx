@@ -1010,7 +1010,7 @@ function App() {
           {/* Beteiligte */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-gray-200 mb-12 md:mb-20">
             {[
-              { label: 'Bauherrschaft & Verkauf', name: 'Joel und Yves Gratwohl', address: ['Niederwilerstrasse', '5524 Nesselnbach'], email: 'kontakt@widematte.ch' },
+              { label: 'Bauherrschaft & Verkauf', name: 'Gratwohl Immobilien AG', address: ['Joel und Yves Gratwohl', 'Ifangweg 15', '5524 Nesselnbach'], email: 'kontakt@widematte.ch' },
               { label: 'Architektur',   name: 'Christ Architektur',     address: ['Vorstadtstrasse 31', '4717 Mümliswil'],   email: 'info@christ-architektur.ch' },
               { label: 'Bauleiter',     name: 'Raffael Eggmann',        address: ['Bauplan 360° AG', 'Grenzweg 4', '5726 Unterkulm'], email: '' },
               { label: 'Bautreuhand',   name: 'Hans Imboden',           address: ['Baumanagement für Systemhäuser', 'Ausserfeldstrasse 1', '5036 Oberentfelden'], email: 'imboden.hans@bluewin.ch' },
@@ -1073,7 +1073,7 @@ function App() {
               <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-4">Kontakt</p>
               <div className="space-y-2 text-sm text-gray-400">
                 <a href="mailto:kontakt@widematte.ch" className="block hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
-<p className="text-gray-600 pt-1">Joel und Yves Gratwohl<br />Niederwilerstrasse<br />5524 Nesselnbach</p>
+<p className="text-gray-600 pt-1">Gratwohl Immobilien AG<br />Joel und Yves Gratwohl<br />Ifangweg 15<br />5524 Nesselnbach</p>
               </div>
             </div>
             <div>
