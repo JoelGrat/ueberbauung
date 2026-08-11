@@ -1,4 +1,4 @@
-import { Building2, Bus, Car, ChevronDown, ChevronLeft, ChevronRight, Download, GraduationCap, Leaf, Mail, MapPin, Menu, ShoppingCart, Upload, X } from 'lucide-react';
+import { Building2, Bus, Car, ChevronDown, ChevronLeft, ChevronRight, Download, GraduationCap, Leaf, Mail, MapPin, Menu, Phone, ShoppingCart, Upload, X } from 'lucide-react';
 import { Fragment, lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -599,12 +599,6 @@ function App() {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const requestDocs = () => {
-    setPrefill('Bitte senden Sie mir die vollständige Verkaufsdokumentation zur Überbauung Widematte (Baubeschrieb, Grundrisse und Preisliste).');
-    closeMenu();
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const grouped = useMemo(() =>
     ['1', '2', '3'].map((building) => ({
       building,
@@ -690,12 +684,6 @@ function App() {
             9 moderne Wohnungen an sonniger, familienfreundlicher Lage — mit durchdachten Grundrissen, direkt am Dorfrand und am Bach.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={requestDocs}
-              className="inline-flex items-center gap-2 bg-white text-black px-6 py-3 text-xs uppercase tracking-widest hover:bg-gray-100 transition-colors"
-            >
-              Unterlagen anfordern
-            </button>
             <a
               href="#apartments"
               className="text-xs uppercase tracking-widest text-white/80 hover:text-white transition-colors border-b border-white/40 hover:border-white pb-0.5"
@@ -1010,18 +998,19 @@ function App() {
           {/* Beteiligte */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-gray-200 mb-12 md:mb-20">
             {[
-              { label: 'Bauherrschaft & Verkauf', name: 'Gratwohl Immobilien AG', address: ['Joel und Yves Gratwohl', 'Ifangweg 15', '5524 Nesselnbach'], email: 'kontakt@widematte.ch' },
+              { label: 'Bauherrschaft & Verkauf', name: 'Gratwohl Immobilien GmbH', address: ['Joel und Yves Gratwohl', 'Ifangweg 15', '5524 Nesselnbach'], email: 'kontakt@widematte.ch', phone: '+41 79 388 31 93' },
               { label: 'Architektur',   name: 'Christ Architektur',     address: ['Vorstadtstrasse 31', '4717 Mümliswil'],   email: 'info@christ-architektur.ch' },
               { label: 'Bauleiter',     name: 'Raffael Eggmann',        address: ['Bauplan 360° AG', 'Grenzweg 4', '5726 Unterkulm'], email: '' },
               { label: 'Bautreuhand',   name: 'Hans Imboden',           address: ['Baumanagement für Systemhäuser', 'Ausserfeldstrasse 1', '5036 Oberentfelden'], email: 'imboden.hans@bluewin.ch' },
-            ].map(({ label, name, address, email }) => (
+            ].map(({ label, name, address, email, phone }) => (
               <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">{label}</p>
                 <p className="text-sm font-light mb-2">{name}</p>
                 <p className="text-sm text-gray-500 leading-relaxed mb-2">
                   {address.map((line, i) => <Fragment key={i}>{line}<br /></Fragment>)}
                 </p>
-                {email && <a href={`mailto:${email}`} className="text-sm text-gray-500 hover:text-black transition-colors break-words">{email}</a>}
+                {email && <a href={`mailto:${email}`} className="block text-sm text-gray-500 hover:text-black transition-colors break-words">{email}</a>}
+                {phone && <a href={`tel:${phone.replace(/\s/g, '')}`} className="block text-sm text-gray-500 hover:text-black transition-colors">{phone}</a>}
               </div>
             ))}
           </div>
@@ -1055,6 +1044,10 @@ function App() {
               <Mail className="w-4 h-4" />
               kontakt@widematte.ch
             </a>
+            <a href="tel:+41793883193" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
+              <Phone className="w-4 h-4" />
+              +41 79 388 31 93
+            </a>
           </div>
           <ContactForm initialMessage={prefill} />
         </div>
@@ -1073,7 +1066,7 @@ function App() {
               <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-4">Kontakt</p>
               <div className="space-y-2 text-sm text-gray-400">
                 <a href="mailto:kontakt@widematte.ch" className="block hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
-<p className="text-gray-600 pt-1">Gratwohl Immobilien AG<br />Joel und Yves Gratwohl<br />Ifangweg 15<br />5524 Nesselnbach</p>
+<p className="text-gray-600 pt-1">Gratwohl Immobilien GmbH<br />Joel und Yves Gratwohl<br />Ifangweg 15<br />5524 Nesselnbach</p>
               </div>
             </div>
             <div>
