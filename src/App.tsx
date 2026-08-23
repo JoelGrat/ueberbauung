@@ -765,6 +765,7 @@ function App() {
             'Lift pro Gebäude',
             'Max. 3 Wohnungen pro Gebäude',
             '2 Tiefgaragenplätze pro Wohnung',
+            'Motorradplätze auf Anfrage',
           ].map(tag => (
             <span key={tag} className="text-[10px] uppercase tracking-widest text-gray-500 border border-gray-200 px-3 py-2 sm:py-1.5">{tag}</span>
           ))}
