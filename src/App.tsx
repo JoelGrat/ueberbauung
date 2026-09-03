@@ -1,4 +1,4 @@
-import { Building2, Bus, Car, ChevronDown, ChevronLeft, ChevronRight, Download, GraduationCap, Leaf, Mail, MapPin, Menu, Phone, ShoppingCart, Upload, X } from 'lucide-react';
+import { Building2, Bus, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Download, GraduationCap, Leaf, Link2, Mail, MapPin, Menu, Phone, ShoppingCart, Upload, X } from 'lucide-react';
 import { Fragment, lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -197,15 +197,89 @@ const TOUR_URL = '/Images/3D_Tour/PanoramaTour_OG_3/index.html';
 const TOUR_BUILDING = '3';
 const TOUR_APT_ID = 8;
 
+// Teilbarer Deep-Link: https://widematte.ch/3d-rundgang öffnet den Rundgang direkt.
+// Die statische Seite dazu wird in scripts/prerender.mjs erzeugt; '#3d-rundgang'
+// funktioniert zusätzlich (u. a. im Dev-Server, wo es die Datei nicht gibt).
+const TOUR_PATH = '/3d-rundgang';
+const TOUR_HASH = '#3d-rundgang';
+const TOUR_TITLE = '3D-Rundgang · Musterwohnung 3.2 · Widematte';
+const TOUR_SHARE_TEXT = 'Virtueller 360°-Rundgang durch die Musterwohnung 3.2 der Überbauung Widematte in Nesselnbach.';
+
+const tourShareUrl = () =>
+  `${typeof window === 'undefined' ? 'https://widematte.ch' : window.location.origin}${TOUR_PATH}`;
+
+function isTourUrl() {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname.replace(/\/+$/, '');
+  return path === TOUR_PATH || window.location.hash === TOUR_HASH;
+}
+
+async function copyToClipboard(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+}
+
+function ShareTourButton() {
+  const [copied, setCopied] = useState(false);
+
+  const share = async () => {
+    const url = tourShareUrl();
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title: TOUR_TITLE, text: TOUR_SHARE_TEXT, url });
+        return;
+      } catch {
+        // Teilen abgebrochen oder nicht möglich — Link stattdessen kopieren
+      }
+    }
+    if (await copyToClipboard(url)) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  };
+
+  return (
+    <button
+      onClick={share}
+      className="flex items-center gap-2 border border-white/25 px-3 py-1.5 text-xs tracking-wide text-white/70 hover:text-white hover:border-white/60 transition-colors"
+      aria-label="Link zum 3D-Rundgang teilen"
+    >
+      {copied
+        ? <><Check className="w-4 h-4" /><span>Link kopiert</span></>
+        : <><Link2 className="w-4 h-4" /><span>Link teilen</span></>}
+    </button>
+  );
+}
+
 function TourModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', onKey);
     const prevOverflow = document.body.style.overflow;
+    const prevTitle = document.title;
     document.body.style.overflow = 'hidden';
+    document.title = TOUR_TITLE;
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
+      document.title = prevTitle;
     };
   }, [onClose]);
 
@@ -213,9 +287,12 @@ function TourModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-50 bg-black flex flex-col">
       <div className="flex items-center justify-between px-4 md:px-6 py-3 text-white/80 shrink-0">
         <span className="text-sm tracking-wide">3D-Rundgang · Wohnung 3.2</span>
-        <button onClick={onClose} className="p-2 text-white/70 hover:text-white transition-colors" aria-label="Rundgang schliessen">
-          <X className="w-7 h-7" />
-        </button>
+        <div className="flex items-center gap-2 md:gap-3">
+          <ShareTourButton />
+          <button onClick={onClose} className="p-2 text-white/70 hover:text-white transition-colors" aria-label="Rundgang schliessen">
+            <X className="w-7 h-7" />
+          </button>
+        </div>
       </div>
       <iframe
         src={TOUR_URL}
@@ -566,6 +643,29 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
 
+  const openTour = () => {
+    setTourOpen(true);
+    if (!isTourUrl()) window.history.pushState({ tour: true }, '', TOUR_PATH);
+  };
+
+  const closeTour = () => {
+    setTourOpen(false);
+    if (isTourUrl()) window.history.pushState({}, '', '/');
+  };
+
+  // Deep-Link /3d-rundgang (bzw. #3d-rundgang) öffnet den Rundgang direkt;
+  // Vor-/Zurück-Navigation schliesst bzw. öffnet ihn wieder.
+  useEffect(() => {
+    const sync = () => setTourOpen(isTourUrl());
+    sync();
+    window.addEventListener('popstate', sync);
+    window.addEventListener('hashchange', sync);
+    return () => {
+      window.removeEventListener('popstate', sync);
+      window.removeEventListener('hashchange', sync);
+    };
+  }, []);
+
   const closeMenu = () => setMenuOpen(false);
 
   const availableCount = apartments.filter(a => a.status === 'available').length;
@@ -635,7 +735,7 @@ function App() {
               </a>
             ))}
             <button
-              onClick={() => setTourOpen(true)}
+              onClick={openTour}
               className="transition-opacity hover:opacity-60 pb-0.5"
             >
               3D-Rundgang
@@ -660,7 +760,7 @@ function App() {
               </a>
             ))}
             <button
-              onClick={() => { setTourOpen(true); closeMenu(); }}
+              onClick={() => { openTour(); closeMenu(); }}
               className="block w-full text-left px-6 py-4 text-sm tracking-wide border-b border-gray-100 last:border-0"
             >
               3D-Rundgang
@@ -709,7 +809,7 @@ function App() {
 
       {/* 3D-Rundgang CTA */}
       <button
-        onClick={() => setTourOpen(true)}
+        onClick={openTour}
         className="group w-full bg-black text-white"
       >
         <div className="max-w-7xl mx-auto px-6 py-5 md:py-6 flex items-center justify-between gap-4">
@@ -792,7 +892,7 @@ function App() {
                 units={units}
                 onRequestUnit={requestInfo}
                 onWaitlistUnit={requestWaitlist}
-                onOpenTour={() => setTourOpen(true)}
+                onOpenTour={openTour}
               />
             </Fragment>
           ))}
@@ -1084,7 +1184,7 @@ function App() {
         </div>
       </footer>
 
-      {tourOpen && <TourModal onClose={() => setTourOpen(false)} />}
+      {tourOpen && <TourModal onClose={closeTour} />}
     </div>
   );
 }

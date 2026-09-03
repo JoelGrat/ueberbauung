@@ -6,5 +6,8 @@
       "destination": "https://widematte.ch/$1",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    { "source": "/3d-rundgang", "destination": "/3d-rundgang/index.html" }
   ]
 }
