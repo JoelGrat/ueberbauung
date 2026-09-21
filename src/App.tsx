@@ -43,7 +43,7 @@ const apartments: Apartment[] = [
   // Gebäude 3
   { id: 7, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 168, sizeEstrich: 0,   sizeKeller: 14, sizePP: 29, rooms: 4.5, rent: 32000, price: 1330000, floor: 0, status: 'available', placeholder: true, note: 'mit grossem Gartenanteil' },
   { id: 8, building: '3', size: 115, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 0,   sizeKeller: 12, sizePP: 30, rooms: 4.5, rent: 30000, price: 1210000, floor: 1, status: 'available' },
-  { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 46,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1235000, floor: 2, status: 'reserved', placeholder: true, note: 'mit Estrich' },
+  { id: 9, building: '3', size: 113, sizeBrutto: 143, sizeBalkon: 24, sizeGarden: 0,   sizeEstrich: 46,  sizeKeller: 14, sizePP: 36, rooms: 4.5, rent: 32000, price: 1235000, floor: 2, status: 'available', placeholder: true, note: 'mit Estrich' },
 ];
 
 const buildingListingType: Record<string, 'sale' | 'rent'> = {
