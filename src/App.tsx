@@ -111,9 +111,13 @@ function floorName(floor: number) {
 // Add '2' here once its Verkaufspläne are available.
 const buildingsWithVerkaufsplan = new Set<string>(['1', '3']);
 
+// Bump whenever the Verkaufsplan PDFs are replaced, so browsers and phone
+// PDF viewers fetch the new file instead of reusing a cached copy.
+const VERKAUFSPLAN_VERSION = '2026-09-27';
+
 function planLink(building: string, floor: number): { href: string; label: string } {
   if (buildingsWithVerkaufsplan.has(building)) {
-    return { href: `/Images/Verkaufsplaene/Wohnung${building}.${floor + 1}.pdf`, label: 'Verkaufsplan' };
+    return { href: `/Images/Verkaufsplaene/Wohnung${building}.${floor + 1}.pdf?v=${VERKAUFSPLAN_VERSION}`, label: 'Verkaufsplan' };
   }
   const code = floor === 0 ? 'EG' : floor === 2 ? 'DG' : 'OG';
   return { href: `/Images/Grundrisse/Grundriss_${code}_${building}.pdf`, label: 'Grundriss' };
