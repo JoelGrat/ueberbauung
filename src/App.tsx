@@ -113,7 +113,7 @@ const buildingsWithVerkaufsplan = new Set<string>(['1', '3']);
 
 // Bump whenever the Verkaufsplan PDFs are replaced, so browsers and phone
 // PDF viewers fetch the new file instead of reusing a cached copy.
-const VERKAUFSPLAN_VERSION = '2026-09-27';
+const VERKAUFSPLAN_VERSION = '2026-09-28';
 
 function planLink(building: string, floor: number): { href: string; label: string } {
   if (buildingsWithVerkaufsplan.has(building)) {
