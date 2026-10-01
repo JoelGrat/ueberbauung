@@ -115,6 +115,9 @@ const buildingsWithVerkaufsplan = new Set<string>(['1', '3']);
 // PDF viewers fetch the new file instead of reusing a cached copy.
 const VERKAUFSPLAN_VERSION = '2026-09-28';
 
+// BWF-Werte sind noch nicht korrekt — ausgeblendet, bis sie überarbeitet sind
+const SHOW_BWF = false;
+
 function planLink(building: string, floor: number): { href: string; label: string } {
   if (buildingsWithVerkaufsplan.has(building)) {
     return { href: `/Images/Verkaufsplaene/Wohnung${building}.${floor + 1}.pdf?v=${VERKAUFSPLAN_VERSION}`, label: 'Verkaufsplan' };
@@ -466,7 +469,7 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit, onOpenTo
                       <div className="border-t border-gray-100 pt-3">
                         <p className="text-[11px] text-gray-500">
                           {[
-                            apt.sizeBrutto && `${apt.sizeBrutto} m² BWF`,
+                            SHOW_BWF && apt.sizeBrutto && `${apt.sizeBrutto} m² BWF`,
                             (apt.sizeBalkon ?? 0) > 0 && `${apt.sizeBalkon} m² Balkon`,
                             (apt.sizeGarden ?? 0) > 0 && `${apt.sizeGarden} m² Garten`,
                             (apt.sizeEstrich ?? 0) > 0 && `${apt.sizeEstrich} m² Estrich`,
