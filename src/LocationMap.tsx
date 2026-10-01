@@ -154,8 +154,8 @@ export default function LocationMap() {
   return (
     <div>
       <MapContainer
-        center={[47.390, 8.314]}
-        zoom={12}
+        center={[PROJECT_LAT, PROJECT_LNG]}
+        zoom={13}
         className="w-full h-72 md:h-[480px] mt-8"
         scrollWheelZoom={false}
         touchZoom={true}
