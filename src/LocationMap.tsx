@@ -145,8 +145,9 @@ export default function LocationMap() {
       >
         <InteractionHandler />
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/" target="_blank">CARTO</a>'
+          url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"
+          attribution='&copy; <a href="https://www.swisstopo.admin.ch/" target="_blank">swisstopo</a>'
+          maxZoom={18}
         />
         {pois.map((poi) => (
           <Marker
