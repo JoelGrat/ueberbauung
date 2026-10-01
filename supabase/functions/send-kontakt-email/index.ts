@@ -127,7 +127,7 @@ serve(async (req) => {
     },
     body: JSON.stringify({
       from: 'Widematte <noreply@widematte.ch>',
-      to: 'kontakt@widematte.ch',
+      to: 'n.desilva@premium-homes.ch',
       reply_to: email,
       subject: `Neue Anfrage von ${name}`,
       html,

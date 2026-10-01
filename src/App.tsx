@@ -1,4 +1,4 @@
-import { Building2, Bus, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Download, GraduationCap, Leaf, Link2, Mail, MapPin, Menu, Phone, ShoppingCart, Upload, X } from 'lucide-react';
+import { Building2, Bus, Car, Check, ChevronDown, ChevronLeft, ChevronRight, Download, Globe, GraduationCap, Leaf, Link2, Mail, MapPin, Menu, Phone, ShoppingCart, Upload, X } from 'lucide-react';
 import { Fragment, lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -351,7 +351,7 @@ function BuildingCard({ building, units, onRequestUnit, onWaitlistUnit, onOpenTo
       return (
         <>
           <p className="text-sm font-light">CHF {apt.price.toLocaleString('de-CH')}</p>
-          <p className="text-[10px] text-gray-500 mt-0.5">inkl. 2 Tiefgaragenparkplätze</p>
+          <p className="text-[10px] text-gray-500 mt-0.5">exkl. 2 Tiefgaragenparkplätze</p>
         </>
       );
     }
@@ -634,8 +634,9 @@ function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
       </p>
       {submitError && (
         <p className="md:col-span-2 text-sm text-red-600">
-          Etwas ist schiefgelaufen. Bitte schreiben Sie uns direkt an{' '}
-          <a href="mailto:kontakt@widematte.ch" className="underline">kontakt@widematte.ch</a>.
+          Etwas ist schiefgelaufen. Bitte schreiben Sie direkt an{' '}
+          <a href="mailto:n.desilva@premium-homes.ch" className="underline">n.desilva@premium-homes.ch</a>{' '}
+          oder rufen Sie an: <a href="tel:+41774312560" className="underline">077 431 25 60</a>.
         </p>
       )}
     </form>
@@ -1101,13 +1102,14 @@ function App() {
           <h2 className="text-3xl md:text-6xl font-light mb-10 md:mb-16">Beteiligte &amp; Konditionen</h2>
 
           {/* Beteiligte */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-gray-200 mb-12 md:mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border-t border-gray-200 mb-12 md:mb-20">
             {[
-              { label: 'Bauherrschaft & Verkauf', name: 'Gratwohl Immobilien GmbH', address: ['Joel und Yves Gratwohl', 'Ifangweg 15', '5524 Nesselnbach'], email: 'kontakt@widematte.ch', phone: '+41 79 388 31 93' },
+              { label: 'Verkauf',       name: 'Premium Homes',          address: ['N. De Silva'], email: 'n.desilva@premium-homes.ch', phone: '+41 77 431 25 60', website: 'https://premium-homes.ch/kontakt/' },
+              { label: 'Bauherrschaft', name: 'Gratwohl Immobilien GmbH', address: ['Joel und Yves Gratwohl', 'Ifangweg 15', '5524 Nesselnbach'] },
               { label: 'Architektur',   name: 'Christ Architektur',     address: ['Vorstadtstrasse 31', '4717 Mümliswil'],   email: 'info@christ-architektur.ch' },
               { label: 'Bauleiter',     name: 'Raffael Eggmann',        address: ['Bauplan 360° AG', 'Grenzweg 4', '5726 Unterkulm'], email: '' },
               { label: 'Bautreuhand',   name: 'Hans Imboden',           address: ['Baumanagement für Systemhäuser', 'Ausserfeldstrasse 1', '5036 Oberentfelden'], email: 'imboden.hans@bluewin.ch' },
-            ].map(({ label, name, address, email, phone }) => (
+            ].map(({ label, name, address, email, phone, website }) => (
               <div key={label} className="border-b border-gray-200 py-7 pr-6 lg:pr-10">
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">{label}</p>
                 <p className="text-sm font-light mb-2">{name}</p>
@@ -1116,6 +1118,7 @@ function App() {
                 </p>
                 {email && <a href={`mailto:${email}`} className="block text-sm text-gray-500 hover:text-black transition-colors break-words">{email}</a>}
                 {phone && <a href={`tel:${phone.replace(/\s/g, '')}`} className="block text-sm text-gray-500 hover:text-black transition-colors">{phone}</a>}
+                {website && <a href={website} target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-500 hover:text-black transition-colors">premium-homes.ch</a>}
               </div>
             ))}
           </div>
@@ -1142,16 +1145,21 @@ function App() {
           <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">06 / Kontakt</p>
           <h2 className="text-3xl md:text-6xl font-light mb-4 md:mb-6">Kontakt</h2>
           <p className="text-base md:text-xl text-gray-500 mb-6">
-            Wir begleiten Sie gerne — sprechen Sie mit uns.
+            Der Verkauf erfolgt über Premium Homes — wir beraten Sie gerne persönlich.
           </p>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 text-gray-600 text-sm mb-10 md:mb-12">
-            <a href="mailto:kontakt@widematte.ch" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
+          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-3">Ihr Ansprechpartner · Premium Homes</p>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-4 sm:gap-8 text-gray-600 text-sm mb-10 md:mb-12">
+            <a href="mailto:n.desilva@premium-homes.ch" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
               <Mail className="w-4 h-4" />
-              kontakt@widematte.ch
+              n.desilva@premium-homes.ch
             </a>
-            <a href="tel:+41793883193" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
+            <a href="tel:+41774312560" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
               <Phone className="w-4 h-4" />
-              +41 79 388 31 93
+              077 431 25 60
+            </a>
+            <a href="https://premium-homes.ch/kontakt/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
+              <Globe className="w-4 h-4" />
+              premium-homes.ch
             </a>
           </div>
           <ContactForm initialMessage={prefill} />
@@ -1170,8 +1178,10 @@ function App() {
             <div>
               <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-4">Kontakt</p>
               <div className="space-y-2 text-sm text-gray-400">
-                <a href="mailto:kontakt@widematte.ch" className="block hover:opacity-60 transition-opacity">kontakt@widematte.ch</a>
-<p className="text-gray-600 pt-1">Gratwohl Immobilien GmbH<br />Joel und Yves Gratwohl<br />Ifangweg 15<br />5524 Nesselnbach</p>
+                <p className="text-gray-600">Verkauf: Premium Homes</p>
+                <a href="mailto:n.desilva@premium-homes.ch" className="block hover:opacity-60 transition-opacity">n.desilva@premium-homes.ch</a>
+                <a href="tel:+41774312560" className="block hover:opacity-60 transition-opacity">077 431 25 60</a>
+<p className="text-gray-600 pt-3">Bauherrschaft:<br />Gratwohl Immobilien GmbH<br />Joel und Yves Gratwohl<br />Ifangweg 15<br />5524 Nesselnbach</p>
               </div>
             </div>
             <div>
