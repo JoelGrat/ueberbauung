@@ -1,6 +1,8 @@
 import L from 'leaflet';
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import '@maplibre/maplibre-gl-leaflet';
 
 type PoiType = 'projekt' | 'einkauf' | 'schule' | 'kita' | 'ov' | 'natur';
 
@@ -110,6 +112,7 @@ function makePin(type: PoiType) {
     iconSize:    [size, size + tri],
     iconAnchor:  [size / 2, size + tri],
     popupAnchor: [0, -(size + tri + 6)],
+    tooltipAnchor: [0, -(size + tri + 2)],
   });
 }
 
@@ -132,6 +135,21 @@ function InteractionHandler() {
   return null;
 }
 
+// swisstopo «Leichte Basiskarte» (Vektor) — frei nutzbar, ohne API-Key
+const BASEMAP_STYLE = 'https://vectortiles.geo.admin.ch/styles/ch.swisstopo.lightbasemap.vt/style.json';
+
+function BaseMap() {
+  const map = useMap();
+
+  useEffect(() => {
+    // Quellenangabe (© swisstopo) liefert der Style selbst
+    const layer = L.maplibreGL({ style: BASEMAP_STYLE }).addTo(map);
+    return () => { map.removeLayer(layer); };
+  }, [map]);
+
+  return null;
+}
+
 export default function LocationMap() {
   return (
     <div>
@@ -144,17 +162,19 @@ export default function LocationMap() {
         style={{ zIndex: 0 }}
       >
         <InteractionHandler />
-        <TileLayer
-          url="https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"
-          attribution='&copy; <a href="https://www.swisstopo.admin.ch/" target="_blank">swisstopo</a>'
-          maxZoom={18}
-        />
+        <BaseMap />
         {pois.map((poi) => (
           <Marker
             key={poi.name}
             position={[poi.lat, poi.lng]}
             icon={makePin(poi.type)}
+            zIndexOffset={poi.type === 'projekt' ? 1000 : 0}
           >
+            {poi.type === 'projekt' && (
+              <Tooltip permanent direction="top" className="project-label">
+                <strong>Widematte</strong> · Nesselnbach
+              </Tooltip>
+            )}
             <Popup>
               <div style={{ fontFamily: '"Helvetica Neue", sans-serif', minWidth: 160 }}>
                 <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: config[poi.type].color }}>{poi.name}</p>
